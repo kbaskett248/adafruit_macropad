@@ -143,32 +143,16 @@ class HotkeyPad:
                 self.app_index = position % len(self.apps)
                 self.current_app = self.apps[self.app_index]
 
-            # Handle encoder button. If state has changed, and if there's a
-            # corresponding macro, set up variables to act on this just like
-            # the keypad keys, as if it were a 13th key/macro.
-            encoder_switch = self.encoder_switch
-            if encoder_switch != self.last_encoder_switch:
-                self.last_encoder_switch = encoder_switch
-                if len(self.current_app) < 13:
-                    continue  # No 13th macro, just resume main loop
-                key_number = 12  # else process below as 13th macro
-                pressed = encoder_switch
-            else:
-                event = self.macropad.keys.events.get()
-                if not event or event.key_number >= len(self.current_app):
-                    continue  # No key events, or no corresponding macro, resume loop
-                key_number = event.key_number
-                pressed = event.pressed
+            pressed_key = self.get_pressed_key()
+            if pressed_key is None:
+                continue
 
             # If code reaches here, a key or the encoder button WAS pressed/released
             # and there IS a corresponding macro available for it...other situations
             # are avoided by 'continue' statements above which resume the loop.
 
-            try:
-                color, _, sequence = self.current_app[key_number + 1]
-            except TypeError:
-                color = 0
-                sequence = []
+            key, key_number, pressed = pressed_key
+            color, _, sequence = key
 
             if pressed:
                 # 'sequence' is an arbitrary-length list, each item is one of:
@@ -178,9 +162,9 @@ class HotkeyPad:
                 # String (e.g. "Foo"): corresponding keys pressed & released
                 # List []: one or more Consumer Control codes (can also do float delay)
                 # Dict {}: mouse buttons/motion (might extend in future)
-                if key_number < 12:  # No pixel for encoder button
-                    self.macropad.pixels[key_number] = 0xFFFFFF
-                    self.macropad.pixels.show()
+                self.macropad.pixels[key_number] = 0xFFFFFF
+                self.macropad.pixels.show()
+
                 for item in sequence:
                     if isinstance(item, int):
                         if item >= 0:
@@ -234,9 +218,35 @@ class HotkeyPad:
                         elif "tone" in item:
                             self.macropad.stop_tone()
                 self.macropad.consumer_control.release()
-                if key_number < 12:  # No pixel for encoder button
-                    self.macropad.pixels[key_number] = color
-                    self.macropad.pixels.show()
+
+                self.macropad.pixels[key_number] = color
+                self.macropad.pixels.show()
+
+    def get_pressed_key(self):
+        # Handle encoder button. If state has changed, and if there's a
+        # corresponding macro, set up variables to act on this just like
+        # the keypad keys, as if it were a 13th key/macro.
+        encoder_switch = self.encoder_switch
+        if encoder_switch != self.last_encoder_switch:
+            self.last_encoder_switch = encoder_switch
+            if len(self.current_app) < 13:
+                return None
+            return None
+
+        event = self.macropad.keys.events.get()
+        if not event:
+            return None
+
+        key_number = event.key_number
+        if key_number >= len(self.current_app):
+            return None
+
+        key = self.current_app[key_number + 1]
+        if key is None:
+            return None
+
+        pressed = event.pressed
+        return (key, key_number, pressed)
 
 
 apps = BaseApp.load_apps(MACRO_FOLDER)
