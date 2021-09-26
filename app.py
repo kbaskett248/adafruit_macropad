@@ -72,3 +72,6 @@ class BaseApp:
 
     def __iter__(self):
         return iter(self.macros)
+
+    def __len__(self):
+        return len(self.macros)

@@ -25,15 +25,6 @@ MACRO_FOLDER = "/macros"
 # CLASSES AND FUNCTIONS ----------------
 
 
-class App:
-    """Class representing a host-side application, for which we have a set
-    of macro sequences."""
-
-    def __init__(self, appdata):
-        self.name = appdata["name"]
-        self.macros = appdata["macros"]
-
-
 class HotkeyPad:
     def __init__(self, apps):
         self.apps = apps
@@ -158,13 +149,13 @@ class HotkeyPad:
             encoder_switch = self.encoder_switch
             if encoder_switch != self.last_encoder_switch:
                 self.last_encoder_switch = encoder_switch
-                if len(self.current_app.macros) < 13:
+                if len(self.current_app) < 13:
                     continue  # No 13th macro, just resume main loop
                 key_number = 12  # else process below as 13th macro
                 pressed = encoder_switch
             else:
                 event = self.macropad.keys.events.get()
-                if not event or event.key_number >= len(self.current_app.macros):
+                if not event or event.key_number >= len(self.current_app):
                     continue  # No key events, or no corresponding macro, resume loop
                 key_number = event.key_number
                 pressed = event.pressed
@@ -173,7 +164,7 @@ class HotkeyPad:
             # and there IS a corresponding macro available for it...other situations
             # are avoided by 'continue' statements above which resume the loop.
 
-            sequence = self.current_app.macros[key_number][2]
+            sequence = self.current_app[key_number + 1][2]
             if pressed:
                 # 'sequence' is an arbitrary-length list, each item is one of:
                 # Positive integer (e.g. Keycode.KEYPAD_MINUS): key pressed
@@ -239,9 +230,9 @@ class HotkeyPad:
                             self.macropad.stop_tone()
                 self.macropad.consumer_control.release()
                 if key_number < 12:  # No pixel for encoder button
-                    self.macropad.pixels[key_number] = self.current_app.macros[
-                        key_number
-                    ][0]
+                    self.macropad.pixels[key_number] = self.current_app[key_number + 1][
+                        0
+                    ]
                     self.macropad.pixels.show()
 
 
