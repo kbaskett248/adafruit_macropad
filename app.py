@@ -69,3 +69,6 @@ class BaseApp:
         if not isinstance(index, int):
             raise IndexError("Index %s is not an int" % index)
         return getattr(self, "key_%s" % index)
+
+    def __iter__(self):
+        return iter(self.macros)

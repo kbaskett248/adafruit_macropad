@@ -118,14 +118,11 @@ class HotkeyPad:
             self.display_group[13].text = "NO MACRO FILES FOUND"
         else:
             self.display_group[13].text = self._current_app.name
-            for i in range(12):
+            for i, macro in enumerate(self.current_app):
                 try:
                     # Key in use, set label + LED color
-                    self.macropad.pixels[i] = self._current_app.macros[i][0]
-                    self.display_group[i].text = self._current_app.macros[i][1]
-                except IndexError:  # Key not in use, no label or LED
-                    self.macropad.pixels[i] = 0
-                    self.display_group[i].text = ""
+                    self.macropad.pixels[i] = macro[0]
+                    self.display_group[i].text = macro[1]
                 except TypeError:  # Key not in use, no label or LED
                     self.macropad.pixels[i] = 0
                     self.display_group[i].text = ""
