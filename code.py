@@ -248,41 +248,6 @@ class HotkeyPad:
                     self.macropad.pixels.show()
 
 
-def load_apps(directory):
-    """Load all the macro key setups from .py files in MACRO_FOLDER.
-
-    Args:
-        directory (str): The directory from which to load macros.
-
-    Returns:
-        List[App]: A list of App objects
-    """
-    apps = []
-    files = os.listdir(directory)
-    files.sort()
-    for filename in files:
-        if filename.endswith(".py"):
-            try:
-                module = __import__(MACRO_FOLDER + "/" + filename[:-3])
-                if isinstance(module.app, dict):
-                    apps.append(App(module.app))
-                else:
-                    apps.append(module.app)
-                print("Loaded %s" % module.app["name"])
-            except (
-                SyntaxError,
-                ImportError,
-                AttributeError,
-                KeyError,
-                NameError,
-                IndexError,
-                TypeError,
-            ) as err:
-                print(err)
-
-    return apps
-
-
-apps = load_apps(MACRO_FOLDER)
+apps = BaseApp.load_apps(MACRO_FOLDER)
 macropad = HotkeyPad(apps)
 macropad.run()
