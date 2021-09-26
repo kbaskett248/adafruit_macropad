@@ -30,8 +30,7 @@ MACRO_FOLDER = "/macros"
 
 class App:
     """Class representing a host-side application, for which we have a set
-    of macro sequences. Project code was originally more complex and
-    this was helpful, but maybe it's excessive now?"""
+    of macro sequences."""
 
     def __init__(self, appdata):
         self.name = appdata["name"]
@@ -56,6 +55,7 @@ class HotkeyPad:
 
     @classmethod
     def _init_macropad(cls):
+        """Initialize the macropad component."""
         macropad = MacroPad()
         macropad.display.auto_refresh = False
         macropad.pixels.auto_write = False
@@ -63,7 +63,7 @@ class HotkeyPad:
         return macropad
 
     def _init_display_group(self):
-        # Set up displayio group with all the labels
+        """Set up displayio group with all the labels."""
         group = displayio.Group()
         for key_index in range(12):
             x = key_index % 3
@@ -108,6 +108,14 @@ class HotkeyPad:
 
     @current_app.setter
     def current_app(self, new_app):
+        """Set a new current app.
+
+        Update the display, set the keyboard pixels, and reset the macropad
+        state.
+
+        Args:
+            new_app (App | None): The new App to set or None
+        """
         self._current_app = new_app
         if new_app is None:
             self.display_group[13].text = "NO MACRO FILES FOUND"
@@ -131,13 +139,15 @@ class HotkeyPad:
         self.macropad.display.refresh()
 
     def run(self):
+        """Run the main event loop."""
         if not self.apps:
             while True:
                 continue
         else:
-            self.main_loop()
+            self._main_loop()
 
-    def main_loop(self):
+    def _main_loop(self):
+        """The main event loop when there is an active app."""
         while True:
             # Read encoder position. If it's changed, switch apps.
             position = self.encoder_position
@@ -240,7 +250,14 @@ class HotkeyPad:
 
 
 def load_apps(directory):
-    # Load all the macro key setups from .py files in MACRO_FOLDER
+    """Load all the macro key setups from .py files in MACRO_FOLDER.
+
+    Args:
+        directory (str): The directory from which to load macros.
+
+    Returns:
+        List[App]: A list of App objects
+    """
     apps = []
     files = os.listdir(directory)
     files.sort()
