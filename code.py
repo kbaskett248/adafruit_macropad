@@ -15,10 +15,7 @@ from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 from adafruit_macropad import MacroPad
 
-import app
-
-print(app.CONSTANT)
-
+from app import BaseApp
 
 # CONFIGURABLES ------------------------
 
@@ -122,12 +119,14 @@ class HotkeyPad:
         else:
             self.display_group[13].text = self._current_app.name
             for i in range(12):
-                if i < len(
-                    self._current_app.macros
-                ):  # Key in use, set label + LED color
+                try:
+                    # Key in use, set label + LED color
                     self.macropad.pixels[i] = self._current_app.macros[i][0]
                     self.display_group[i].text = self._current_app.macros[i][1]
-                else:  # Key not in use, no label or LED
+                except IndexError:  # Key not in use, no label or LED
+                    self.macropad.pixels[i] = 0
+                    self.display_group[i].text = ""
+                except TypeError:  # Key not in use, no label or LED
                     self.macropad.pixels[i] = 0
                     self.display_group[i].text = ""
 
@@ -265,7 +264,10 @@ def load_apps(directory):
         if filename.endswith(".py"):
             try:
                 module = __import__(MACRO_FOLDER + "/" + filename[:-3])
-                apps.append(App(module.app))
+                if isinstance(module.app, dict):
+                    apps.append(App(module.app))
+                else:
+                    apps.append(module.app)
                 print("Loaded %s" % module.app["name"])
             except (
                 SyntaxError,
@@ -276,7 +278,7 @@ def load_apps(directory):
                 IndexError,
                 TypeError,
             ) as err:
-                pass
+                print(err)
 
     return apps
 
