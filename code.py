@@ -164,7 +164,12 @@ class HotkeyPad:
             # and there IS a corresponding macro available for it...other situations
             # are avoided by 'continue' statements above which resume the loop.
 
-            sequence = self.current_app[key_number + 1][2]
+            try:
+                color, _, sequence = self.current_app[key_number + 1]
+            except TypeError:
+                color = 0
+                sequence = []
+
             if pressed:
                 # 'sequence' is an arbitrary-length list, each item is one of:
                 # Positive integer (e.g. Keycode.KEYPAD_MINUS): key pressed
@@ -230,9 +235,7 @@ class HotkeyPad:
                             self.macropad.stop_tone()
                 self.macropad.consumer_control.release()
                 if key_number < 12:  # No pixel for encoder button
-                    self.macropad.pixels[key_number] = self.current_app[key_number + 1][
-                        0
-                    ]
+                    self.macropad.pixels[key_number] = color
                     self.macropad.pixels.show()
 
 
