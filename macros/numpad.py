@@ -1,28 +1,32 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
-from adafruit_hid.keycode import Keycode # REQUIRED if using Keycode.* values
+from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-app = {                # REQUIRED dict, must be named 'app'
-    'name' : 'Numpad', # Application name
-    'macros' : [       # List of button macros...
-        # COLOR    LABEL    KEY SEQUENCE
-        # 1st row ----------
-        (0x202000, '7', ['7']),
-        (0x202000, '8', ['8']),
-        (0x202000, '9', ['9']),
-        # 2nd row ----------
-        (0x202000, '4', ['4']),
-        (0x202000, '5', ['5']),
-        (0x202000, '6', ['6']),
-        # 3rd row ----------
-        (0x202000, '1', ['1']),
-        (0x202000, '2', ['2']),
-        (0x202000, '3', ['3']),
-        # 4th row ----------
-        (0x101010, '*', ['*']),
-        (0x800000, '0', ['0']),
-        (0x101010, '#', ['#']),
-        # Encoder button ---
-        (0x000000, '', [Keycode.BACKSPACE])
-    ]
-}
+from app import BaseApp
+
+
+class NumpadApp(BaseApp):
+    name = "Numpad"
+
+    # First row
+    key_1 = (0x202000, "7", ["7"])
+    key_2 = (0x202000, "8", ["8"])
+    key_3 = (0x202000, "9", ["9"])
+
+    # Second row
+    key_4 = (0x202000, "4", ["4"])
+    key_5 = (0x202000, "5", ["5"])
+    key_6 = (0x202000, "6", ["6"])
+
+    # Third row
+    key_7 = (0x202000, "1", ["1"])
+    key_8 = (0x202000, "2", ["2"])
+    key_9 = (0x202000, "3", ["3"])
+
+    # Fourth row
+    key_10 = (0x101010, "*", ["*"])
+    key_11 = (0x800000, "0", ["0"])
+    key_12 = (0x101010, "#", ["#"])
+
+
+NumpadApp()
