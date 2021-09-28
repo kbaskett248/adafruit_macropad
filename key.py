@@ -68,6 +68,18 @@ class Text(Command):
         macropad.keyboard_layout.write(self.text)
 
 
+class Media(Command):
+    command = None
+
+    def __init__(self, command):
+        super().__init__()
+        self.command = command
+
+    def execute(self, macropad):
+        macropad.consumer_control.release()
+        macropad.consumer_control.press(self.command)
+
+
 class Key:
     text = ""
     color = 0
