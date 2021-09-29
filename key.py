@@ -152,7 +152,7 @@ class Key:
     color = 0
     command = None
 
-    def __init__(self, command=None, color=0):
+    def __init__(self, color=0, command=None):
         self.command = command
         self.color = color
 
@@ -168,6 +168,6 @@ class Key:
 class LabeledKey(Key):
     text = ""
 
-    def __init__(self, text="", command=None, color=0):
-        super().__init__(command, color)
+    def __init__(self, text="", color=0, command=None):
+        super().__init__(color, command)
         self.text = text
