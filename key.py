@@ -87,7 +87,7 @@ class Media(Command):
 class MouseClick(Command):
     button = None
 
-    def __init__(self, button) -> None:
+    def __init__(self, button):
         super().__init__()
         self.button = button
 
@@ -102,7 +102,7 @@ class MouseMove(Command):
     x = 0
     y = 0
 
-    def __init__(self, x=0, y=0) -> None:
+    def __init__(self, x=0, y=0):
         super().__init__()
         self.x = x
         self.y = y
@@ -114,7 +114,7 @@ class MouseMove(Command):
 class Scroll(Command):
     lines = 0
 
-    def __init__(self, lines) -> None:
+    def __init__(self, lines):
         super().__init__()
         self.lines = lines
 
@@ -125,7 +125,7 @@ class Scroll(Command):
 class Tone(Command):
     tone = 0
 
-    def __init__(self, tone) -> None:
+    def __init__(self, tone):
         super().__init__()
         self.tone = tone
 
@@ -140,7 +140,7 @@ class Tone(Command):
 class PlayFile(Command):
     file_ = None
 
-    def __init__(self, file_) -> None:
+    def __init__(self, file_):
         super().__init__()
         self.file_ = file_
 
@@ -149,6 +149,25 @@ class PlayFile(Command):
 
 
 class Key:
-    text = ""
     color = 0
     command = None
+
+    def __init__(self, command=None, color=0):
+        self.command = command
+        self.color = color
+
+    def press(self, macropad):
+        if self.command:
+            self.command.execute(macropad)
+
+    def release(self, macropad):
+        if self.command:
+            self.command.undo(macropad)
+
+
+class LabeledKey(Key):
+    text = ""
+
+    def __init__(self, text="", command=None, color=0):
+        super().__init__(command, color)
+        self.text = text
