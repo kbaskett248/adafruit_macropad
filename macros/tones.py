@@ -14,27 +14,28 @@
 # with other elements (keys, codes, mouse) to provide auditory feedback.
 
 from app import BaseApp
+from key import LabeledKey, Sequence, Tone, Wait
 
 
 class ToneApp(BaseApp):
     name = "Tones"
 
     # First row
-    key_1 = (0x200000, "C3", [{"tone": 131}])
-    key_2 = (0x202000, "C4", [{"tone": 262}])
-    key_3 = (0x002000, "C5", [{"tone": 523}])
+    key_1 = LabeledKey("C3", 0x200000, Tone(131))
+    key_2 = LabeledKey("C4", 0x202000, Tone(262))
+    key_3 = LabeledKey("C5", 0x002000, Tone(523))
 
     # Second row
-    key_4 = (
+    key_4 = LabeledKey(
+        "Rising", 
         0x000020,
-        "Rising",
-        [{"tone": 131}, 0.2, {"tone": 262}, 0.2, {"tone": 523}],
+        Sequence(Tone(131), Wait(0.2), Tone(262), Wait(0.2), Tone(523))
     )
-    key_5 = None
-    key_6 = (
+
+    key_6 = LabeledKey(
+        "Falling", 
         0x000020,
-        "Falling",
-        [{"tone": 523}, 0.2, {"tone": 262}, 0.2, {"tone": 131}],
+        Sequence(Tone(523), Wait(0.2), Tone(262), Wait(0.2), Tone(131))
     )
 
 
