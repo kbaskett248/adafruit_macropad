@@ -10,24 +10,24 @@ class BaseApp:
     name = "Base App"
 
     # First row
+    key_0 = None
     key_1 = None
     key_2 = None
-    key_3 = None
 
     # Second row
+    key_3 = None
     key_4 = None
     key_5 = None
-    key_6 = None
 
     # Third row
+    key_6 = None
     key_7 = None
     key_8 = None
-    key_9 = None
 
     # Fourth row
+    key_9 = None
     key_10 = None
     key_11 = None
-    key_12 = None
 
     @staticmethod
     def load_apps(directory):
@@ -73,7 +73,7 @@ class BaseApp:
 
         self.macros = []
         for index in range(12):
-            self.macros.append(self[index + 1])
+            self.macros.append(self[index])
 
         self.display_group = self._init_display_group(display_width, display_height)
 
@@ -95,7 +95,7 @@ class BaseApp:
             x = key_index % 3
             y = key_index // 3
             try:
-                text = self[key_index + 1].text
+                text = self[key_index].text
             except:
                 text = ""
             group.append(
