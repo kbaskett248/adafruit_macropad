@@ -55,9 +55,14 @@ class BaseApp:
                     print("Error loading %s" % filename)
                     print(err)
 
-        apps = list(sorted(BaseApp._instances, key=lambda app: app.name))
+        try:
+            apps = list(sorted(BaseApp._instances, key=lambda app: app.name))
+        except AttributeError:
+            apps = []
+
         for app in apps:
             print("Loaded %s" % app.name)
+
         return apps
 
     def __init__(self, display_width=128, display_height=64):
