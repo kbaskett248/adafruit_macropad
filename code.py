@@ -109,12 +109,12 @@ class HotkeyPad:
             self.display_group[13].text = "NO MACRO FILES FOUND"
         else:
             self.display_group[13].text = self._current_app.name
-            for i, macro in enumerate(self.current_app):
+            for i, labeled_key in enumerate(self.current_app):
                 try:
                     # Key in use, set label + LED color
-                    self.macropad.pixels[i] = macro[0]
-                    self.display_group[i].text = macro[1]
-                except TypeError:  # Key not in use, no label or LED
+                    self.macropad.pixels[i] = labeled_key.color
+                    self.display_group[i].text = labeled_key.text
+                except AttributeError:  # Key not in use, no label or LED
                     self.macropad.pixels[i] = 0
                     self.display_group[i].text = ""
 
@@ -152,74 +152,21 @@ class HotkeyPad:
             # are avoided by 'continue' statements above which resume the loop.
 
             key, key_number, pressed = pressed_key
-            color, _, sequence = key
 
             if pressed:
-                # 'sequence' is an arbitrary-length list, each item is one of:
-                # Positive integer (e.g. Keycode.KEYPAD_MINUS): key pressed
-                # Negative integer: (absolute value) key released
-                # Float (e.g. 0.25): delay in seconds
-                # String (e.g. "Foo"): corresponding keys pressed & released
-                # List []: one or more Consumer Control codes (can also do float delay)
-                # Dict {}: mouse buttons/motion (might extend in future)
                 self.macropad.pixels[key_number] = 0xFFFFFF
                 self.macropad.pixels.show()
-
-                for item in sequence:
-                    if isinstance(item, int):
-                        if item >= 0:
-                            self.macropad.keyboard.press(item)
-                        else:
-                            self.macropad.keyboard.release(-item)
-                    elif isinstance(item, float):
-                        time.sleep(item)
-                    elif isinstance(item, str):
-                        self.macropad.keyboard_layout.write(item)
-                    elif isinstance(item, list):
-                        for code in item:
-                            if isinstance(code, int):
-                                self.macropad.consumer_control.release()
-                                self.macropad.consumer_control.press(code)
-                            if isinstance(code, float):
-                                time.sleep(code)
-                    elif isinstance(item, dict):
-                        if "buttons" in item:
-                            if item["buttons"] >= 0:
-                                self.macropad.mouse.press(item["buttons"])
-                            else:
-                                self.macropad.mouse.release(-item["buttons"])
-                        self.macropad.mouse.move(
-                            item["x"] if "x" in item else 0,
-                            item["y"] if "y" in item else 0,
-                            item["wheel"] if "wheel" in item else 0,
-                        )
-                        if "tone" in item:
-                            if item["tone"] > 0:
-                                self.macropad.stop_tone()
-                                self.macropad.start_tone(item["tone"])
-                            else:
-                                self.macropad.stop_tone()
-                        elif "play" in item:
-                            self.macropad.play_file(item["play"])
+                key.press(self.macropad)
             else:
                 # Release any still-pressed keys, consumer codes, mouse buttons
                 # Keys and mouse buttons are individually released this way (rather
                 # than release_all()) because pad supports multi-key rollover, e.g.
                 # could have a meta key or right-mouse held down by one macro and
                 # press/release keys/buttons with others. Navigate popups, etc.
-                for item in sequence:
-                    if isinstance(item, int):
-                        if item >= 0:
-                            self.macropad.keyboard.release(item)
-                    elif isinstance(item, dict):
-                        if "buttons" in item:
-                            if item["buttons"] >= 0:
-                                self.macropad.mouse.release(item["buttons"])
-                        elif "tone" in item:
-                            self.macropad.stop_tone()
+                key.release(self.macropad)
                 self.macropad.consumer_control.release()
 
-                self.macropad.pixels[key_number] = color
+                self.macropad.pixels[key_number] = key.color
                 self.macropad.pixels.show()
 
     def get_pressed_key(self):
