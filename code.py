@@ -7,39 +7,29 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
 
-import os
-import time
-import displayio
-import terminalio
-from adafruit_display_shapes.rect import Rect
-from adafruit_display_text import label
 from adafruit_macropad import MacroPad
 
 from app import BaseApp
 
 # CONFIGURABLES ------------------------
-
 MACRO_FOLDER = "/macros"
 
 
 # CLASSES AND FUNCTIONS ----------------
-
-
 class HotkeyPad:
     def __init__(self, apps):
+        """
+        Args:
+            apps (List[BaseApp]): List of apps to display
+        """
         self.apps = apps
         self.macropad = self._init_macropad()
-        self.display_group = self._init_display_group()
-        self.macropad.display.show(self.display_group)
 
         self.last_encoder_position = self.encoder_position
         self.last_encoder_switch = self.encoder_switch
 
         self.app_index = 0
-        try:
-            self.current_app = self.apps[self.app_index]
-        except IndexError:
-            self.current_app = None
+        self.current_app = self.apps[self.app_index]
 
     @classmethod
     def _init_macropad(cls):
@@ -49,37 +39,6 @@ class HotkeyPad:
         macropad.pixels.auto_write = False
 
         return macropad
-
-    def _init_display_group(self):
-        """Set up displayio group with all the labels."""
-        group = displayio.Group()
-        for key_index in range(12):
-            x = key_index % 3
-            y = key_index // 3
-            group.append(
-                label.Label(
-                    terminalio.FONT,
-                    text="",
-                    color=0xFFFFFF,
-                    anchored_position=(
-                        (self.macropad.display.width - 1) * x / 2,
-                        self.macropad.display.height - 1 - (3 - y) * 12,
-                    ),
-                    anchor_point=(x / 2, 1.0),
-                )
-            )
-        group.append(Rect(0, 0, self.macropad.display.width, 12, fill=0xFFFFFF))
-        group.append(
-            label.Label(
-                terminalio.FONT,
-                text="",
-                color=0x000000,
-                anchored_position=(self.macropad.display.width // 2, -2),
-                anchor_point=(0.5, 0.0),
-            )
-        )
-
-        return group
 
     @property
     def encoder_position(self):
@@ -102,38 +61,25 @@ class HotkeyPad:
         state.
 
         Args:
-            new_app (App | None): The new App to set or None
+            new_app (App): The new App to set
         """
         self._current_app = new_app
-        if new_app is None:
-            self.display_group[13].text = "NO MACRO FILES FOUND"
-        else:
-            self.display_group[13].text = self._current_app.name
-            for i, labeled_key in enumerate(self.current_app):
-                try:
-                    # Key in use, set label + LED color
-                    self.macropad.pixels[i] = labeled_key.color
-                    self.display_group[i].text = labeled_key.text
-                except AttributeError:  # Key not in use, no label or LED
-                    self.macropad.pixels[i] = 0
-                    self.display_group[i].text = ""
+        for i, labeled_key in enumerate(self.current_app):
+            try:
+                # Key in use, set label + LED color
+                self.macropad.pixels[i] = labeled_key.color
+            except AttributeError:  # Key not in use, no label or LED
+                self.macropad.pixels[i] = 0
 
         self.macropad.keyboard.release_all()
         self.macropad.consumer_control.release()
         self.macropad.mouse.release_all()
         self.macropad.stop_tone()
         self.macropad.pixels.show()
+        self.macropad.display.show(self._current_app.display_group)
         self.macropad.display.refresh()
 
     def run(self):
-        """Run the main event loop."""
-        if not self.apps:
-            while True:
-                continue
-        else:
-            self._main_loop()
-
-    def _main_loop(self):
         """The main event loop when there is an active app."""
         while True:
             # Read encoder position. If it's changed, switch apps.
@@ -196,6 +142,12 @@ class HotkeyPad:
         return (key, key_number, pressed)
 
 
+class DefaultApp(BaseApp):
+    name = "NO MACRO FILES FOUND"
+
+
 apps = BaseApp.load_apps(MACRO_FOLDER)
+if not apps:
+    apps = [DefaultApp()]
 macropad = HotkeyPad(apps)
 macropad.run()
