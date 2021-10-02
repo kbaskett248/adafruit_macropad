@@ -21,21 +21,21 @@ class ToneApp(BaseApp):
     name = "Tones"
 
     # First row
-    key_1 = LabeledKey("C3", 0x200000, Tone(131))
-    key_2 = LabeledKey("C4", 0x202000, Tone(262))
-    key_3 = LabeledKey("C5", 0x002000, Tone(523))
+    key_0 = LabeledKey("C3", 0x200000, Tone(131))
+    key_1 = LabeledKey("C4", 0x202000, Tone(262))
+    key_2 = LabeledKey("C5", 0x002000, Tone(523))
 
     # Second row
-    key_4 = LabeledKey(
-        "Rising", 
+    key_3 = LabeledKey(
+        "Rising",
         0x000020,
-        Sequence(Tone(131), Wait(0.2), Tone(262), Wait(0.2), Tone(523))
+        Sequence(Tone(131), Wait(0.2), Tone(262), Wait(0.2), Tone(523)),
     )
 
-    key_6 = LabeledKey(
-        "Falling", 
+    key_5 = LabeledKey(
+        "Falling",
         0x000020,
-        Sequence(Tone(523), Wait(0.2), Tone(262), Wait(0.2), Tone(131))
+        Sequence(Tone(523), Wait(0.2), Tone(262), Wait(0.2), Tone(131)),
     )
 
 
