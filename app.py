@@ -89,10 +89,14 @@ class BaseApp:
         for key_index in range(12):
             x = key_index % 3
             y = key_index // 3
+            try:
+                text = self[key_index + 1].text
+            except:
+                text = ""
             group.append(
                 label.Label(
                     terminalio.FONT,
-                    text="",
+                    text=text,
                     color=0xFFFFFF,
                     anchored_position=(
                         (display_width - 1) * x / 2,
@@ -105,7 +109,7 @@ class BaseApp:
         group.append(
             label.Label(
                 terminalio.FONT,
-                text="",
+                text=self.name,
                 color=0x000000,
                 anchored_position=(display_width // 2, -2),
                 anchor_point=(0.5, 0.0),
