@@ -134,7 +134,7 @@ class HotkeyPad:
         if key_number >= len(self.current_app):
             return None
 
-        key = self.current_app[key_number + 1]
+        key = self.current_app[key_number]
         if key is None:
             return None
 
