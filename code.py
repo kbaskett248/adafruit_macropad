@@ -64,20 +64,7 @@ class HotkeyPad:
             new_app (App): The new App to set
         """
         self._current_app = new_app
-        for i, labeled_key in enumerate(self.current_app):
-            try:
-                # Key in use, set label + LED color
-                self.macropad.pixels[i] = labeled_key.color
-            except AttributeError:  # Key not in use, no label or LED
-                self.macropad.pixels[i] = 0
-
-        self.macropad.keyboard.release_all()
-        self.macropad.consumer_control.release()
-        self.macropad.mouse.release_all()
-        self.macropad.stop_tone()
-        self.macropad.pixels.show()
-        self.macropad.display.show(self._current_app.display_group)
-        self.macropad.display.refresh()
+        self._current_app.on_focus(self.macropad)
 
     def run(self):
         """The main event loop when there is an active app."""
@@ -93,27 +80,12 @@ class HotkeyPad:
             if pressed_key is None:
                 continue
 
-            # If code reaches here, a key or the encoder button WAS pressed/released
-            # and there IS a corresponding macro available for it...other situations
-            # are avoided by 'continue' statements above which resume the loop.
-
-            key, key_number, pressed = pressed_key
+            key_number, pressed = pressed_key
 
             if pressed:
-                self.macropad.pixels[key_number] = 0xFFFFFF
-                self.macropad.pixels.show()
-                key.press(self.macropad)
+                self.current_app.key_press(self.macropad, key_number)
             else:
-                # Release any still-pressed keys, consumer codes, mouse buttons
-                # Keys and mouse buttons are individually released this way (rather
-                # than release_all()) because pad supports multi-key rollover, e.g.
-                # could have a meta key or right-mouse held down by one macro and
-                # press/release keys/buttons with others. Navigate popups, etc.
-                key.release(self.macropad)
-                self.macropad.consumer_control.release()
-
-                self.macropad.pixels[key_number] = key.color
-                self.macropad.pixels.show()
+                self.current_app.key_release(self.macropad, key_number)
 
     def get_pressed_key(self):
         # Handle encoder button. If state has changed, and if there's a
@@ -130,16 +102,7 @@ class HotkeyPad:
         if not event:
             return None
 
-        key_number = event.key_number
-        if key_number >= len(self.current_app):
-            return None
-
-        key = self.current_app[key_number]
-        if key is None:
-            return None
-
-        pressed = event.pressed
-        return (key, key_number, pressed)
+        return (event.key_number, event.pressed)
 
 
 class DefaultApp(BaseApp):

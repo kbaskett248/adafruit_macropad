@@ -2,14 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.COMMAND), Text("n"), Release(Keycode.COMMAND))
 
 
-class MacSafariApp(BaseApp):
+class MacSafariApp(MacroApp):
     name = "Mac Safari"
 
     # First row

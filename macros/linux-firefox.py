@@ -2,14 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))
 
 
-class LinuxFirefoxApp(BaseApp):
+class LinuxFirefoxApp(MacroApp):
     name = "Linux Firefox"
 
     # First row

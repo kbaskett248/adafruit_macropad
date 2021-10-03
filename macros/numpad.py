@@ -1,10 +1,10 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, Text
 
 
-class NumpadApp(BaseApp):
+class NumpadApp(MacroApp):
     name = "Numpad"
 
     # First row
