@@ -12,10 +12,11 @@
 # To reference Consumer Control codes, import ConsumerControlCode like so...
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
-from app import MacroApp
+from app import BaseApp, MacroApp
 from key import LabeledKey, Media
 
 
+@BaseApp.register_app
 class MediaApp(MacroApp):
     name = "Media"
 
@@ -38,6 +39,3 @@ class MediaApp(MacroApp):
     key_9 = LabeledKey("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
     key_10 = LabeledKey("Play/Pause", 0x002000, Media(ConsumerControlCode.PLAY_PAUSE))
     key_11 = LabeledKey(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
-
-
-MediaApp()

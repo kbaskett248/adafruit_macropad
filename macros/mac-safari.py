@@ -2,13 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import MacroApp
+from app import BaseApp, MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.COMMAND), Text("n"), Release(Keycode.COMMAND))
 
 
+@BaseApp.register_app
 class MacSafariApp(MacroApp):
     name = "Mac Safari"
 
@@ -45,6 +46,3 @@ class MacSafariApp(MacroApp):
     key_11 = LabeledKey(
         "Hacks", 0x101010, Sequence(new_tab, Text("www.hackaday.com\n"))
     )  # Hack-a-Day in new win
-
-
-MacSafariApp()

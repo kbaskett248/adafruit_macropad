@@ -4,10 +4,11 @@ from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
 
-from app import MacroApp
+from app import BaseApp, MacroApp
 from key import LabeledKey, Media, Press, Scroll
 
 
+@BaseApp.register_app
 class ExtraKeysApp(MacroApp):
     name = "Extra keys"
 
@@ -24,6 +25,3 @@ class ExtraKeysApp(MacroApp):
     key_9 = LabeledKey("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
     key_10 = LabeledKey("Play/Pause", 0x002000, Media(ConsumerControlCode.PLAY_PAUSE))
     key_11 = LabeledKey(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
-
-
-ExtraKeysApp()

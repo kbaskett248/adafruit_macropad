@@ -2,13 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import MacroApp
+from app import BaseApp, MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))
 
 
+@BaseApp.register_app
 class LinuxFirefoxApp(MacroApp):
     name = "Linux Firefox"
 
@@ -47,6 +48,3 @@ class LinuxFirefoxApp(MacroApp):
     key_11 = LabeledKey(
         "Digi", 0x101010, Sequence(new_tab, Text("digikey.com\n"))
     )  # digikey in a new tab
-
-
-LinuxFirefoxApp()
