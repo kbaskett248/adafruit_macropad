@@ -6,11 +6,11 @@ from adafruit_hid.mouse import Mouse
 # You can still import Keycode and/or ConsumerControl as well if a macro file
 # mixes types! See other macro files for typical Keycode examples.
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, MouseClick, MouseMove
 
 
-class MouseApp(BaseApp):
+class MouseApp(MacroApp):
     name = "Mouse"
 
     # First row

@@ -2,14 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("n"), Release(Keycode.CONTROL))
 
 
-class WindowsEdgeApp(BaseApp):
+class WindowsEdgeApp(MacroApp):
     name = "Windows Edge"
 
     # First row

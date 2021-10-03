@@ -12,11 +12,11 @@
 # To reference Consumer Control codes, import ConsumerControlCode like so...
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 
-from app import BaseApp
+from app import MacroApp
 from key import LabeledKey, Media
 
 
-class MediaApp(BaseApp):
+class MediaApp(MacroApp):
     name = "Media"
 
     # First row
