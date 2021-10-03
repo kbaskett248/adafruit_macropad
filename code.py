@@ -15,19 +15,19 @@ from app import BaseApp
 MACRO_FOLDER = "/macros"
 
 
+class DefaultApp(BaseApp):
+    name = "NO MACRO FILES FOUND"
+
+
 # CLASSES AND FUNCTIONS ----------------
 class HotkeyPad:
-    def __init__(self, apps):
-        """
-        Args:
-            apps (List[BaseApp]): List of apps to display
-        """
-        self.apps = apps
+    def __init__(self):
         self.macropad = self._init_macropad()
 
         self.last_encoder_position = self.encoder_position
         self.last_encoder_switch = self.encoder_switch
 
+        self.apps = [DefaultApp(self.macropad)]
         self.app_index = 0
         self.current_app = self.apps[self.app_index]
 
@@ -39,6 +39,14 @@ class HotkeyPad:
         macropad.pixels.auto_write = False
 
         return macropad
+
+    def add_app(self, app_class):
+        if isinstance(self.apps[0], DefaultApp):
+            del self.apps[0]
+            self.apps.append(app_class(self.macropad))
+            self.current_app = self.apps[0]
+        else:
+            self.apps.append(app_class(self.macropad))
 
     @property
     def encoder_position(self):
@@ -105,12 +113,7 @@ class HotkeyPad:
         return (event.key_number, event.pressed)
 
 
-class DefaultApp(BaseApp):
-    name = "NO MACRO FILES FOUND"
-
-
-apps = [app() for app in BaseApp.load_apps(MACRO_FOLDER)]
-if not apps:
-    apps = [DefaultApp()]
-macropad = HotkeyPad(apps)
+macropad = HotkeyPad()
+for app in BaseApp.load_apps(MACRO_FOLDER):
+    macropad.add_app(app)
 macropad.run()
