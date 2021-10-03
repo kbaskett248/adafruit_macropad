@@ -35,22 +35,30 @@ class BaseApp:
                     print("Error loading %s" % filename)
                     print(err)
 
-        try:
-            apps = list(sorted(BaseApp._instances, key=lambda app: app.name))
-        except AttributeError:
-            apps = []
+        apps = BaseApp.list_registered_apps()
 
         for app in apps:
             print("Loaded %s" % app.name)
 
         return apps
 
-    def __init__(self, display_width=128, display_height=64):
+    @staticmethod
+    def register_app(app_class):
         try:
-            BaseApp._instances.add(self)
+            BaseApp._registered_apps.add(app_class)
         except AttributeError:
-            BaseApp._instances = {self}
+            BaseApp._registered_apps = {app_class}
 
+        return app_class
+
+    @staticmethod
+    def list_registered_apps():
+        try:
+            return list(sorted(BaseApp._registered_apps, key=lambda app: app.name))
+        except AttributeError:
+            return []
+
+    def __init__(self, display_width=128, display_height=64):
         self.display_group = self._init_display_group(display_width, display_height)
 
     def _init_display_group(self, display_width, display_height):
