@@ -69,6 +69,18 @@ class BaseApp:
 
         return group
 
+    def on_focus(self, macropad):
+        macropad.keyboard.release_all()
+        macropad.consumer_control.release()
+        macropad.mouse.release_all()
+        macropad.stop_tone()
+
+    def key_press(self, macropad, key_number):
+        pass
+
+    def key_release(self, macropad, key_number):
+        pass
+
 
 class MacroApp(BaseApp):
     name = "Base App"
@@ -145,3 +157,56 @@ class MacroApp(BaseApp):
         )
 
         return group
+
+    def on_focus(self, macropad):
+        super().on_focus(macropad)
+
+        for i, labeled_key in enumerate(self.macros):
+            try:
+                macropad.pixels[i] = labeled_key.color
+            except AttributeError:
+                macropad.pixels[i] = 0
+
+        macropad.pixels.show()
+        macropad.display.show(self.display_group)
+        macropad.display.refresh()
+
+    def key_press(self, macropad, key_number):
+        """Execute the macro bound to the key.
+
+        If there is no macro bound to this key, return early and do nothing.
+
+        Args:
+            macropad (adafruit_macropad.MacroPad): A MacroPad instance
+            key_number (int): The index of the key that was pressed
+        """
+        try:
+            key = self[key_number]
+        except IndexError:
+            return
+
+        macropad.pixels[key_number] = 0xFFFFFF
+        macropad.pixels.show()
+        key.press(macropad)
+
+    def key_release(self, macropad, key_number):
+        """Release the macro bound to the key.
+
+        Release any still-pressed keys, consumer codes, mouse buttons
+        Keys and mouse buttons are individually released this way (rather
+        than release_all()) because pad supports multi-key rollover, e.g.
+        could have a meta key or right-mouse held down by one macro and
+        press/release keys/buttons with others. Navigate popups, etc.
+
+        Args:
+            macropad (adafruit_macropad.MacroPad): A MacroPad instance
+            key_number (int): The index of the key that was pressed
+        """
+        try:
+            key = self[key_number]
+        except IndexError:
+            return
+
+        key.release(macropad)
+        macropad.pixels[key_number] = key.color
+        macropad.pixels.show()
