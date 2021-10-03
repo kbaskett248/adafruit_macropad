@@ -9,26 +9,6 @@ from adafruit_display_text import label
 class BaseApp:
     name = "Base App"
 
-    # First row
-    key_0 = None
-    key_1 = None
-    key_2 = None
-
-    # Second row
-    key_3 = None
-    key_4 = None
-    key_5 = None
-
-    # Third row
-    key_6 = None
-    key_7 = None
-    key_8 = None
-
-    # Fourth row
-    key_9 = None
-    key_10 = None
-    key_11 = None
-
     @staticmethod
     def load_apps(directory):
         """Load all the macro key setups from .py files in directory.
@@ -71,11 +51,54 @@ class BaseApp:
         except AttributeError:
             BaseApp._instances = {self}
 
+        self.display_group = self._init_display_group(display_width, display_height)
+
+    def _init_display_group(self, display_width, display_height):
+        """Set up displayio group with all the labels."""
+        group = displayio.Group()
+        group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+        group.append(
+            label.Label(
+                terminalio.FONT,
+                text=self.name,
+                color=0x000000,
+                anchored_position=(display_width // 2, -2),
+                anchor_point=(0.5, 0.0),
+            )
+        )
+
+        return group
+
+
+class MacroApp(BaseApp):
+    name = "Base App"
+
+    # First row
+    key_0 = None
+    key_1 = None
+    key_2 = None
+
+    # Second row
+    key_3 = None
+    key_4 = None
+    key_5 = None
+
+    # Third row
+    key_6 = None
+    key_7 = None
+    key_8 = None
+
+    # Fourth row
+    key_9 = None
+    key_10 = None
+    key_11 = None
+
+    def __init__(self, display_width=128, display_height=64):
         self.macros = []
         for index in range(12):
             self.macros.append(self[index])
 
-        self.display_group = self._init_display_group(display_width, display_height)
+        super().__init__(display_width, display_height)
 
     def __getitem__(self, index):
         if not isinstance(index, int):
