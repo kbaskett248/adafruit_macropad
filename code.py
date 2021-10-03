@@ -109,7 +109,7 @@ class DefaultApp(BaseApp):
     name = "NO MACRO FILES FOUND"
 
 
-apps = BaseApp.load_apps(MACRO_FOLDER)
+apps = [app() for app in BaseApp.load_apps(MACRO_FOLDER)]
 if not apps:
     apps = [DefaultApp()]
 macropad = HotkeyPad(apps)
