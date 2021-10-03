@@ -83,6 +83,9 @@ class Media(Command):
         macropad.consumer_control.release()
         macropad.consumer_control.press(self.command)
 
+    def undo(self, macropad):
+        macropad.consumer_control.release()
+
 
 class MouseClick(Command):
     button = None
