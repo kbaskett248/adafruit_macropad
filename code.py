@@ -72,7 +72,7 @@ class HotkeyPad:
             new_app (App): The new App to set
         """
         self._current_app = new_app
-        self._current_app.on_focus(self.macropad)
+        self._current_app.on_focus()
 
     def run(self):
         """The main event loop when there is an active app."""
@@ -91,9 +91,9 @@ class HotkeyPad:
             key_number, pressed = pressed_key
 
             if pressed:
-                self.current_app.key_press(self.macropad, key_number)
+                self.current_app.key_press(key_number)
             else:
-                self.current_app.key_release(self.macropad, key_number)
+                self.current_app.key_release(key_number)
 
     def get_pressed_key(self):
         # Handle encoder button. If state has changed, and if there's a
