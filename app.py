@@ -53,13 +53,22 @@ class BaseApp:
 
     @staticmethod
     def list_registered_apps():
+        """Return a list of the apps that have been registered.
+
+        Returns:
+            List[BaseApp]: A list of apps that have been registered, sorted by name
+        """
         try:
             return list(sorted(BaseApp._registered_apps, key=lambda app: app.name))
         except AttributeError:
             return []
 
-    def __init__(self, display_width=128, display_height=64):
-        self.display_group = self._init_display_group(display_width, display_height)
+    def __init__(self, macropad):
+        self.macropad = macropad
+
+        self.display_group = self._init_display_group(
+            self.macropad.display.width, self.macropad.display.height
+        )
 
     def _init_display_group(self, display_width, display_height):
         """Set up displayio group with all the labels."""
@@ -77,16 +86,16 @@ class BaseApp:
 
         return group
 
-    def on_focus(self, macropad):
-        macropad.keyboard.release_all()
-        macropad.consumer_control.release()
-        macropad.mouse.release_all()
-        macropad.stop_tone()
+    def on_focus(self):
+        self.macropad.keyboard.release_all()
+        self.macropad.consumer_control.release()
+        self.macropad.mouse.release_all()
+        self.macropad.stop_tone()
 
-    def key_press(self, macropad, key_number):
+    def key_press(self, key_number):
         pass
 
-    def key_release(self, macropad, key_number):
+    def key_release(self, key_number):
         pass
 
 
@@ -113,12 +122,12 @@ class MacroApp(BaseApp):
     key_10 = None
     key_11 = None
 
-    def __init__(self, display_width=128, display_height=64):
+    def __init__(self, macropad):
         self.macros = []
         for index in range(12):
             self.macros.append(self[index])
 
-        super().__init__(display_width, display_height)
+        super().__init__(macropad)
 
     def __getitem__(self, index):
         if not isinstance(index, int):
@@ -166,26 +175,25 @@ class MacroApp(BaseApp):
 
         return group
 
-    def on_focus(self, macropad):
-        super().on_focus(macropad)
+    def on_focus(self):
+        super().on_focus()
 
         for i, labeled_key in enumerate(self.macros):
             try:
-                macropad.pixels[i] = labeled_key.color
+                self.macropad.pixels[i] = labeled_key.color
             except AttributeError:
-                macropad.pixels[i] = 0
+                self.macropad.pixels[i] = 0
 
-        macropad.pixels.show()
-        macropad.display.show(self.display_group)
-        macropad.display.refresh()
+        self.macropad.pixels.show()
+        self.macropad.display.show(self.display_group)
+        self.macropad.display.refresh()
 
-    def key_press(self, macropad, key_number):
+    def key_press(self, key_number):
         """Execute the macro bound to the key.
 
         If there is no macro bound to this key, return early and do nothing.
 
         Args:
-            macropad (adafruit_macropad.MacroPad): A MacroPad instance
             key_number (int): The index of the key that was pressed
         """
         try:
@@ -193,11 +201,11 @@ class MacroApp(BaseApp):
         except IndexError:
             return
 
-        macropad.pixels[key_number] = 0xFFFFFF
-        macropad.pixels.show()
-        key.press(macropad)
+        self.macropad.pixels[key_number] = 0xFFFFFF
+        self.macropad.pixels.show()
+        key.press(self.macropad)
 
-    def key_release(self, macropad, key_number):
+    def key_release(self, key_number):
         """Release the macro bound to the key.
 
         Release any still-pressed keys, consumer codes, mouse buttons
@@ -207,7 +215,6 @@ class MacroApp(BaseApp):
         press/release keys/buttons with others. Navigate popups, etc.
 
         Args:
-            macropad (adafruit_macropad.MacroPad): A MacroPad instance
             key_number (int): The index of the key that was pressed
         """
         try:
@@ -215,6 +222,6 @@ class MacroApp(BaseApp):
         except IndexError:
             return
 
-        key.release(macropad)
-        macropad.pixels[key_number] = key.color
-        macropad.pixels.show()
+        key.release(self.macropad)
+        self.macropad.pixels[key_number] = key.color
+        self.macropad.pixels.show()
