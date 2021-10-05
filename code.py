@@ -6,7 +6,7 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 """
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
-
+from collections import namedtuple
 from adafruit_macropad import MacroPad
 
 from app import BaseApp
@@ -20,12 +20,21 @@ class DefaultApp(BaseApp):
 
 
 # CLASSES AND FUNCTIONS ----------------
+EncoderButtonEvent = namedtuple("EncoderButtonEvent", ("pressed",))
+
+
+EncoderEvent = namedtuple("EncoderEvent", ("position", "previous_position"))
+
+
+KeyEvent = namedtuple("KeyEvent", ("number", "pressed"))
+
+
 class HotkeyPad:
     def __init__(self):
         self.macropad = self._init_macropad()
 
-        self.last_encoder_position = self.encoder_position
-        self.last_encoder_switch = self.encoder_switch
+        self._last_encoder_position = self.encoder_position
+        self._last_encoder_switch = self.encoder_switch
 
         self.apps = [DefaultApp(self.macropad)]
         self.app_index = 0
@@ -74,13 +83,43 @@ class HotkeyPad:
         self._current_app = new_app
         self._current_app.on_focus()
 
+    def check_events(self):
+        """Check for changes in state and return a tuple of events.
+
+        Returns:
+            Tuple[Union[EncoderButtonEvent, EncoderEvent, KeyEvent]]: A tuple of Events.
+        """
+        events = []
+
+        position = self.encoder_position
+        if position != self._last_encoder_position:
+            events.append(
+                EncoderEvent(
+                    position=position,
+                    previous_position=self._last_encoder_position,
+                )
+            )
+            self._last_encoder_position = position
+
+        encoder_switch = self.encoder_switch
+        if encoder_switch != self._last_encoder_switch:
+            events.append(EncoderButtonEvent(pressed=encoder_switch))
+
+        key_event = self.macropad.keys.events.get()
+        if key_event:
+            events.append(
+                KeyEvent(number=key_event.key_number, pressed=key_event.pressed)
+            )
+
+        return tuple(events)
+
     def run(self):
         """The main event loop when there is an active app."""
         while True:
             # Read encoder position. If it's changed, switch apps.
             position = self.encoder_position
-            if position != self.last_encoder_position:
-                self.last_encoder_position = position
+            if position != self._last_encoder_position:
+                self._last_encoder_position = position
                 self.app_index = position % len(self.apps)
                 self.current_app = self.apps[self.app_index]
 
@@ -100,8 +139,8 @@ class HotkeyPad:
         # corresponding macro, set up variables to act on this just like
         # the keypad keys, as if it were a 13th key/macro.
         encoder_switch = self.encoder_switch
-        if encoder_switch != self.last_encoder_switch:
-            self.last_encoder_switch = encoder_switch
+        if encoder_switch != self._last_encoder_switch:
+            self._last_encoder_switch = encoder_switch
             if len(self.current_app) < 13:
                 return None
             return None
