@@ -201,6 +201,9 @@ class MacroApp(BaseApp):
         except IndexError:
             return
 
+        if key is None:
+            return
+
         self.macropad.pixels[key_number] = 0xFFFFFF
         self.macropad.pixels.show()
         key.press(self.macropad)
@@ -220,6 +223,9 @@ class MacroApp(BaseApp):
         try:
             key = self[key_number]
         except IndexError:
+            return
+
+        if key is None:
             return
 
         key.release(self.macropad)
