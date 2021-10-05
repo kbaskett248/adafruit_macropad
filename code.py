@@ -7,6 +7,7 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
 from collections import namedtuple
+from key import Key
 from adafruit_macropad import MacroPad
 
 from app import BaseApp
@@ -116,40 +117,17 @@ class HotkeyPad:
     def run(self):
         """The main event loop when there is an active app."""
         while True:
-            # Read encoder position. If it's changed, switch apps.
-            position = self.encoder_position
-            if position != self._last_encoder_position:
-                self._last_encoder_position = position
-                self.app_index = position % len(self.apps)
-                self.current_app = self.apps[self.app_index]
-
-            pressed_key = self.get_pressed_key()
-            if pressed_key is None:
-                continue
-
-            key_number, pressed = pressed_key
-
-            if pressed:
-                self.current_app.key_press(key_number)
-            else:
-                self.current_app.key_release(key_number)
-
-    def get_pressed_key(self):
-        # Handle encoder button. If state has changed, and if there's a
-        # corresponding macro, set up variables to act on this just like
-        # the keypad keys, as if it were a 13th key/macro.
-        encoder_switch = self.encoder_switch
-        if encoder_switch != self._last_encoder_switch:
-            self._last_encoder_switch = encoder_switch
-            if len(self.current_app) < 13:
-                return None
-            return None
-
-        event = self.macropad.keys.events.get()
-        if not event:
-            return None
-
-        return (event.key_number, event.pressed)
+            for event in self.check_events():
+                if isinstance(event, EncoderEvent):
+                    self.app_index = event.position % len(self.apps)
+                    self.current_app = self.apps[self.app_index]
+                elif isinstance(event, EncoderButtonEvent):
+                    pass
+                elif isinstance(event, KeyEvent):
+                    if event.pressed:
+                        self.current_app.key_press(event.number)
+                    else:
+                        self.current_app.key_release(event.number)
 
 
 macropad = HotkeyPad()
