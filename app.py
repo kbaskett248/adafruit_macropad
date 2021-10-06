@@ -5,8 +5,29 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 64
+
+
+def init_display_group_base_app(display_width, display_height):
+    """Set up displayio group with all the labels."""
+    group = displayio.Group()
+    group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    group.append(
+        label.Label(
+            terminalio.FONT,
+            text="",
+            color=0x000000,
+            anchored_position=(display_height // 2, -2),
+            anchor_point=(0.5, 0.0),
+        )
+    )
+
+    return group
+
 
 class BaseApp:
+    display_group = init_display_group_base_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
     name = "Base App"
 
     @staticmethod
@@ -66,31 +87,24 @@ class BaseApp:
     def __init__(self, macropad):
         self.macropad = macropad
 
-        self.display_group = self._init_display_group(
-            self.macropad.display.width, self.macropad.display.height
-        )
-
-    def _init_display_group(self, display_width, display_height):
-        """Set up displayio group with all the labels."""
-        group = displayio.Group()
-        group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
-        group.append(
-            label.Label(
-                terminalio.FONT,
-                text=self.name,
-                color=0x000000,
-                anchored_position=(display_width // 2, -2),
-                anchor_point=(0.5, 0.0),
-            )
-        )
-
-        return group
-
     def on_focus(self):
         self.macropad.keyboard.release_all()
         self.macropad.consumer_control.release()
         self.macropad.mouse.release_all()
         self.macropad.stop_tone()
+
+        self.display_on_focus()
+        self.macropad.display.show(self.display_group)
+        self.macropad.display.refresh()
+        self.pixels_on_focus()
+        self.macropad.pixels.show()
+
+    def display_on_focus(self):
+        self.display_group[0].text = self.name
+
+    def pixels_on_focus(self):
+        for i in range(12):
+            self.macropad.pixels[i] = 0
 
     def key_press(self, key_number):
         pass
@@ -99,8 +113,42 @@ class BaseApp:
         pass
 
 
+def init_display_group_macro_app(display_width, display_height):
+    """Set up displayio group with all the labels."""
+    group = displayio.Group()
+    for key_index in range(12):
+        x = key_index % 3
+        y = key_index // 3
+
+        group.append(
+            label.Label(
+                terminalio.FONT,
+                text="",
+                color=0xFFFFFF,
+                anchored_position=(
+                    (display_width - 1) * x / 2,
+                    display_height - 1 - (3 - y) * 12,
+                ),
+                anchor_point=(x / 2, 1.0),
+            )
+        )
+    group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    group.append(
+        label.Label(
+            terminalio.FONT,
+            text="",
+            color=0x000000,
+            anchored_position=(display_width // 2, -2),
+            anchor_point=(0.5, 0.0),
+        )
+    )
+
+    return group
+
+
 class MacroApp(BaseApp):
     name = "Base App"
+    display_group = init_display_group_macro_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 
     # First row
     key_0 = None
@@ -140,53 +188,25 @@ class MacroApp(BaseApp):
     def __len__(self):
         return len(self.macros)
 
-    def _init_display_group(self, display_width, display_height):
-        """Set up displayio group with all the labels."""
-        group = displayio.Group()
-        for key_index in range(12):
-            x = key_index % 3
-            y = key_index // 3
-            try:
-                text = self[key_index].text
-            except:
-                text = ""
-            group.append(
-                label.Label(
-                    terminalio.FONT,
-                    text=text,
-                    color=0xFFFFFF,
-                    anchored_position=(
-                        (display_width - 1) * x / 2,
-                        display_height - 1 - (3 - y) * 12,
-                    ),
-                    anchor_point=(x / 2, 1.0),
-                )
-            )
-        group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
-        group.append(
-            label.Label(
-                terminalio.FONT,
-                text=self.name,
-                color=0x000000,
-                anchored_position=(display_width // 2, -2),
-                anchor_point=(0.5, 0.0),
-            )
-        )
-
-        return group
-
-    def on_focus(self):
-        super().on_focus()
+    def display_on_focus(self):
+        self.display_group[13].text = self.name
 
         for i, labeled_key in enumerate(self.macros):
             try:
-                self.macropad.pixels[i] = labeled_key.color
+                text = labeled_key.text
             except AttributeError:
-                self.macropad.pixels[i] = 0
+                text = ""
+            finally:
+                self.display_group[i].text = text
 
-        self.macropad.pixels.show()
-        self.macropad.display.show(self.display_group)
-        self.macropad.display.refresh()
+    def pixels_on_focus(self):
+        for i, labeled_key in enumerate(self.macros):
+            try:
+                color = labeled_key.color
+            except AttributeError:
+                color = 0
+            finally:
+                self.macropad.pixels[i] = color
 
     def key_press(self, key_number):
         """Execute the macro bound to the key.
