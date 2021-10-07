@@ -5,6 +5,8 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
+from event import EncoderEvent, EncoderButtonEvent, KeyEvent
+
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 64
 
@@ -88,6 +90,13 @@ class BaseApp:
         self.app_pad = app_pad
         self.macropad = app_pad.macropad
 
+    def run(self):
+        self.on_focus()
+
+        while True:
+            for event in self.app_pad.check_events():
+                self.process_event(event)
+
     def on_focus(self):
         self.macropad.keyboard.release_all()
         self.macropad.consumer_control.release()
@@ -107,6 +116,26 @@ class BaseApp:
     def pixels_on_focus(self):
         for i in range(12):
             self.macropad.pixels[i] = 0
+
+    def process_event(self, event):
+        if isinstance(event, EncoderEvent):
+            self.encoder_event(event)
+        elif isinstance(event, EncoderButtonEvent):
+            self.encoder_button_event(event)
+        elif isinstance(event, KeyEvent):
+            self.key_event(event)
+
+    def encoder_event(self, event):
+        pass
+
+    def encoder_button_event(self, event):
+        pass
+
+    def key_event(self, event):
+        if event.pressed:
+            self.key_press(event.number)
+        else:
+            self.key_release(event.number)
 
     def key_press(self, key_number):
         pass
@@ -209,6 +238,10 @@ class MacroApp(BaseApp):
                 color = 0
             finally:
                 self.macropad.pixels[i] = color
+
+    def encoder_event(self, event):
+        self.app_pad.app_index = event.position % len(self.app_pad.apps)
+        self.app_pad.current_app = self.app_pad.apps[self.app_pad.app_index]
 
     def key_press(self, key_number):
         """Execute the macro bound to the key.
