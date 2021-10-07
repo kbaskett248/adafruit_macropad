@@ -2,13 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import MacroApp
+from app import BaseApp, MacroApp
 from key import LabeledKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("n"), Release(Keycode.CONTROL))
 
 
+@BaseApp.register_app
 class WindowsEdgeApp(MacroApp):
     name = "Windows Edge"
 
@@ -57,6 +58,3 @@ class WindowsEdgeApp(MacroApp):
         0x101010,
         Sequence(new_tab, Text("www.hackaday.com\n")),
     )  # Hack-a-Day in new win
-
-
-WindowsEdgeApp()

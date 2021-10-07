@@ -5,8 +5,31 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
+from event import EncoderEvent, EncoderButtonEvent, KeyEvent
+
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 64
+
+
+def init_display_group_base_app(display_width, display_height):
+    """Set up displayio group with all the labels."""
+    group = displayio.Group()
+    group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    group.append(
+        label.Label(
+            terminalio.FONT,
+            text="",
+            color=0x000000,
+            anchored_position=(display_height // 2, -2),
+            anchor_point=(0.5, 0.0),
+        )
+    )
+
+    return group
+
 
 class BaseApp:
+    display_group = init_display_group_base_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
     name = "Base App"
 
     @staticmethod
@@ -35,55 +58,128 @@ class BaseApp:
                     print("Error loading %s" % filename)
                     print(err)
 
-        try:
-            apps = list(sorted(BaseApp._instances, key=lambda app: app.name))
-        except AttributeError:
-            apps = []
+        apps = BaseApp.list_registered_apps()
 
         for app in apps:
             print("Loaded %s" % app.name)
 
         return apps
 
-    def __init__(self, display_width=128, display_height=64):
+    @staticmethod
+    def register_app(app_class):
         try:
-            BaseApp._instances.add(self)
+            BaseApp._registered_apps.add(app_class)
         except AttributeError:
-            BaseApp._instances = {self}
+            BaseApp._registered_apps = {app_class}
 
-        self.display_group = self._init_display_group(display_width, display_height)
+        return app_class
 
-    def _init_display_group(self, display_width, display_height):
-        """Set up displayio group with all the labels."""
-        group = displayio.Group()
-        group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    @staticmethod
+    def list_registered_apps():
+        """Return a list of the apps that have been registered.
+
+        Returns:
+            List[BaseApp]: A list of apps that have been registered, sorted by name
+        """
+        try:
+            return list(sorted(BaseApp._registered_apps, key=lambda app: app.name))
+        except AttributeError:
+            return []
+
+    def __init__(self, app_pad):
+        self.app_pad = app_pad
+        self.macropad = app_pad.macropad
+
+    def run(self):
+        self.on_focus()
+
+        while True:
+            for event in self.app_pad.check_events():
+                self.process_event(event)
+
+    def on_focus(self):
+        self.macropad.keyboard.release_all()
+        self.macropad.consumer_control.release()
+        self.macropad.mouse.release_all()
+        self.macropad.stop_tone()
+
+        self.display_on_focus()
+        self.macropad.display.show(self.display_group)
+        self.macropad.display.refresh()
+
+        self.pixels_on_focus()
+        self.macropad.pixels.show()
+
+    def display_on_focus(self):
+        self.display_group[0].text = self.name
+
+    def pixels_on_focus(self):
+        for i in range(12):
+            self.macropad.pixels[i] = 0
+
+    def process_event(self, event):
+        if isinstance(event, EncoderEvent):
+            self.encoder_event(event)
+        elif isinstance(event, EncoderButtonEvent):
+            self.encoder_button_event(event)
+        elif isinstance(event, KeyEvent):
+            self.key_event(event)
+
+    def encoder_event(self, event):
+        pass
+
+    def encoder_button_event(self, event):
+        pass
+
+    def key_event(self, event):
+        if event.pressed:
+            self.key_press(event.number)
+        else:
+            self.key_release(event.number)
+
+    def key_press(self, key_number):
+        pass
+
+    def key_release(self, key_number):
+        pass
+
+
+def init_display_group_macro_app(display_width, display_height):
+    """Set up displayio group with all the labels."""
+    group = displayio.Group()
+    for key_index in range(12):
+        x = key_index % 3
+        y = key_index // 3
+
         group.append(
             label.Label(
                 terminalio.FONT,
-                text=self.name,
-                color=0x000000,
-                anchored_position=(display_width // 2, -2),
-                anchor_point=(0.5, 0.0),
+                text="",
+                color=0xFFFFFF,
+                anchored_position=(
+                    (display_width - 1) * x / 2,
+                    display_height - 1 - (3 - y) * 12,
+                ),
+                anchor_point=(x / 2, 1.0),
             )
         )
+    group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    group.append(
+        label.Label(
+            terminalio.FONT,
+            text="",
+            color=0x000000,
+            anchored_position=(display_width // 2, -2),
+            anchor_point=(0.5, 0.0),
+        )
+    )
 
-        return group
-
-    def on_focus(self, macropad):
-        macropad.keyboard.release_all()
-        macropad.consumer_control.release()
-        macropad.mouse.release_all()
-        macropad.stop_tone()
-
-    def key_press(self, macropad, key_number):
-        pass
-
-    def key_release(self, macropad, key_number):
-        pass
+    return group
 
 
 class MacroApp(BaseApp):
     name = "Base App"
+    display_group = init_display_group_macro_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 
     # First row
     key_0 = None
@@ -105,12 +201,12 @@ class MacroApp(BaseApp):
     key_10 = None
     key_11 = None
 
-    def __init__(self, display_width=128, display_height=64):
+    def __init__(self, app_pad):
         self.macros = []
         for index in range(12):
             self.macros.append(self[index])
 
-        super().__init__(display_width, display_height)
+        super().__init__(app_pad)
 
     def __getitem__(self, index):
         if not isinstance(index, int):
@@ -123,61 +219,36 @@ class MacroApp(BaseApp):
     def __len__(self):
         return len(self.macros)
 
-    def _init_display_group(self, display_width, display_height):
-        """Set up displayio group with all the labels."""
-        group = displayio.Group()
-        for key_index in range(12):
-            x = key_index % 3
-            y = key_index // 3
-            try:
-                text = self[key_index].text
-            except:
-                text = ""
-            group.append(
-                label.Label(
-                    terminalio.FONT,
-                    text=text,
-                    color=0xFFFFFF,
-                    anchored_position=(
-                        (display_width - 1) * x / 2,
-                        display_height - 1 - (3 - y) * 12,
-                    ),
-                    anchor_point=(x / 2, 1.0),
-                )
-            )
-        group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
-        group.append(
-            label.Label(
-                terminalio.FONT,
-                text=self.name,
-                color=0x000000,
-                anchored_position=(display_width // 2, -2),
-                anchor_point=(0.5, 0.0),
-            )
-        )
-
-        return group
-
-    def on_focus(self, macropad):
-        super().on_focus(macropad)
+    def display_on_focus(self):
+        self.display_group[13].text = self.name
 
         for i, labeled_key in enumerate(self.macros):
             try:
-                macropad.pixels[i] = labeled_key.color
+                text = labeled_key.text
             except AttributeError:
-                macropad.pixels[i] = 0
+                text = ""
+            finally:
+                self.display_group[i].text = text
 
-        macropad.pixels.show()
-        macropad.display.show(self.display_group)
-        macropad.display.refresh()
+    def pixels_on_focus(self):
+        for i, labeled_key in enumerate(self.macros):
+            try:
+                color = labeled_key.color
+            except AttributeError:
+                color = 0
+            finally:
+                self.macropad.pixels[i] = color
 
-    def key_press(self, macropad, key_number):
+    def encoder_event(self, event):
+        self.app_pad.app_index = event.position % len(self.app_pad.apps)
+        self.app_pad.current_app = self.app_pad.apps[self.app_pad.app_index]
+
+    def key_press(self, key_number):
         """Execute the macro bound to the key.
 
         If there is no macro bound to this key, return early and do nothing.
 
         Args:
-            macropad (adafruit_macropad.MacroPad): A MacroPad instance
             key_number (int): The index of the key that was pressed
         """
         try:
@@ -185,11 +256,14 @@ class MacroApp(BaseApp):
         except IndexError:
             return
 
-        macropad.pixels[key_number] = 0xFFFFFF
-        macropad.pixels.show()
-        key.press(macropad)
+        if key is None:
+            return
 
-    def key_release(self, macropad, key_number):
+        self.macropad.pixels[key_number] = 0xFFFFFF
+        self.macropad.pixels.show()
+        key.press(self.macropad)
+
+    def key_release(self, key_number):
         """Release the macro bound to the key.
 
         Release any still-pressed keys, consumer codes, mouse buttons
@@ -199,7 +273,6 @@ class MacroApp(BaseApp):
         press/release keys/buttons with others. Navigate popups, etc.
 
         Args:
-            macropad (adafruit_macropad.MacroPad): A MacroPad instance
             key_number (int): The index of the key that was pressed
         """
         try:
@@ -207,6 +280,9 @@ class MacroApp(BaseApp):
         except IndexError:
             return
 
-        key.release(macropad)
-        macropad.pixels[key_number] = key.color
-        macropad.pixels.show()
+        if key is None:
+            return
+
+        key.release(self.macropad)
+        self.macropad.pixels[key_number] = key.color
+        self.macropad.pixels.show()
