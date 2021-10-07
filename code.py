@@ -30,7 +30,7 @@ EncoderEvent = namedtuple("EncoderEvent", ("position", "previous_position"))
 KeyEvent = namedtuple("KeyEvent", ("number", "pressed"))
 
 
-class HotkeyPad:
+class AppPad:
     def __init__(self):
         self.macropad = self._init_macropad()
 
@@ -130,7 +130,7 @@ class HotkeyPad:
                         self.current_app.key_release(event.number)
 
 
-macropad = HotkeyPad()
+macropad = AppPad()
 for app in BaseApp.load_apps(MACRO_FOLDER):
     macropad.add_app(app)
 macropad.run()
