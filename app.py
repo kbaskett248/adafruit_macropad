@@ -177,8 +177,9 @@ def init_display_group_macro_app(display_width, display_height):
     return group
 
 
-class MacroApp(BaseApp):
-    name = "Base App"
+class KeyApp(BaseApp):
+    name = "Key App"
+
     display_group = init_display_group_macro_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 
     # First row
@@ -202,9 +203,9 @@ class MacroApp(BaseApp):
     key_11 = None
 
     def __init__(self, app_pad):
-        self.macros = []
+        self.keys = []
         for index in range(12):
-            self.macros.append(self[index])
+            self.keys.append(self[index])
 
         super().__init__(app_pad)
 
@@ -214,15 +215,19 @@ class MacroApp(BaseApp):
         return getattr(self, "key_%s" % index)
 
     def __iter__(self):
-        return iter(self.macros)
+        return iter(self.keys)
 
     def __len__(self):
-        return len(self.macros)
+        return len(self.keys)
+
+
+class MacroApp(KeyApp):
+    name = "Macro App"
 
     def display_on_focus(self):
         self.display_group[13].text = self.name
 
-        for i, labeled_key in enumerate(self.macros):
+        for i, labeled_key in enumerate(self.keys):
             try:
                 text = labeled_key.text
             except AttributeError:
@@ -231,7 +236,7 @@ class MacroApp(BaseApp):
                 self.display_group[i].text = text
 
     def pixels_on_focus(self):
-        for i, labeled_key in enumerate(self.macros):
+        for i, labeled_key in enumerate(self.keys):
             try:
                 color = labeled_key.color
             except AttributeError:
