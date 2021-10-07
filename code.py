@@ -37,7 +37,7 @@ class AppPad:
         self._last_encoder_position = self.encoder_position
         self._last_encoder_switch = self.encoder_switch
 
-        self.apps = [DefaultApp(self.macropad)]
+        self.apps = [DefaultApp(self)]
         self.app_index = 0
         self.current_app = self.apps[self.app_index]
 
@@ -53,10 +53,10 @@ class AppPad:
     def add_app(self, app_class):
         if isinstance(self.apps[0], DefaultApp):
             del self.apps[0]
-            self.apps.append(app_class(self.macropad))
+            self.apps.append(app_class(self))
             self.current_app = self.apps[0]
         else:
-            self.apps.append(app_class(self.macropad))
+            self.apps.append(app_class(self))
 
     @property
     def encoder_position(self):
@@ -130,7 +130,7 @@ class AppPad:
                         self.current_app.key_release(event.number)
 
 
-macropad = AppPad()
+app_pad = AppPad()
 for app in BaseApp.load_apps(MACRO_FOLDER):
-    macropad.add_app(app)
-macropad.run()
+    app_pad.add_app(app)
+app_pad.run()

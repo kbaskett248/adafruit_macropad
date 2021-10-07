@@ -84,8 +84,9 @@ class BaseApp:
         except AttributeError:
             return []
 
-    def __init__(self, macropad):
-        self.macropad = macropad
+    def __init__(self, app_pad):
+        self.app_pad = app_pad
+        self.macropad = app_pad.macropad
 
     def on_focus(self):
         self.macropad.keyboard.release_all()
@@ -96,6 +97,7 @@ class BaseApp:
         self.display_on_focus()
         self.macropad.display.show(self.display_group)
         self.macropad.display.refresh()
+
         self.pixels_on_focus()
         self.macropad.pixels.show()
 
@@ -170,12 +172,12 @@ class MacroApp(BaseApp):
     key_10 = None
     key_11 = None
 
-    def __init__(self, macropad):
+    def __init__(self, app_pad):
         self.macros = []
         for index in range(12):
             self.macros.append(self[index])
 
-        super().__init__(macropad)
+        super().__init__(app_pad)
 
     def __getitem__(self, index):
         if not isinstance(index, int):
