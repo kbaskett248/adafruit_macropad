@@ -220,16 +220,12 @@ class KeyApp(BaseApp):
     def __len__(self):
         return len(self.keys)
 
-
-class MacroApp(KeyApp):
-    name = "Macro App"
-
     def display_on_focus(self):
         self.display_group[13].text = self.name
 
         for i, labeled_key in enumerate(self.keys):
             try:
-                text = labeled_key.text
+                text = labeled_key.text()
             except AttributeError:
                 text = ""
             finally:
@@ -238,11 +234,15 @@ class MacroApp(KeyApp):
     def pixels_on_focus(self):
         for i, labeled_key in enumerate(self.keys):
             try:
-                color = labeled_key.color
+                color = labeled_key.color()
             except AttributeError:
                 color = 0
             finally:
                 self.macropad.pixels[i] = color
+
+
+class MacroApp(KeyApp):
+    name = "Macro App"
 
     def encoder_event(self, event):
         self.app_pad.app_index = event.position % len(self.app_pad.apps)
@@ -289,5 +289,5 @@ class MacroApp(KeyApp):
             return
 
         key.release(self)
-        self.macropad.pixels[key_number] = key.color
+        self.macropad.pixels[key_number] = key.color()
         self.macropad.pixels.show()

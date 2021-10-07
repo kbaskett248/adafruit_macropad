@@ -152,12 +152,15 @@ class PlayFile(Command):
 
 
 class Key:
-    color = 0
+    _color = 0
     command = None
 
     def __init__(self, color=0, command=None):
         self.command = command
-        self.color = color
+        self._color = color
+
+    def color(self):
+        return self._color
 
     def press(self, app):
         if self.command:
@@ -169,8 +172,11 @@ class Key:
 
 
 class LabeledKey(Key):
-    text = ""
+    _text = ""
 
     def __init__(self, text="", color=0, command=None):
         super().__init__(color, command)
-        self.text = text
+        self._text = text
+
+    def text(self):
+        return self._text
