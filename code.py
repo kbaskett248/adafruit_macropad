@@ -6,11 +6,10 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 """
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
-from collections import namedtuple
-from key import Key
 from adafruit_macropad import MacroPad
 
 from app import BaseApp
+from event import EncoderButtonEvent, EncoderEvent, KeyEvent
 
 # CONFIGURABLES ------------------------
 MACRO_FOLDER = "/macros"
@@ -21,15 +20,6 @@ class DefaultApp(BaseApp):
 
 
 # CLASSES AND FUNCTIONS ----------------
-EncoderButtonEvent = namedtuple("EncoderButtonEvent", ("pressed",))
-
-
-EncoderEvent = namedtuple("EncoderEvent", ("position", "previous_position"))
-
-
-KeyEvent = namedtuple("KeyEvent", ("number", "pressed"))
-
-
 class AppPad:
     def __init__(self):
         self.macropad = self._init_macropad()
