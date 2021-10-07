@@ -266,7 +266,7 @@ class MacroApp(KeyApp):
 
         self.macropad.pixels[key_number] = 0xFFFFFF
         self.macropad.pixels.show()
-        key.press(self.macropad)
+        key.press(self)
 
     def key_release(self, key_number):
         """Release the macro bound to the key.
@@ -288,6 +288,6 @@ class MacroApp(KeyApp):
         if key is None:
             return
 
-        key.release(self.macropad)
+        key.release(self)
         self.macropad.pixels[key_number] = key.color
         self.macropad.pixels.show()
