@@ -289,27 +289,50 @@ class BaseSettingsApp(KeyApp):
 
 
 class MacroSettingsApp(BaseSettingsApp):
-    name = "Macro Settings App"
+    PREVIOUS_APP = "previous app"
+    OS = "OS"
+    OS_MAC = "MAC"
+    OS_WINDOWS = "WIN"
+    OS_LINUX = "LIN"
 
-    key_0 = SettingsValueKey("MAC", 0x555555, "OS", "MAC")
-    key_1 = SettingsValueKey("WIN", 0x00A4EF, "OS", "WIN")
-    key_2 = SettingsValueKey("LIN", 0x25D366, "OS", "LIN")
+    name = "Macropad Settings"
+
+    key_0 = SettingsValueKey("MAC", 0x555555, OS, OS_MAC)
+    key_1 = SettingsValueKey("WIN", 0x00A4EF, OS, OS_WINDOWS)
+    key_2 = SettingsValueKey("LIN", 0x25D366, OS, OS_LINUX)
+
+    def encoder_button_event(self, event):
+        if event.pressed:
+            previous_app = self.get_setting(self.PREVIOUS_APP)
+            self.put_setting(self.PREVIOUS_APP, None)
+            self.app_pad.current_app = previous_app
 
 
 class MacroApp(KeyApp):
     name = "Macro App"
 
-    def __init__(self, app_pad):
-        super().__init__(app_pad)
-
+    @property
+    def settings_app(self):
         try:
-            MacroApp.settings_app
+            return self._settings_app
         except AttributeError:
-            MacroApp.settings_app = MacroSettingsApp(app_pad, {"OS": "MAC"})
+            MacroApp._settings_app = MacroSettingsApp(
+                self.app_pad,
+                {
+                    MacroSettingsApp.OS: MacroSettingsApp.OS_MAC,
+                    MacroSettingsApp.PREVIOUS_APP: None,
+                },
+            )
+            return self._settings_app
 
     def encoder_event(self, event):
         self.app_pad.app_index = event.position % len(self.app_pad.apps)
         self.app_pad.current_app = self.app_pad.apps[self.app_pad.app_index]
+
+    def encoder_button_event(self, event):
+        if event.pressed:
+            self.settings_app.put_setting(MacroSettingsApp.PREVIOUS_APP, self)
+            self.app_pad.current_app = self.settings_app
 
     def key_press(self, key_number):
         """Execute the macro bound to the key.
