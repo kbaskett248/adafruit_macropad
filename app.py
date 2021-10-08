@@ -1,3 +1,4 @@
+from key import SettingsValueKey
 import os
 
 import displayio
@@ -287,8 +288,24 @@ class BaseSettingsApp(KeyApp):
         self.macropad.pixels.show()
 
 
+class MacroSettingsApp(BaseSettingsApp):
+    name = "Macro Settings App"
+
+    key_0 = SettingsValueKey("MAC", 0x555555, "OS", "MAC")
+    key_1 = SettingsValueKey("WIN", 0x00A4EF, "OS", "WIN")
+    key_2 = SettingsValueKey("LIN", 0x25D366, "OS", "LIN")
+
+
 class MacroApp(KeyApp):
     name = "Macro App"
+
+    def __init__(self, app_pad):
+        super().__init__(app_pad)
+
+        try:
+            MacroApp.settings_app
+        except AttributeError:
+            MacroApp.settings_app = MacroSettingsApp(app_pad, {"OS": "MAC"})
 
     def encoder_event(self, event):
         self.app_pad.app_index = event.position % len(self.app_pad.apps)
