@@ -159,7 +159,7 @@ class Key:
         self.command = command
         self._color = color
 
-    def color(self):
+    def color(self, app):
         return self._color
 
     def press(self, app):
@@ -178,5 +178,5 @@ class LabeledKey(Key):
         super().__init__(color, command)
         self._text = text
 
-    def text(self):
+    def text(self, app):
         return self._text

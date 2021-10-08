@@ -225,7 +225,7 @@ class KeyApp(BaseApp):
 
         for i, labeled_key in enumerate(self.keys):
             try:
-                text = labeled_key.text()
+                text = labeled_key.text(self)
             except AttributeError:
                 text = ""
             finally:
@@ -234,7 +234,7 @@ class KeyApp(BaseApp):
     def pixels_on_focus(self):
         for i, labeled_key in enumerate(self.keys):
             try:
-                color = labeled_key.color()
+                color = labeled_key.color(self)
             except AttributeError:
                 color = 0
             finally:
@@ -289,5 +289,5 @@ class MacroApp(KeyApp):
             return
 
         key.release(self)
-        self.macropad.pixels[key_number] = key.color()
+        self.macropad.pixels[key_number] = key.color(self)
         self.macropad.pixels.show()
