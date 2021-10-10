@@ -8,6 +8,9 @@ class Command:
     def undo(self, app):
         pass
 
+    def __str__(self):
+        return self.__class__.__name__ + "()"
+
 
 class Sequence(Command):
     sequence = []
@@ -24,6 +27,11 @@ class Sequence(Command):
         for command in self.sequence:
             command.undo(app)
 
+    def __str__(self):
+        return "{0}({1})".format(
+            self.__class__.__name__, ", ".join(str(com) for com in self.sequence)
+        )
+
 
 class Press(Command):
     keycode = None
@@ -38,6 +46,9 @@ class Press(Command):
     def undo(self, app):
         app.macropad.keyboard.release(self.keycode)
 
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.keycode)
+
 
 class Release(Command):
     keycode = None
@@ -48,6 +59,9 @@ class Release(Command):
 
     def execute(self, app):
         app.macropad.keyboard.release(self.keycode)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.keycode)
 
 
 class Wait(Command):
@@ -60,6 +74,9 @@ class Wait(Command):
     def execute(self, app):
         time.sleep(self.time)
 
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.time)
+
 
 class Text(Command):
     text = ""
@@ -70,6 +87,9 @@ class Text(Command):
 
     def execute(self, app):
         app.macropad.keyboard_layout.write(self.text)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.text)
 
 
 class Media(Command):
@@ -86,6 +106,9 @@ class Media(Command):
     def undo(self, app):
         app.macropad.consumer_control.release()
 
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.command)
+
 
 class MouseClick(Command):
     button = None
@@ -100,6 +123,9 @@ class MouseClick(Command):
     def undo(self, app):
         app.macropad.mouse.release(self.button)
 
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.button)
+
 
 class MouseMove(Command):
     x = 0
@@ -113,6 +139,9 @@ class MouseMove(Command):
     def execute(self, app):
         app.macropad.mouse.move(self.x, self.y)
 
+    def __str__(self):
+        return "{0}(x={1}, y={2})".format(self.__class__.__name__, self.x, self.y)
+
 
 class Scroll(Command):
     lines = 0
@@ -123,6 +152,9 @@ class Scroll(Command):
 
     def execute(self, app):
         app.macropad.mouse.move(0, 0, self.lines)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.lines)
 
 
 class Tone(Command):
@@ -139,6 +171,9 @@ class Tone(Command):
     def undo(self, app):
         app.macropad.stop_tone()
 
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.tone)
+
 
 class PlayFile(Command):
     file_ = None
@@ -149,6 +184,9 @@ class PlayFile(Command):
 
     def execute(self, app):
         app.macropad.play_file(self.file_)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.file_)
 
 
 class Key:
