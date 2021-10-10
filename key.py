@@ -152,12 +152,13 @@ class PlayFile(Command):
 
 
 class Key:
-    _color = 0
-    command = None
-
-    def __init__(self, color=0, command=None):
+    def __init__(self, text="", color=0, command=None):
         self.command = command
         self._color = color
+        self._text = text
+
+    def text(self, app):
+        return self._text
 
     def color(self, app):
         return self._color
@@ -171,18 +172,42 @@ class Key:
             self.command.undo(app)
 
 
-class LabeledKey(Key):
-    _text = ""
+EMPTY_VALUE = object()
 
-    def __init__(self, text="", color=0, command=None):
-        super().__init__(color, command)
+
+class MacroKey(Key):
+    def __init__(
+        self,
+        text="",
+        color=0,
+        command=None,
+        linux_command=EMPTY_VALUE,
+        mac_command=EMPTY_VALUE,
+        windows_command=EMPTY_VALUE,
+    ):
+        self.command = command
+        self._color = color
         self._text = text
 
-    def text(self, app):
-        return self._text
+        self.os_commands = {
+            os: command if command is not EMPTY_VALUE else self.command
+            for os, command in zip(
+                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
+            )
+        }
+
+    def press(self, app):
+        command = self.os_commands[app.settings_app.get_setting("OS")]
+        if command:
+            self.command.execute(app)
+
+    def release(self, app):
+        command = self.os_commands[app.settings_app.get_setting("OS")]
+        if command:
+            self.command.undo(app)
 
 
-class SettingsValueKey(LabeledKey):
+class SettingsValueKey(Key):
     setting = ""
     value = None
     marker = ">"
