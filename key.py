@@ -228,8 +228,8 @@ class MacroKey(Key):
         self._text = text
 
         self.os_commands = {
-            os: command if command is not EMPTY_VALUE else self.command
-            for os, command in zip(
+            os: com if com is not EMPTY_VALUE else self.command
+            for os, com in zip(
                 ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
             )
         }
