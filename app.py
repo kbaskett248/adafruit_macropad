@@ -159,19 +159,19 @@ def init_display_group_macro_app(display_width, display_height):
                 color=0xFFFFFF,
                 anchored_position=(
                     (display_width - 1) * x / 2,
-                    display_height - 1 - (3 - y) * 12,
+                    display_height - 1 - (4 - y) * 12,
                 ),
                 anchor_point=(x / 2, 1.0),
             )
         )
-    group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
+    group.append(Rect(0, display_height - 11, display_width, 12, fill=0xFFFFFF))
     group.append(
         label.Label(
             terminalio.FONT,
             text="",
             color=0x000000,
-            anchored_position=(display_width // 2, -2),
-            anchor_point=(0.5, 0.0),
+            anchored_position=(display_width // 2, display_height),
+            anchor_point=(0.5, 1.0),
         )
     )
 
