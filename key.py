@@ -2,11 +2,14 @@ import time
 
 
 class Command:
-    def execute(self, macropad):
+    def execute(self, app):
         raise NotImplementedError("Command must be implemented")
 
-    def undo(self, macropad):
+    def undo(self, app):
         pass
+
+    def __str__(self):
+        return self.__class__.__name__ + "()"
 
 
 class Sequence(Command):
@@ -16,13 +19,18 @@ class Sequence(Command):
         super().__init__()
         self.sequence = sequence
 
-    def execute(self, macropad):
+    def execute(self, app):
         for command in self.sequence:
-            command.execute(macropad)
+            command.execute(app)
 
-    def undo(self, macropad):
+    def undo(self, app):
         for command in self.sequence:
-            command.undo(macropad)
+            command.undo(app)
+
+    def __str__(self):
+        return "{0}({1})".format(
+            self.__class__.__name__, ", ".join(str(com) for com in self.sequence)
+        )
 
 
 class Press(Command):
@@ -32,11 +40,14 @@ class Press(Command):
         super().__init__()
         self.keycode = keycode
 
-    def execute(self, macropad):
-        macropad.keyboard.press(self.keycode)
+    def execute(self, app):
+        app.macropad.keyboard.press(self.keycode)
 
-    def undo(self, macropad):
-        macropad.keyboard.release(self.keycode)
+    def undo(self, app):
+        app.macropad.keyboard.release(self.keycode)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.keycode)
 
 
 class Release(Command):
@@ -46,8 +57,11 @@ class Release(Command):
         super().__init__()
         self.keycode = keycode
 
-    def execute(self, macropad):
-        macropad.keyboard.release(self.keycode)
+    def execute(self, app):
+        app.macropad.keyboard.release(self.keycode)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.keycode)
 
 
 class Wait(Command):
@@ -57,8 +71,11 @@ class Wait(Command):
         super().__init__()
         self.time = time
 
-    def execute(self, macropad):
+    def execute(self, app):
         time.sleep(self.time)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.time)
 
 
 class Text(Command):
@@ -68,8 +85,11 @@ class Text(Command):
         super().__init__()
         self.text = text
 
-    def execute(self, macropad):
-        macropad.keyboard_layout.write(self.text)
+    def execute(self, app):
+        app.macropad.keyboard_layout.write(self.text)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.text)
 
 
 class Media(Command):
@@ -79,12 +99,15 @@ class Media(Command):
         super().__init__()
         self.command = command
 
-    def execute(self, macropad):
-        macropad.consumer_control.release()
-        macropad.consumer_control.press(self.command)
+    def execute(self, app):
+        app.macropad.consumer_control.release()
+        app.macropad.consumer_control.press(self.command)
 
-    def undo(self, macropad):
-        macropad.consumer_control.release()
+    def undo(self, app):
+        app.macropad.consumer_control.release()
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.command)
 
 
 class MouseClick(Command):
@@ -94,11 +117,14 @@ class MouseClick(Command):
         super().__init__()
         self.button = button
 
-    def execute(self, macropad):
-        macropad.mouse.press(self.button)
+    def execute(self, app):
+        app.macropad.mouse.press(self.button)
 
-    def undo(self, macropad):
-        macropad.mouse.release(self.button)
+    def undo(self, app):
+        app.macropad.mouse.release(self.button)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.button)
 
 
 class MouseMove(Command):
@@ -110,8 +136,11 @@ class MouseMove(Command):
         self.x = x
         self.y = y
 
-    def execute(self, macropad):
-        macropad.mouse.move(self.x, self.y)
+    def execute(self, app):
+        app.macropad.mouse.move(self.x, self.y)
+
+    def __str__(self):
+        return "{0}(x={1}, y={2})".format(self.__class__.__name__, self.x, self.y)
 
 
 class Scroll(Command):
@@ -121,8 +150,11 @@ class Scroll(Command):
         super().__init__()
         self.lines = lines
 
-    def execute(self, macropad):
-        macropad.mouse.move(0, 0, self.lines)
+    def execute(self, app):
+        app.macropad.mouse.move(0, 0, self.lines)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.lines)
 
 
 class Tone(Command):
@@ -132,12 +164,15 @@ class Tone(Command):
         super().__init__()
         self.tone = tone
 
-    def execute(self, macropad):
-        macropad.stop_tone()
-        macropad.start_tone(self.tone)
+    def execute(self, app):
+        app.macropad.stop_tone()
+        app.macropad.start_tone(self.tone)
 
-    def undo(self, macropad):
-        macropad.stop_tone()
+    def undo(self, app):
+        app.macropad.stop_tone()
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.tone)
 
 
 class PlayFile(Command):
@@ -147,30 +182,96 @@ class PlayFile(Command):
         super().__init__()
         self.file_ = file_
 
-    def execute(self, macropad):
-        macropad.play_file(self.file_)
+    def execute(self, app):
+        app.macropad.play_file(self.file_)
+
+    def __str__(self):
+        return "{0}({1})".format(self.__class__.__name__, self.file_)
 
 
 class Key:
-    color = 0
-    command = None
-
-    def __init__(self, color=0, command=None):
-        self.command = command
-        self.color = color
-
-    def press(self, macropad):
-        if self.command:
-            self.command.execute(macropad)
-
-    def release(self, macropad):
-        if self.command:
-            self.command.undo(macropad)
-
-
-class LabeledKey(Key):
-    text = ""
-
     def __init__(self, text="", color=0, command=None):
-        super().__init__(color, command)
-        self.text = text
+        self.command = command
+        self._color = color
+        self._text = text
+
+    def text(self, app):
+        return self._text
+
+    def color(self, app):
+        return self._color
+
+    def press(self, app):
+        if self.command:
+            self.command.execute(app)
+
+    def release(self, app):
+        if self.command:
+            self.command.undo(app)
+
+
+EMPTY_VALUE = object()
+
+
+class MacroKey(Key):
+    def __init__(
+        self,
+        text="",
+        color=0,
+        command=None,
+        linux_command=EMPTY_VALUE,
+        mac_command=EMPTY_VALUE,
+        windows_command=EMPTY_VALUE,
+    ):
+        self.command = command
+        self._color = color
+        self._text = text
+
+        self.os_commands = {
+            os: com if com is not EMPTY_VALUE else self.command
+            for os, com in zip(
+                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
+            )
+        }
+
+    def press(self, app):
+        command = self.os_commands[app.settings_app.get_setting("OS")]
+        if command:
+            self.command.execute(app)
+
+    def release(self, app):
+        command = self.os_commands[app.settings_app.get_setting("OS")]
+        if command:
+            self.command.undo(app)
+
+
+class SettingsValueKey(Key):
+    setting = ""
+    value = None
+    marker = ">"
+    template = "{marker} {text}"
+
+    def __init__(self, text="", color=0, setting="", value=None):
+        super().__init__(text, color, None)
+        self.setting = setting
+        self.value = value
+
+    def text(self, app):
+        if app.get_setting(self.setting) == self.value:
+            marker = self.marker
+        else:
+            marker = " "
+
+        return self.template.format(marker=marker, text=self._text)
+
+    def color(self, app):
+        if app.get_setting(self.setting) == self.value:
+            return self._color
+        else:
+            return 0
+
+    def press(self, app):
+        app.put_setting(self.setting, self.value)
+
+    def release(self, app):
+        pass
