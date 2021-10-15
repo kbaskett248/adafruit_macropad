@@ -3,7 +3,7 @@
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
 from app import BaseApp, MacroApp
-from key import Key, MacroKey, Press, Release, Sequence, Text
+from key import MacroKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))

@@ -1,5 +1,7 @@
 import time
 
+from constants import EMPTY_VALUE
+
 
 class Command:
     def execute(self, app):
@@ -210,9 +212,6 @@ class Key:
             self.command.undo(app)
 
 
-EMPTY_VALUE = object()
-
-
 class MacroKey(Key):
     def __init__(
         self,
@@ -228,7 +227,7 @@ class MacroKey(Key):
         self._text = text
 
         self.os_commands = {
-            os: com if com is not EMPTY_VALUE else self.command
+            os: com if (com is not EMPTY_VALUE) else self.command
             for os, com in zip(
                 ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
             )
