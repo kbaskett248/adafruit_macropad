@@ -30,7 +30,7 @@ class MediaApp(MacroApp):
             Press(Keycode.COMMAND),
             Press(Keycode.OPTION),
             Press(Keycode.CONTROL),
-            Text("S"),
+            Press(Keycode.S),
         ),
     )
 
