@@ -2,14 +2,14 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import BaseApp, MacroApp
+from app import MacroApp
 from key import MacroKey, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))
 
 
-@BaseApp.register_app
+@MacroApp.register_app
 class ChromeApp(MacroApp):
     name = "Chrome"
 

@@ -4,11 +4,11 @@ from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
 
-from app import BaseApp, MacroApp
+from app import MacroApp
 from key import MacroKey, Media, Press, Scroll
 
 
-@BaseApp.register_app
+@MacroApp.register_app
 class ExtraKeysApp(MacroApp):
     name = "Extra keys"
 

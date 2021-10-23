@@ -13,11 +13,11 @@
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode
 
-from app import BaseApp, MacroApp
+from app import MacroApp
 from key import MacroKey, Media, Press, Sequence, Text
 
 
-@BaseApp.register_app
+@MacroApp.register_app
 class MediaApp(MacroApp):
     name = "Media"
 

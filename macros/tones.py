@@ -13,11 +13,11 @@
 # This example ONLY shows tones (and delays), but really they can be mixed
 # with other elements (keys, codes, mouse) to provide auditory feedback.
 
-from app import BaseApp, MacroApp
+from app import MacroApp
 from key import Key, Sequence, Tone, Wait
 
 
-@BaseApp.register_app
+@MacroApp.register_app
 class ToneApp(MacroApp):
     name = "Tones"
 
