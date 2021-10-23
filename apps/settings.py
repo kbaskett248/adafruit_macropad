@@ -1,4 +1,4 @@
-from apps.key import KeyApp
+from apps.key import KeyApp, Key
 
 
 class SettingsApp(KeyApp):
@@ -36,3 +36,35 @@ class SettingsApp(KeyApp):
 
         self.macropad.display.refresh()
         self.macropad.pixels.show()
+
+
+class SettingsValueKey(Key):
+    setting = ""
+    value = None
+    marker = ">"
+    template = "{marker} {text}"
+
+    def __init__(self, text="", color=0, setting="", value=None):
+        super().__init__(text, color, None)
+        self.setting = setting
+        self.value = value
+
+    def text(self, app):
+        if app.get_setting(self.setting) == self.value:
+            marker = self.marker
+        else:
+            marker = " "
+
+        return self.template.format(marker=marker, text=self._text)
+
+    def color(self, app):
+        if app.get_setting(self.setting) == self.value:
+            return self._color
+        else:
+            return 0
+
+    def press(self, app):
+        app.put_setting(self.setting, self.value)
+
+    def release(self, app):
+        pass

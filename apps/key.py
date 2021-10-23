@@ -126,3 +126,24 @@ class KeyApp(BaseApp):
 
     def key_release(self, key, key_number):
         pass
+
+
+class Key:
+    def __init__(self, text="", color=0, command=None):
+        self.command = command
+        self._color = color
+        self._text = text
+
+    def text(self, app):
+        return self._text
+
+    def color(self, app):
+        return self._color
+
+    def press(self, app):
+        if self.command:
+            self.command.execute(app)
+
+    def release(self, app):
+        if self.command:
+            self.command.undo(app)

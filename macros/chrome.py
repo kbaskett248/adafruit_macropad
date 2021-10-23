@@ -1,9 +1,7 @@
 # MACROPAD Hotkeys example: Firefox web browser for Linux
 
-from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
-
-from apps.macro import MacroApp
-from key import MacroKey, Press, Release, Sequence, Text
+from apps.macro import MacroApp, MacroKey
+from commands import Keycode, Press, Release, Sequence, Text
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))

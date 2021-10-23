@@ -1,7 +1,13 @@
-from apps.key import KeyApp
-from apps.settings import SettingsApp
-from constants import PREVIOUS_APP_SETTING, OS_SETTING, OS_MAC, OS_LINUX, OS_WINDOWS
-from key import SettingsValueKey
+from apps.key import KeyApp, Key
+from apps.settings import SettingsApp, SettingsValueKey
+from constants import (
+    EMPTY_VALUE,
+    PREVIOUS_APP_SETTING,
+    OS_SETTING,
+    OS_MAC,
+    OS_LINUX,
+    OS_WINDOWS,
+)
 
 
 class MacroSettingsApp(SettingsApp):
@@ -73,3 +79,53 @@ class MacroApp(KeyApp):
         key.release(self)
         self.macropad.pixels[key_number] = key.color(self)
         self.macropad.pixels.show()
+
+
+class MacroKey(Key):
+    def __init__(
+        self,
+        text="",
+        color=0,
+        command=None,
+        linux_command=EMPTY_VALUE,
+        mac_command=EMPTY_VALUE,
+        windows_command=EMPTY_VALUE,
+    ):
+        self.command = command
+        self._color = color
+        self._text = text
+
+        self.os_commands = {
+            os: com if (com is not EMPTY_VALUE) else self.command
+            for os, com in zip(
+                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
+            )
+        }
+
+    @staticmethod
+    def _get_os(app):
+        return app.settings_app.get_setting("OS")
+
+    def _get_command(self, app):
+        os = self._get_os(app)
+        return self.os_commands[os]
+
+    def text(self, app):
+        if self._get_command(app):
+            return self._text
+        return ""
+
+    def color(self, app):
+        if self._get_command(app):
+            return self._color
+        return 0
+
+    def press(self, app):
+        command = self._get_command(app)
+        if command:
+            command.execute(app)
+
+    def release(self, app):
+        command = self._get_command(app)
+        if command:
+            command.undo(app)

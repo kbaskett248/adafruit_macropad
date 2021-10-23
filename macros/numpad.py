@@ -1,7 +1,8 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
+from apps.key import Key
 from apps.macro import MacroApp
-from key import Key, Text
+from commands import Text
 
 
 @MacroApp.register_app
