@@ -8,7 +8,7 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 # pylint: disable=import-error, unused-import, too-few-public-methods
 from adafruit_macropad import MacroPad
 
-from app import BaseApp
+from apps.base import BaseApp
 from event import EncoderButtonEvent, EncoderEvent, KeyEvent
 
 # CONFIGURABLES ------------------------
