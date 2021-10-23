@@ -136,13 +136,4 @@ class BaseApp:
         pass
 
     def key_event(self, event):
-        if event.pressed:
-            self.key_press(event.number)
-        else:
-            self.key_release(event.number)
-
-    def key_press(self, key_number):
-        pass
-
-    def key_release(self, key_number):
         pass

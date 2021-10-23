@@ -19,24 +19,15 @@ class BaseSettingsApp(KeyApp):
     def put_setting(self, setting, value):
         self.settings[setting] = value
 
-    def key_press(self, key_number):
+    def key_press(self, key, key_number):
         """Update the setting associated with the key.
 
-        If there is no setting bound to this key, return early and do nothing.
-        Otherwise, update the display and pixels.
-
         Args:
-            key_number (int): The index of the key that was pressed
+            key (Key): The Key object bound to the key
+            key_number (int): Number for the key
         """
-        try:
-            key = self[key_number]
-        except IndexError:
-            return
-
-        if key is None:
-            return
-
         key.press(self)
+
         for i, labeled_key in enumerate(self.keys):
             try:
                 self.display_group[i].text = labeled_key.text(self)
@@ -95,27 +86,19 @@ class MacroApp(KeyApp):
             self.settings_app.put_setting(MacroSettingsApp.PREVIOUS_APP, self)
             self.app_pad.current_app = self.settings_app
 
-    def key_press(self, key_number):
+    def key_press(self, key, key_number):
         """Execute the macro bound to the key.
 
-        If there is no macro bound to this key, return early and do nothing.
-
         Args:
-            key_number (int): The index of the key that was pressed
+            key (Key): The Key object bound to this key
+            key_number (int): Number for the key
         """
-        try:
-            key = self[key_number]
-        except IndexError:
-            return
-
-        if key is None:
-            return
 
         self.macropad.pixels[key_number] = 0xFFFFFF
         self.macropad.pixels.show()
         key.press(self)
 
-    def key_release(self, key_number):
+    def key_release(self, key, key_number):
         """Release the macro bound to the key.
 
         Release any still-pressed keys, consumer codes, mouse buttons
@@ -125,16 +108,9 @@ class MacroApp(KeyApp):
         press/release keys/buttons with others. Navigate popups, etc.
 
         Args:
-            key_number (int): The index of the key that was pressed
+            key (Key): The Key object bound to this key
+            key_number (int): Number for the key
         """
-        try:
-            key = self[key_number]
-        except IndexError:
-            return
-
-        if key is None:
-            return
-
         key.release(self)
         self.macropad.pixels[key_number] = key.color(self)
         self.macropad.pixels.show()

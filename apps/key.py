@@ -106,3 +106,23 @@ class KeyApp(BaseApp):
                 color = 0
             finally:
                 self.macropad.pixels[i] = color
+
+    def key_event(self, event):
+        try:
+            key = self[event.number]
+        except IndexError:
+            return
+
+        if key is None:
+            return
+
+        if event.pressed:
+            self.key_press(key, event.number)
+        else:
+            self.key_release(key, event.number)
+
+    def key_press(self, key, key_number):
+        pass
+
+    def key_release(self, key, key_number):
+        pass
