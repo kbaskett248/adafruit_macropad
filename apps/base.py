@@ -1,3 +1,9 @@
+"""
+Includes a BaseApp implementation which handles the basic app run loop.
+
+BaseApp also provides a load_apps method to load any apps from a directory.
+"""
+
 import os
 
 import displayio
