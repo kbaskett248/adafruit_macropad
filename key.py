@@ -233,15 +233,33 @@ class MacroKey(Key):
             )
         }
 
+    @staticmethod
+    def _get_os(app):
+        return app.settings_app.get_setting("OS")
+
+    def _get_command(self, app):
+        os = self._get_os(app)
+        return self.os_commands[os]
+
+    def text(self, app):
+        if self._get_command(app):
+            return self._text
+        return ""
+
+    def color(self, app):
+        if self._get_command(app):
+            return self._color
+        return 0
+
     def press(self, app):
-        command = self.os_commands[app.settings_app.get_setting("OS")]
+        command = self._get_command(app)
         if command:
-            self.command.execute(app)
+            command.execute(app)
 
     def release(self, app):
-        command = self.os_commands[app.settings_app.get_setting("OS")]
+        command = self._get_command(app)
         if command:
-            self.command.undo(app)
+            command.undo(app)
 
 
 class SettingsValueKey(Key):
