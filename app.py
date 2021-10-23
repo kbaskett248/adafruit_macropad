@@ -310,13 +310,14 @@ class MacroSettingsApp(BaseSettingsApp):
 
 class MacroApp(KeyApp):
     name = "Macro App"
+    SETTINGS_APP = MacroSettingsApp
 
     @property
     def settings_app(self):
         try:
             return self._settings_app
         except AttributeError:
-            MacroApp._settings_app = MacroSettingsApp(
+            MacroApp._settings_app = self.SETTINGS_APP(
                 self.app_pad,
                 {
                     MacroSettingsApp.OS: MacroSettingsApp.OS_MAC,
