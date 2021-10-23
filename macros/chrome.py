@@ -61,12 +61,37 @@ class ChromeApp(MacroApp):
 
     # Third row
     key_6 = MacroKey(
+        "BkMrk",
+        0x101010,
+        Sequence(Press(Keycode.CONTROL), Press(Keycode.D)),
+        mac_command=Sequence(Press(Keycode.COMMAND), Text("d")),
+    )
+    key_7 = MacroKey(
+        "Close",
+        0x101010,
+        Sequence(Press(Keycode.CONTROL), Press(Keycode.W)),
+        mac_command=Sequence(Press(Keycode.COMMAND), Text("w")),
+    )
+    key_8 = MacroKey(
+        "Chrome",
+        0x101010,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.ONE)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.CONTROL),
+            Press(Keycode.OPTION),
+            Press(Keycode.C),
+        ),
+    )
+
+    # Fourth row
+    key_9 = MacroKey(
         "Menu",
         0x000040,
         Sequence(Press(Keycode.ALT), Press(Keycode.E)),
-        mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.F2)),
+        mac_command=None,
     )
-    key_7 = MacroKey(
+    key_10 = MacroKey(
         "Book",
         0x000040,
         Sequence(Press(Keycode.CONTROL), Press(Keycode.SHIFT), Press(Keycode.O)),
@@ -74,23 +99,9 @@ class ChromeApp(MacroApp):
             Press(Keycode.COMMAND), Press(Keycode.OPTION), Press(Keycode.B)
         ),
     )
-    key_8 = MacroKey(
+    key_11 = MacroKey(
         "Hist",
         0x000040,
         Sequence(Press(Keycode.CONTROL), Press(Keycode.H)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.Y)),
-    )
-
-    # Fourth row
-    key_9 = MacroKey(
-        "BkMrk",
-        0x101010,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.D)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.D)),
-    )
-    key_10 = MacroKey(
-        "Close",
-        0x101010,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.W)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.W)),
+        mac_command=Sequence(Press(Keycode.COMMAND), Text("y")),
     )
