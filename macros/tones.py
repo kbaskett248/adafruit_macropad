@@ -13,7 +13,7 @@
 # This example ONLY shows tones (and delays), but really they can be mixed
 # with other elements (keys, codes, mouse) to provide auditory feedback.
 
-from app import MacroApp
+from apps.macro import MacroApp
 from key import Key, Sequence, Tone, Wait
 
 

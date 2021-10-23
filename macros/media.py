@@ -13,7 +13,7 @@
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode
 
-from app import MacroApp
+from apps.macro import MacroApp
 from key import MacroKey, Media, Press, Sequence, Text
 
 

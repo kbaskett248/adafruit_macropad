@@ -1,6 +1,6 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
-from app import MacroApp
+from apps.macro import MacroApp
 from key import Key, Text
 
 

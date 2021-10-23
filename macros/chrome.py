@@ -2,7 +2,7 @@
 
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 
-from app import MacroApp
+from apps.macro import MacroApp
 from key import MacroKey, Press, Release, Sequence, Text
 
 
