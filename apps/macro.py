@@ -82,13 +82,14 @@ class MacroKey(Key):
         self.os_commands = {
             os: com if (com is not EMPTY_VALUE) else self.command
             for os, com in zip(
-                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
+                (OS_LINUX, OS_MAC, OS_WINDOWS),
+                (linux_command, mac_command, windows_command),
             )
         }
 
     @staticmethod
     def _get_os(app):
-        return app.settings_app.get_setting("OS")
+        return app.get_setting(OS_SETTING)
 
     def _get_command(self, app):
         os = self._get_os(app)
