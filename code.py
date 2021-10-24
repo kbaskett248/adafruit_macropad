@@ -12,6 +12,7 @@ from apps.numpad import NumpadApp
 from apps.settings import KeyAppWithSettings, SettingsValueKey
 from app_pad import AppPad
 from apps.switcher import AppSwitcherApp
+from apps.window import WindowManagementApp
 from commands import Media, ConsumerControlCode, SwitchAppCommand
 from constants import OS_SETTING, OS_LINUX, OS_MAC, OS_WINDOWS, PREVIOUS_APP_SETTING
 
@@ -28,6 +29,7 @@ numpad_app = NumpadApp(app_pad, macro_settings)
 nav_app = NavApp(app_pad, macro_settings)
 func_keys_app = FuncKeysApp(app_pad, macro_settings)
 app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
+window_manager_app = WindowManagementApp(app_pad, macro_settings)
 
 
 class HomeApp(KeyAppWithSettings):
@@ -39,6 +41,9 @@ class HomeApp(KeyAppWithSettings):
 
     key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
     key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
+    key_5 = Key(
+        text="WinMan", color=0x303030, command=SwitchAppCommand(window_manager_app)
+    )
 
     key_6 = Key(text="Apps", color=0x303030, command=SwitchAppCommand(app_switcher_app))
     key_7 = Key(text="Func", color=0x303030, command=SwitchAppCommand(func_keys_app))
