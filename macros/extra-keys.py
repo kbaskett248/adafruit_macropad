@@ -1,14 +1,10 @@
 # Extra keys missing from my keyboard
 
-from adafruit_hid.consumer_control_code import ConsumerControlCode
-from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
-from adafruit_hid.mouse import Mouse
-
-from app import BaseApp, MacroApp
-from key import MacroKey, Media, Press, Scroll
+from apps.macro import MacroApp, MacroKey
+from commands import Keycode, ConsumerControlCode, Media, Press, Scroll
 
 
-@BaseApp.register_app
+@MacroApp.register_app
 class ExtraKeysApp(MacroApp):
     name = "Extra keys"
 

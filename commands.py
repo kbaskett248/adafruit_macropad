@@ -1,6 +1,9 @@
 import time
 
-from constants import EMPTY_VALUE
+# Expose these libraries to those that use commands
+from adafruit_hid.consumer_control_code import ConsumerControlCode
+from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
+from adafruit_hid.mouse import Mouse
 
 
 class Command:
@@ -189,106 +192,3 @@ class PlayFile(Command):
 
     def __str__(self):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
-
-
-class Key:
-    def __init__(self, text="", color=0, command=None):
-        self.command = command
-        self._color = color
-        self._text = text
-
-    def text(self, app):
-        return self._text
-
-    def color(self, app):
-        return self._color
-
-    def press(self, app):
-        if self.command:
-            self.command.execute(app)
-
-    def release(self, app):
-        if self.command:
-            self.command.undo(app)
-
-
-class MacroKey(Key):
-    def __init__(
-        self,
-        text="",
-        color=0,
-        command=None,
-        linux_command=EMPTY_VALUE,
-        mac_command=EMPTY_VALUE,
-        windows_command=EMPTY_VALUE,
-    ):
-        self.command = command
-        self._color = color
-        self._text = text
-
-        self.os_commands = {
-            os: com if (com is not EMPTY_VALUE) else self.command
-            for os, com in zip(
-                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
-            )
-        }
-
-    @staticmethod
-    def _get_os(app):
-        return app.settings_app.get_setting("OS")
-
-    def _get_command(self, app):
-        os = self._get_os(app)
-        return self.os_commands[os]
-
-    def text(self, app):
-        if self._get_command(app):
-            return self._text
-        return ""
-
-    def color(self, app):
-        if self._get_command(app):
-            return self._color
-        return 0
-
-    def press(self, app):
-        command = self._get_command(app)
-        if command:
-            command.execute(app)
-
-    def release(self, app):
-        command = self._get_command(app)
-        if command:
-            command.undo(app)
-
-
-class SettingsValueKey(Key):
-    setting = ""
-    value = None
-    marker = ">"
-    template = "{marker} {text}"
-
-    def __init__(self, text="", color=0, setting="", value=None):
-        super().__init__(text, color, None)
-        self.setting = setting
-        self.value = value
-
-    def text(self, app):
-        if app.get_setting(self.setting) == self.value:
-            marker = self.marker
-        else:
-            marker = " "
-
-        return self.template.format(marker=marker, text=self._text)
-
-    def color(self, app):
-        if app.get_setting(self.setting) == self.value:
-            return self._color
-        else:
-            return 0
-
-    def press(self, app):
-        app.put_setting(self.setting, self.value)
-
-    def release(self, app):
-        pass

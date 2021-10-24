@@ -1,1 +1,12 @@
 EMPTY_VALUE = object()
+
+DISPLAY_WIDTH = 128
+DISPLAY_HEIGHT = 64
+
+# Settings
+PREVIOUS_APP_SETTING = "previous app"
+
+OS_SETTING = "OS"
+OS_MAC = "MAC"
+OS_WINDOWS = "WIN"
+OS_LINUX = "LIN"
