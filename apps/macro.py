@@ -1,5 +1,5 @@
 from apps.key import KeyApp, Key
-from apps.settings import SettingsApp, SettingsValueKey
+from apps.settings import KeyAppWithSettings, SettingsValueKey
 from constants import (
     EMPTY_VALUE,
     PREVIOUS_APP_SETTING,
@@ -10,12 +10,21 @@ from constants import (
 )
 
 
-class MacroSettingsApp(SettingsApp):
+MacroAppSettings = {
+    OS_SETTING: OS_MAC,
+    PREVIOUS_APP_SETTING: None,
+}
+
+
+class MacroSettingsApp(KeyAppWithSettings):
     name = "Macropad Settings"
 
     key_0 = SettingsValueKey("MAC", 0x555555, OS_SETTING, OS_MAC)
     key_1 = SettingsValueKey("WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS)
     key_2 = SettingsValueKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
+
+    def __init__(self, app_pad):
+        super().__init__(app_pad, settings=MacroAppSettings)
 
     def encoder_button_event(self, event):
         if event.pressed:
@@ -24,23 +33,16 @@ class MacroSettingsApp(SettingsApp):
             self.app_pad.current_app = previous_app
 
 
-class MacroApp(KeyApp):
+class MacroApp(KeyAppWithSettings):
     name = "Macro App"
     SETTINGS_APP = MacroSettingsApp
 
-    @property
-    def settings_app(self):
+    def __init__(self, app_pad):
+        super().__init__(app_pad, settings=MacroAppSettings)
         try:
-            return self._settings_app
+            self.settings_app
         except AttributeError:
-            MacroApp._settings_app = self.SETTINGS_APP(
-                self.app_pad,
-                {
-                    OS_SETTING: OS_MAC,
-                    PREVIOUS_APP_SETTING: None,
-                },
-            )
-            return self._settings_app
+            MacroApp.settings_app = self.SETTINGS_APP(self.app_pad)
 
     def encoder_event(self, event):
         self.app_pad.app_index = event.position % len(self.app_pad.apps)

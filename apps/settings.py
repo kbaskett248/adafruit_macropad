@@ -1,14 +1,14 @@
 from apps.key import KeyApp, Key
 
 
-class SettingsApp(KeyApp):
+class KeyAppWithSettings(KeyApp):
     name = "Base Settings"
 
-    def __init__(self, app_pad, initial_settings=None):
-        if initial_settings is None:
+    def __init__(self, app_pad, settings=None):
+        if settings is None:
             self.settings = {}
         else:
-            self.settings = initial_settings
+            self.settings = settings
 
         super().__init__(app_pad)
 
