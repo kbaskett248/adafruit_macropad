@@ -6,6 +6,7 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 """
 
 from apps.key import Key
+from apps.nav import NavApp
 from apps.numpad import NumpadApp
 from apps.settings import KeyAppWithSettings, SettingsValueKey
 from app_pad import AppPad
@@ -22,6 +23,7 @@ macro_settings = {
 
 
 numpad_app = NumpadApp(app_pad, macro_settings)
+nav_app = NavApp(app_pad, macro_settings)
 
 
 class HomeApp(KeyAppWithSettings):
@@ -32,6 +34,7 @@ class HomeApp(KeyAppWithSettings):
     key_2 = SettingsValueKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
 
     key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
+    key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
 
     encoder_button = Media(ConsumerControlCode.MUTE)
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
