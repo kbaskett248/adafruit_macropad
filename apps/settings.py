@@ -18,31 +18,38 @@ class SettingsApp(KeyApp):
     def put_setting(self, setting, value):
         self.settings[setting] = value
 
-    def key_press(self, key, key_number):
-        """Update the setting associated with the key.
-
-        Args:
-            key (Key): The Key object bound to the key
-            key_number (int): Number for the key
-        """
-        key.press(self)
-
-        for i, labeled_key in enumerate(self.keys):
-            try:
-                self.display_group[i].text = labeled_key.text(self)
-                self.macropad.pixels[i] = labeled_key.color(self)
-            except AttributeError:
-                continue
-
-        self.macropad.display.refresh()
-        self.macropad.pixels.show()
-
 
 class SettingsValueKey(Key):
     setting = ""
     value = None
     marker = ">"
     template = "{marker} {text}"
+
+    class BoundKey(Key.BoundKey):
+        def __init__(self, key, app, key_number):
+            super().__init__(key, app, key_number)
+            self.related_keys = set()
+
+            setting = key.setting
+            for bound_key in app.keys:
+                if not isinstance(bound_key, SettingsValueKey.BoundKey):
+                    continue
+
+                if bound_key.key.setting == setting:
+                    self.related_keys.add(bound_key)
+                    bound_key.related_keys.add(self)
+
+        def press(self):
+            self.key.press(self.app)
+            self.pixel = self.color()
+            self.label = self.text()
+
+            for key in self.related_keys:
+                key.pixel = key.color()
+                key.label = key.text()
+
+            self.app.macropad.display.refresh()
+            self.app.macropad.pixels.show()
 
     def __init__(self, text="", color=0, setting="", value=None):
         super().__init__(text, color, None)
@@ -68,3 +75,6 @@ class SettingsValueKey(Key):
 
     def release(self, app):
         pass
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({self.setting}: {self.value})"

@@ -51,37 +51,19 @@ class MacroApp(KeyApp):
             self.settings_app.put_setting(PREVIOUS_APP_SETTING, self)
             self.app_pad.current_app = self.settings_app
 
-    def key_press(self, key, key_number):
-        """Execute the macro bound to the key.
-
-        Args:
-            key (Key): The Key object bound to this key
-            key_number (int): Number for the key
-        """
-
-        self.macropad.pixels[key_number] = 0xFFFFFF
-        self.macropad.pixels.show()
-        key.press(self)
-
-    def key_release(self, key, key_number):
-        """Release the macro bound to the key.
-
-        Release any still-pressed keys, consumer codes, mouse buttons
-        Keys and mouse buttons are individually released this way (rather
-        than release_all()) because pad supports multi-key rollover, e.g.
-        could have a meta key or right-mouse held down by one macro and
-        press/release keys/buttons with others. Navigate popups, etc.
-
-        Args:
-            key (Key): The Key object bound to this key
-            key_number (int): Number for the key
-        """
-        key.release(self)
-        self.macropad.pixels[key_number] = key.color(self)
-        self.macropad.pixels.show()
-
 
 class MacroKey(Key):
+    class BoundKey(Key.BoundKey):
+        def press(self):
+            self.pixel = 0xFFFFFF
+            self.app.macropad.pixels.show()
+            self.key.press(self.app)
+
+        def release(self):
+            self.key.release(self.app)
+            self.pixel = self.color()
+            self.app.macropad.pixels.show()
+
     def __init__(
         self,
         text="",

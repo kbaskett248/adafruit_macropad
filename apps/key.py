@@ -72,14 +72,24 @@ class KeyApp(BaseApp):
     def __init__(self, app_pad):
         self.keys = []
         for index in range(12):
-            self.keys.append(self[index])
+            key = getattr(self, "key_%s" % index)
+
+            try:
+                bound_key = key.bind(self, index)
+            except AttributeError:
+                bound_key = None
+
+            self.keys.append(bound_key)
 
         super().__init__(app_pad)
 
     def __getitem__(self, index):
-        if not isinstance(index, int):
-            raise IndexError("Index %s is not an int" % index)
-        return getattr(self, "key_%s" % index)
+        try:
+            return self.keys[index]
+        except IndexError as err:
+            if 0 <= index <= 11:
+                return None
+            raise err
 
     def __iter__(self):
         return iter(self.keys)
@@ -90,45 +100,69 @@ class KeyApp(BaseApp):
     def display_on_focus(self):
         self.display_group[13].text = self.name
 
-        for i, labeled_key in enumerate(self.keys):
+        for i, key in enumerate(self.keys):
             try:
-                text = labeled_key.text(self)
+                key.label = key.text()
             except AttributeError:
-                text = ""
-            finally:
-                self.display_group[i].text = text
+                self.display_group[i].text = ""
 
     def pixels_on_focus(self):
-        for i, labeled_key in enumerate(self.keys):
+        for i, key in enumerate(self.keys):
             try:
-                color = labeled_key.color(self)
+                key.pixel = key.color()
             except AttributeError:
-                color = 0
-            finally:
-                self.macropad.pixels[i] = color
+                self.macropad.pixels[i] = 0
 
     def key_event(self, event):
-        try:
-            key = self[event.number]
-        except IndexError:
-            return
+        key = self[event.number]
 
         if key is None:
             return
 
         if event.pressed:
-            self.key_press(key, event.number)
+            key.press()
         else:
-            self.key_release(key, event.number)
-
-    def key_press(self, key, key_number):
-        pass
-
-    def key_release(self, key, key_number):
-        pass
+            key.release()
 
 
 class Key:
+    class BoundKey:
+        def __init__(self, key, app, key_number):
+            self.key = key
+            self.app = app
+            self.key_number = key_number
+
+        @property
+        def pixel(self):
+            return self.app.macropad.pixels[self.key_number]
+
+        @pixel.setter
+        def pixel(self, color):
+            self.app.macropad.pixels[self.key_number] = color
+
+        @property
+        def label(self):
+            self.app.display_group[self.key_number].text
+
+        @label.setter
+        def label(self, text):
+            self.app.display_group[self.key_number].text = text
+
+        def text(self):
+            return self.key.text(self.app)
+
+        def color(self):
+            return self.key.color(self.app)
+
+        def press(self):
+            self.key.press(self.app)
+
+        def release(self):
+            self.key.release(self.app)
+
+        def __str__(self) -> str:
+            return f"{self.__class__.__name__}({self.key_number} - {self.key})"
+
     def __init__(self, text="", color=0, command=None):
         self.command = command
         self._color = color
@@ -147,3 +181,6 @@ class Key:
     def release(self, app):
         if self.command:
             self.command.undo(app)
+
+    def bind(self, app, key_number):
+        return self.BoundKey(self, app, key_number)
