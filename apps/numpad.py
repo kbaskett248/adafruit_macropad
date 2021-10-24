@@ -6,7 +6,6 @@ from apps.settings import KeyAppWithSettings
 from commands import Keycode, Press, PreviousAppCommand, Text
 
 
-@MacroApp.register_app
 class NumpadApp(KeyAppWithSettings):
     name = "Numpad"
 

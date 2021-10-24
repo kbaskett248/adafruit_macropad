@@ -5,6 +5,7 @@ use. Plug into computer's USB port, use dial to select an application macro
 set, press MACROPAD keys to send key sequences and other USB protocols.
 """
 
+from apps.func import FuncKeysApp
 from apps.key import Key
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
@@ -24,6 +25,7 @@ macro_settings = {
 
 numpad_app = NumpadApp(app_pad, macro_settings)
 nav_app = NavApp(app_pad, macro_settings)
+func_keys_app = FuncKeysApp(app_pad, macro_settings)
 
 
 class HomeApp(KeyAppWithSettings):
@@ -35,6 +37,8 @@ class HomeApp(KeyAppWithSettings):
 
     key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
     key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
+
+    key_7 = Key(text="Func", color=0x303030, command=SwitchAppCommand(func_keys_app))
 
     # Fourth row
     key_9 = Key("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
