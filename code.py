@@ -36,6 +36,11 @@ class HomeApp(KeyAppWithSettings):
     key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
     key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
 
+    # Fourth row
+    key_9 = Key("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
+    key_10 = Key(">||", 0x002000, Media(ConsumerControlCode.PLAY_PAUSE))
+    key_11 = Key(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
+
     encoder_button = Media(ConsumerControlCode.MUTE)
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
     encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
