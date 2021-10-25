@@ -1,8 +1,6 @@
 """
-A macro/hotkey program for Adafruit MACROPAD. Macro setups are stored in the
-/macros folder (configurable below), load up just the ones you're likely to
-use. Plug into computer's USB port, use dial to select an application macro
-set, press MACROPAD keys to send key sequences and other USB protocols.
+An App program for Adafruit MACROPAD. Apps can send hotkeys or do pretty much
+anything else.
 """
 
 from apps.func import FuncKeysApp
@@ -30,7 +28,7 @@ app_pad = AppPad()
 
 macro_settings = {
     OS_SETTING: OS_MAC,
-    PREVIOUS_APP_SETTING: None,
+    PREVIOUS_APP_SETTING: [],
 }
 
 
