@@ -211,4 +211,5 @@ class PreviousAppCommand(Command):
     def execute(self, app):
         previous_app = app.get_setting(PREVIOUS_APP_SETTING)
         app.put_setting(PREVIOUS_APP_SETTING, None)
-        app.app_pad.current_app = previous_app
+        if previous_app is not None:
+            app.app_pad.current_app = previous_app

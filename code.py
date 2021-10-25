@@ -7,13 +7,22 @@ set, press MACROPAD keys to send key sequences and other USB protocols.
 
 from apps.func import FuncKeysApp
 from apps.key import Key
+from apps.macro import MacroKey
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
 from apps.settings import KeyAppWithSettings, SettingsValueKey
+from apps.spotify import SpotifyApp
 from app_pad import AppPad
-from apps.switcher import AppSwitcherApp
 from apps.window import WindowManagementApp
-from commands import Media, ConsumerControlCode, SwitchAppCommand
+from commands import (
+    ConsumerControlCode,
+    Keycode,
+    Media,
+    Press,
+    PreviousAppCommand,
+    Sequence,
+    SwitchAppCommand,
+)
 from constants import OS_SETTING, OS_LINUX, OS_MAC, OS_WINDOWS, PREVIOUS_APP_SETTING
 
 app_pad = AppPad()
@@ -25,11 +34,130 @@ macro_settings = {
 }
 
 
-numpad_app = NumpadApp(app_pad, macro_settings)
-nav_app = NavApp(app_pad, macro_settings)
 func_keys_app = FuncKeysApp(app_pad, macro_settings)
-app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
+nav_app = NavApp(app_pad, macro_settings)
+numpad_app = NumpadApp(app_pad, macro_settings)
+spotify_app = SpotifyApp(app_pad, macro_settings)
 window_manager_app = WindowManagementApp(app_pad, macro_settings)
+
+
+class AppSwitcherApp(KeyAppWithSettings):
+    name = "App Switcher"
+
+    key_3 = MacroKey(
+        "Term",
+        0x101010,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.FOUR)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.SHIFT),
+            Press(Keycode.ENTER),
+        ),
+    )
+    key_4 = MacroKey(
+        "Files",
+        0x101010,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.TWO)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.CONTROL),
+            Press(Keycode.OPTION),
+            Press(Keycode.F),
+        ),
+    )
+    key_5 = MacroKey(
+        "Spotify",
+        0x1ED760,
+        Sequence(
+            Press(Keycode.WINDOWS), Press(Keycode.SEVEN), SwitchAppCommand(spotify_app)
+        ),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.OPTION),
+            Press(Keycode.CONTROL),
+            Press(Keycode.S),
+            SwitchAppCommand(spotify_app),
+        ),
+    )
+
+    key_6 = MacroKey(
+        "PyCharm",
+        0x1ED760,
+        Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.OPTION),
+            Press(Keycode.CONTROL),
+            Press(Keycode.H),
+        ),
+        windows_command=None,
+    )
+    key_7 = MacroKey(
+        "Code",
+        0x1ED760,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.FIVE)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.OPTION),
+            Press(Keycode.CONTROL),
+            Press(Keycode.V),
+        ),
+    )
+    key_8 = MacroKey(
+        "Merge",
+        0x1ED760,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.SIX)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.OPTION),
+            Press(Keycode.CONTROL),
+            Press(Keycode.M),
+        ),
+    )
+
+    key_9 = MacroKey(
+        "Chrome",
+        0x101010,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.ONE)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.CONTROL),
+            Press(Keycode.OPTION),
+            Press(Keycode.C),
+        ),
+    )
+    key_10 = MacroKey(
+        "Notion",
+        0x101010,
+        Sequence(Press(Keycode.WINDOWS), Press(Keycode.THREE)),
+        mac_command=Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.CONTROL),
+            Press(Keycode.OPTION),
+            Press(Keycode.N),
+        ),
+    )
+    key_11 = MacroKey(
+        "Slack",
+        0x101010,
+        Sequence(
+            Press(Keycode.COMMAND),
+            Press(Keycode.CONTROL),
+            Press(Keycode.OPTION),
+            Press(Keycode.L),
+        ),
+        windows_command=None,
+    )
+
+    encoder_button = PreviousAppCommand()
+
+    def encoder_button_event(self, event):
+        if event.pressed:
+            self.encoder_button.execute(self)
+        else:
+            self.encoder_button.undo(self)
+
+
+app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
 
 
 class HomeApp(KeyAppWithSettings):
