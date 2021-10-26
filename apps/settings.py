@@ -82,8 +82,8 @@ class SettingsSelectKey(Key):
             self.app.macropad.display.refresh()
             self.app.macropad.pixels.show()
 
-    def __init__(self, text="", color=0, setting="", value=None):
-        super().__init__(text, color, None)
+    def __init__(self, text="", color=0, setting="", value=None, command=None):
+        super().__init__(text, color, command)
         self.setting = setting
         self.value = value
 
@@ -103,9 +103,7 @@ class SettingsSelectKey(Key):
 
     def press(self, app):
         app.put_setting(self.setting, self.value)
-
-    def release(self, app):
-        pass
+        super().press(app)
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.setting}: {self.value})"
