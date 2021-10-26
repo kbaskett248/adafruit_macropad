@@ -21,7 +21,7 @@ class KeyAppWithSettings(KeyApp):
         self.settings[setting] = value
 
 
-class SettingsValueKey(Key):
+class SettingsSelectKey(Key):
     setting = ""
     value = None
     marker = ">"
@@ -34,7 +34,7 @@ class SettingsValueKey(Key):
 
             setting = key.setting
             for bound_key in app.keys:
-                if not isinstance(bound_key, SettingsValueKey.BoundKey):
+                if not isinstance(bound_key, SettingsSelectKey.BoundKey):
                     continue
 
                 if bound_key.key.setting == setting:

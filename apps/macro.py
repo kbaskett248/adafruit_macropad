@@ -1,5 +1,9 @@
 from apps.key import KeyApp, Key
-from apps.settings import KeyAppWithSettings, SettingsDependentCommand, SettingsValueKey
+from apps.settings import (
+    KeyAppWithSettings,
+    SettingsDependentCommand,
+    SettingsSelectKey,
+)
 from commands import Command
 from constants import (
     EMPTY_VALUE,
@@ -20,9 +24,9 @@ MacroAppSettings = {
 class MacroSettingsApp(KeyAppWithSettings):
     name = "Macropad Settings"
 
-    key_0 = SettingsValueKey("MAC", 0x555555, OS_SETTING, OS_MAC)
-    key_1 = SettingsValueKey("WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS)
-    key_2 = SettingsValueKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
+    key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC)
+    key_1 = SettingsSelectKey("WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS)
+    key_2 = SettingsSelectKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
 
     def __init__(self, app_pad):
         super().__init__(app_pad, settings=MacroAppSettings)
