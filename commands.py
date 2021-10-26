@@ -4,9 +4,6 @@ import time
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
-from apps.base import BaseApp
-from apps.settings import KeyAppWithSettings
-from constants import PREVIOUS_APP_SETTING
 
 
 class Command:
@@ -195,22 +192,3 @@ class PlayFile(Command):
 
     def __str__(self):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
-
-
-class SwitchAppCommand(Command):
-    def __init__(self, app: KeyAppWithSettings) -> None:
-        super().__init__()
-        self.app = app
-
-    def execute(self, app: KeyAppWithSettings):
-        app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
-        app_stack.append(app)
-        app.app_pad.current_app = self.app
-
-
-class PreviousAppCommand(Command):
-    def execute(self, app: KeyAppWithSettings):
-        app_stack = app.get_setting(PREVIOUS_APP_SETTING)
-        previous_app = app_stack.pop()
-        if previous_app is not None:
-            app.app_pad.current_app = previous_app

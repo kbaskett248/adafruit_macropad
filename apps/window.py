@@ -1,9 +1,8 @@
 # Nav cluster
 
-from apps.key import Key
 from apps.macro import MacroKey
-from apps.settings import KeyAppWithSettings
-from commands import Keycode, Press, PreviousAppCommand, Sequence
+from apps.settings import KeyAppWithSettings, PreviousAppCommand
+from commands import Keycode, Press, Sequence
 
 
 class WindowManagementApp(KeyAppWithSettings):

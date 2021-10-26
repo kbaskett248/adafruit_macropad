@@ -1,8 +1,8 @@
 # MACROPAD Hotkeys example: Firefox web browser for Linux
 
 from apps.macro import MacroApp, MacroKey
-from apps.settings import KeyAppWithSettings
-from commands import Keycode, Press, PreviousAppCommand, Release, Sequence, Text, Wait
+from apps.settings import KeyAppWithSettings, PreviousAppCommand
+from commands import Keycode, Press, Release, Sequence, Text, Wait
 
 
 new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))

@@ -9,7 +9,12 @@ from apps.key import Key
 from apps.macro import MacroKey
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
-from apps.settings import KeyAppWithSettings, SettingsValueKey
+from apps.settings import (
+    KeyAppWithSettings,
+    SettingsValueKey,
+    SwitchAppCommand,
+    PreviousAppCommand,
+)
 from apps.spotify import SpotifyApp
 from app_pad import AppPad
 from apps.window import WindowManagementApp
@@ -18,10 +23,8 @@ from commands import (
     Keycode,
     Media,
     Press,
-    PreviousAppCommand,
     Release,
     Sequence,
-    SwitchAppCommand,
     Wait,
 )
 from constants import OS_SETTING, OS_LINUX, OS_MAC, OS_WINDOWS, PREVIOUS_APP_SETTING

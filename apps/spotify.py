@@ -2,13 +2,12 @@
 
 from apps.key import Key
 from apps.macro import MacroKey
-from apps.settings import KeyAppWithSettings
+from apps.settings import KeyAppWithSettings, PreviousAppCommand
 from commands import (
     ConsumerControlCode,
     Keycode,
     Media,
     Press,
-    PreviousAppCommand,
     Sequence,
 )
 

@@ -1,8 +1,8 @@
 # Nav cluster
 
 from apps.key import Key
-from apps.settings import KeyAppWithSettings
-from commands import Keycode, Press, PreviousAppCommand
+from apps.settings import KeyAppWithSettings, PreviousAppCommand
+from commands import Keycode, Press
 
 
 class NavApp(KeyAppWithSettings):
