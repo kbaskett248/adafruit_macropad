@@ -3,6 +3,7 @@ An App program for Adafruit MACROPAD. Apps can send hotkeys or do pretty much
 anything else.
 """
 
+from apps.chrome import ChromeApp
 from apps.func import FuncKeysApp
 from apps.key import Key
 from apps.macro import MacroKey
@@ -18,8 +19,10 @@ from commands import (
     Media,
     Press,
     PreviousAppCommand,
+    Release,
     Sequence,
     SwitchAppCommand,
+    Wait,
 )
 from constants import OS_SETTING, OS_LINUX, OS_MAC, OS_WINDOWS, PREVIOUS_APP_SETTING
 
@@ -32,6 +35,7 @@ macro_settings = {
 }
 
 
+chrome_app = ChromeApp(app_pad, macro_settings)
 func_keys_app = FuncKeysApp(app_pad, macro_settings)
 nav_app = NavApp(app_pad, macro_settings)
 numpad_app = NumpadApp(app_pad, macro_settings)
@@ -115,12 +119,20 @@ class AppSwitcherApp(KeyAppWithSettings):
     key_9 = MacroKey(
         "Chrome",
         0x101010,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.ONE)),
+        Sequence(
+            Press(Keycode.WINDOWS),
+            Press(Keycode.ONE),
+            Wait(0.1),
+            Release(Keycode.ONE),
+            Release(Keycode.WINDOWS),
+            SwitchAppCommand(chrome_app),
+        ),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
             Press(Keycode.CONTROL),
             Press(Keycode.OPTION),
             Press(Keycode.C),
+            SwitchAppCommand(chrome_app),
         ),
     )
     key_10 = MacroKey(
