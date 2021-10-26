@@ -99,3 +99,30 @@ class PreviousAppCommand(Command):
         previous_app = app_stack.pop()
         if previous_app is not None:
             app.app_pad.current_app = previous_app
+
+
+class SettingsDependentCommand(Command):
+    def __init__(
+        self, setting: str, default_command: Command, **override_commands: Command
+    ):
+        self.setting = setting
+        self.default_command = default_command
+        self.override_commands = override_commands
+
+    def execute(self, app: KeyAppWithSettings):
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        command.execute(app)
+
+    def undo(self, app: KeyAppWithSettings):
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        command.undo(app)

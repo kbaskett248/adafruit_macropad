@@ -1,5 +1,6 @@
 from apps.key import KeyApp, Key
-from apps.settings import KeyAppWithSettings, SettingsValueKey
+from apps.settings import KeyAppWithSettings, SettingsDependentCommand, SettingsValueKey
+from commands import Command
 from constants import (
     EMPTY_VALUE,
     PREVIOUS_APP_SETTING,
@@ -114,3 +115,8 @@ class MacroKey(Key):
         command = self._get_command(app)
         if command:
             command.undo(app)
+
+
+class MacroCommand(SettingsDependentCommand):
+    def __init__(self, default_command: Command, **override_commands: Command):
+        super().__init__(OS_SETTING, default_command, **override_commands)
