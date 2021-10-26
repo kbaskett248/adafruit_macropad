@@ -195,25 +195,12 @@ class HomeApp(KeyAppWithSettings):
     key_11 = Key(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
 
     encoder_button = Media(ConsumerControlCode.MUTE)
+
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
     encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
 
     def __init__(self, app_pad):
         super().__init__(app_pad, settings=macro_settings)
-
-    def encoder_event(self, event):
-        if event.position > event.previous_position:
-            self.encoder_increase.execute(self)
-            self.encoder_increase.undo(self)
-        elif event.position < event.previous_position:
-            self.encoder_decrease.execute(self)
-            self.encoder_decrease.undo(self)
-
-    def encoder_button_event(self, event):
-        if event.pressed:
-            self.encoder_button.execute(self)
-        else:
-            self.encoder_button.undo(self)
 
 
 app_pad.add_app(HomeApp)

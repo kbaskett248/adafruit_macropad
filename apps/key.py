@@ -2,6 +2,12 @@
 KeyApp is a basic framework for apps with functionality bound to each key.
 """
 
+try:
+    from typing import Optional
+except ImportError:
+    pass
+
+from commands import Command
 import displayio
 import terminalio
 from adafruit_display_shapes.rect import Rect
@@ -69,6 +75,11 @@ class KeyApp(BaseApp):
     key_10 = None
     key_11 = None
 
+    encoder_button: Optional[Command] = None
+
+    encoder_increase: Optional[Command] = None
+    encoder_decrease: Optional[Command] = None
+
     def __init__(self, app_pad):
         self.keys = []
         for index in range(12):
@@ -123,6 +134,29 @@ class KeyApp(BaseApp):
             key.press()
         else:
             key.release()
+
+    def encoder_button_event(self, event):
+        if self.encoder_button is None:
+            return
+
+        if event.pressed:
+            self.encoder_button.execute(self)
+        else:
+            self.encoder_button.undo(self)
+
+    def encoder_event(self, event):
+        if (
+            event.position > event.previous_position
+            and self.encoder_increase is not None
+        ):
+            self.encoder_increase.execute(self)
+            self.encoder_increase.undo(self)
+        elif (
+            event.position < event.previous_position
+            and self.encoder_decrease is not None
+        ):
+            self.encoder_decrease.execute(self)
+            self.encoder_decrease.undo(self)
 
 
 class Key:
