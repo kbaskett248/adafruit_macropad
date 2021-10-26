@@ -6,12 +6,12 @@ anything else.
 from apps.chrome import ChromeApp
 from apps.func import FuncKeysApp
 from apps.key import Key
-from apps.macro import MacroKey
+from apps.macro import MacroKey, MacroSettingsApp
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
 from apps.settings import (
     KeyAppWithSettings,
-    SettingsSelectKey,
+    SettingsValueKey,
     SwitchAppCommand,
     PreviousAppCommand,
 )
@@ -42,6 +42,7 @@ chrome_app = ChromeApp(app_pad, macro_settings)
 func_keys_app = FuncKeysApp(app_pad, macro_settings)
 nav_app = NavApp(app_pad, macro_settings)
 numpad_app = NumpadApp(app_pad, macro_settings)
+settings_app = MacroSettingsApp(app_pad, macro_settings)
 spotify_app = SpotifyApp(app_pad, macro_settings)
 window_manager_app = WindowManagementApp(app_pad, macro_settings)
 
@@ -176,18 +177,21 @@ app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
 class HomeApp(KeyAppWithSettings):
     name = "Home"
 
-    key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC)
-    key_1 = SettingsSelectKey("WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS)
-    key_2 = SettingsSelectKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
+    key_0 = SettingsValueKey(
+        OS_SETTING,
+        SwitchAppCommand(settings_app),
+        {OS_MAC: 0x555555, OS_WINDOWS: 0x00A4EF, OS_LINUX: 0x25D366},
+        text_template="[ {value} ]",
+    )
 
     key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
     key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
-    key_5 = Key(
-        text="WinMan", color=0x303030, command=SwitchAppCommand(window_manager_app)
-    )
+    key_5 = Key(text="Func", color=0x303030, command=SwitchAppCommand(func_keys_app))
 
     key_6 = Key(text="Apps", color=0x303030, command=SwitchAppCommand(app_switcher_app))
-    key_7 = Key(text="Func", color=0x303030, command=SwitchAppCommand(func_keys_app))
+    key_8 = Key(
+        text="WinMan", color=0x303030, command=SwitchAppCommand(window_manager_app)
+    )
 
     # Fourth row
     key_9 = Key("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))

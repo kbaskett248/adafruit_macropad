@@ -1,3 +1,8 @@
+try:
+    from typing import Dict, Optional
+except ImportError:
+    pass
+
 from apps.key import KeyApp, Key
 from commands import Command
 from constants import PREVIOUS_APP_SETTING
@@ -19,6 +24,30 @@ class KeyAppWithSettings(KeyApp):
 
     def put_setting(self, setting, value):
         self.settings[setting] = value
+
+
+class SettingsValueKey(Key):
+    def __init__(
+        self,
+        setting: str,
+        command: Optional[Command] = None,
+        color_mapping: Optional[Dict[str, int]] = None,
+        text_template: str = "{value}",
+    ):
+        self.setting = setting
+        self.command = command
+        self.color_mapping = color_mapping
+        self.text_template = text_template
+
+    def text(self, app) -> str:
+        return self.text_template.format(
+            setting=self.setting, value=app.get_setting(self.setting)
+        )
+
+    def color(self, app) -> int:
+        if self.color_mapping is not None:
+            return self.color_mapping.get(app.get_setting(self.setting), 0)
+        return 0
 
 
 class SettingsSelectKey(Key):
