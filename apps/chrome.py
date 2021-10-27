@@ -16,21 +16,7 @@ class ChromeApp(KeyAppWithSettings):
     key_2 = MacroKey(
         "Back",
         0x101010,
-        Sequence(
-            Press(Keycode.ALT),
-            Press(Keycode.TAB),
-            Wait(0.1),
-            Release(Keycode.TAB),
-            Release(Keycode.ALT),
-            PreviousAppCommand(),
-        ),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.CONTROL),
-            Press(Keycode.OPTION),
-            Press(Keycode.C),
-            PreviousAppCommand(),
-        ),
+        Sequence(PreviousAppCommand()),
     )
 
     # Second row
