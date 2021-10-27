@@ -1,4 +1,11 @@
+try:
+    from typing import Dict, Optional
+except ImportError:
+    pass
+
 from apps.key import KeyApp, Key
+from commands import Command
+from constants import PREVIOUS_APP_SETTING
 
 
 class KeyAppWithSettings(KeyApp):
@@ -20,6 +27,30 @@ class KeyAppWithSettings(KeyApp):
 
 
 class SettingsValueKey(Key):
+    def __init__(
+        self,
+        setting: str,
+        command: Optional[Command] = None,
+        color_mapping: Optional[Dict[str, int]] = None,
+        text_template: str = "{value}",
+    ):
+        self.setting = setting
+        self.command = command
+        self.color_mapping = color_mapping
+        self.text_template = text_template
+
+    def text(self, app) -> str:
+        return self.text_template.format(
+            setting=self.setting, value=app.get_setting(self.setting)
+        )
+
+    def color(self, app) -> int:
+        if self.color_mapping is not None:
+            return self.color_mapping.get(app.get_setting(self.setting), 0)
+        return 0
+
+
+class SettingsSelectKey(Key):
     setting = ""
     value = None
     marker = ">"
@@ -32,7 +63,7 @@ class SettingsValueKey(Key):
 
             setting = key.setting
             for bound_key in app.keys:
-                if not isinstance(bound_key, SettingsValueKey.BoundKey):
+                if not isinstance(bound_key, SettingsSelectKey.BoundKey):
                     continue
 
                 if bound_key.key.setting == setting:
@@ -51,8 +82,8 @@ class SettingsValueKey(Key):
             self.app.macropad.display.refresh()
             self.app.macropad.pixels.show()
 
-    def __init__(self, text="", color=0, setting="", value=None):
-        super().__init__(text, color, None)
+    def __init__(self, text="", color=0, setting="", value=None, command=None):
+        super().__init__(text, color, command)
         self.setting = setting
         self.value = value
 
@@ -72,9 +103,53 @@ class SettingsValueKey(Key):
 
     def press(self, app):
         app.put_setting(self.setting, self.value)
-
-    def release(self, app):
-        pass
+        super().press(app)
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.setting}: {self.value})"
+
+
+class SwitchAppCommand(Command):
+    def __init__(self, app: KeyAppWithSettings) -> None:
+        super().__init__()
+        self.app = app
+
+    def execute(self, app: KeyAppWithSettings):
+        app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack.append(app)
+        app.app_pad.current_app = self.app
+
+
+class PreviousAppCommand(Command):
+    def execute(self, app: KeyAppWithSettings):
+        app_stack = app.get_setting(PREVIOUS_APP_SETTING)
+        previous_app = app_stack.pop()
+        if previous_app is not None:
+            app.app_pad.current_app = previous_app
+
+
+class SettingsDependentCommand(Command):
+    def __init__(
+        self, setting: str, default_command: Command, **override_commands: Command
+    ):
+        self.setting = setting
+        self.default_command = default_command
+        self.override_commands = override_commands
+
+    def execute(self, app: KeyAppWithSettings):
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        command.execute(app)
+
+    def undo(self, app: KeyAppWithSettings):
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        command.undo(app)

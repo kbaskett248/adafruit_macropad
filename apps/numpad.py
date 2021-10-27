@@ -1,12 +1,11 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
 from apps.key import Key
-from apps.macro import MacroApp
-from commands import Text
+from apps.settings import KeyAppWithSettings, PreviousAppCommand
+from commands import Keycode, Press, Text
 
 
-@MacroApp.register_app
-class NumpadApp(MacroApp):
+class NumpadApp(KeyAppWithSettings):
     name = "Numpad"
 
     # First row
@@ -25,6 +24,14 @@ class NumpadApp(MacroApp):
     key_8 = Key("3", 0x202000, Text("3"))
 
     # Fourth row
-    key_9 = Key("*", 0x101010, Text("*"))
-    key_10 = Key("0", 0x800000, Text("0"))
-    key_11 = Key("#", 0x101010, Text("#"))
+    key_9 = Key("0", 0x101010, Text("0"))
+    key_10 = Key(".", 0x800000, Text("."))
+    key_11 = Key("Entr", 0x101010, Press(Keycode.KEYPAD_ENTER))
+
+    encoder_button = PreviousAppCommand()
+
+    def encoder_button_event(self, event):
+        if event.pressed:
+            self.encoder_button.execute(self)
+        else:
+            self.encoder_button.undo(self)

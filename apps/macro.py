@@ -1,5 +1,11 @@
 from apps.key import KeyApp, Key
-from apps.settings import KeyAppWithSettings, SettingsValueKey
+from apps.settings import (
+    KeyAppWithSettings,
+    PreviousAppCommand,
+    SettingsDependentCommand,
+    SettingsSelectKey,
+)
+from commands import Command
 from constants import (
     EMPTY_VALUE,
     PREVIOUS_APP_SETTING,
@@ -10,35 +16,26 @@ from constants import (
 )
 
 
-MacroAppSettings = {
-    OS_SETTING: OS_MAC,
-    PREVIOUS_APP_SETTING: None,
-}
-
-
 class MacroSettingsApp(KeyAppWithSettings):
     name = "Macropad Settings"
 
-    key_0 = SettingsValueKey("MAC", 0x555555, OS_SETTING, OS_MAC)
-    key_1 = SettingsValueKey("WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS)
-    key_2 = SettingsValueKey("LIN", 0x25D366, OS_SETTING, OS_LINUX)
+    key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC, PreviousAppCommand())
+    key_1 = SettingsSelectKey(
+        "WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS, PreviousAppCommand()
+    )
+    key_2 = SettingsSelectKey(
+        "LIN", 0x25D366, OS_SETTING, OS_LINUX, PreviousAppCommand()
+    )
 
-    def __init__(self, app_pad):
-        super().__init__(app_pad, settings=MacroAppSettings)
-
-    def encoder_button_event(self, event):
-        if event.pressed:
-            previous_app = self.get_setting(PREVIOUS_APP_SETTING)
-            self.put_setting(PREVIOUS_APP_SETTING, None)
-            self.app_pad.current_app = previous_app
+    encoder_button = PreviousAppCommand()
 
 
 class MacroApp(KeyAppWithSettings):
     name = "Macro App"
     SETTINGS_APP = MacroSettingsApp
 
-    def __init__(self, app_pad):
-        super().__init__(app_pad, settings=MacroAppSettings)
+    def __init__(self, app_pad, settings=None):
+        super().__init__(app_pad, settings)
         try:
             self.settings_app
         except AttributeError:
@@ -82,13 +79,14 @@ class MacroKey(Key):
         self.os_commands = {
             os: com if (com is not EMPTY_VALUE) else self.command
             for os, com in zip(
-                ("LIN", "MAC", "WIN"), (linux_command, mac_command, windows_command)
+                (OS_LINUX, OS_MAC, OS_WINDOWS),
+                (linux_command, mac_command, windows_command),
             )
         }
 
     @staticmethod
     def _get_os(app):
-        return app.settings_app.get_setting("OS")
+        return app.get_setting(OS_SETTING)
 
     def _get_command(self, app):
         os = self._get_os(app)
@@ -113,3 +111,8 @@ class MacroKey(Key):
         command = self._get_command(app)
         if command:
             command.undo(app)
+
+
+class MacroCommand(SettingsDependentCommand):
+    def __init__(self, default_command: Command, **override_commands: Command):
+        super().__init__(OS_SETTING, default_command, **override_commands)
