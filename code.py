@@ -27,7 +27,32 @@ from commands import (
     Sequence,
     Wait,
 )
-from constants import OS_SETTING, OS_LINUX, OS_MAC, OS_WINDOWS, PREVIOUS_APP_SETTING
+from constants import (
+    COLOR_APPS,
+    COLOR_BACK,
+    COLOR_CHROME,
+    COLOR_CODE,
+    COLOR_FILES,
+    COLOR_FUNC,
+    COLOR_LINUX,
+    COLOR_MAC,
+    COLOR_MEDIA,
+    COLOR_NAV,
+    COLOR_NOTION,
+    COLOR_NUMPAD,
+    COLOR_PYCHARM,
+    COLOR_SLACK,
+    COLOR_SPOTIFY,
+    COLOR_SUBLIME_MERGE,
+    COLOR_TERMINAL,
+    COLOR_WINDOWS,
+    COLOR_WINMAN,
+    OS_SETTING,
+    OS_LINUX,
+    OS_MAC,
+    OS_WINDOWS,
+    PREVIOUS_APP_SETTING,
+)
 
 app_pad = AppPad()
 
@@ -50,11 +75,11 @@ window_manager_app = WindowManagementApp(app_pad, macro_settings)
 class AppSwitcherApp(KeyAppWithSettings):
     name = "App Switcher"
 
-    key_2 = Key("Back", 0x101010, PreviousAppCommand())
+    key_2 = Key("Back", COLOR_BACK, PreviousAppCommand())
 
     key_3 = MacroKey(
         "Term",
-        0x101010,
+        COLOR_TERMINAL,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.FOUR)),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
@@ -64,7 +89,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_4 = MacroKey(
         "Files",
-        0x101010,
+        COLOR_FILES,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.TWO)),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
@@ -75,7 +100,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_5 = MacroKey(
         "Spotify",
-        0x1ED760,
+        COLOR_SPOTIFY,
         Sequence(
             Press(Keycode.WINDOWS), Press(Keycode.SEVEN), SwitchAppCommand(spotify_app)
         ),
@@ -90,7 +115,7 @@ class AppSwitcherApp(KeyAppWithSettings):
 
     key_6 = MacroKey(
         "PyCharm",
-        0x1ED760,
+        COLOR_PYCHARM,
         Sequence(
             Press(Keycode.COMMAND),
             Press(Keycode.OPTION),
@@ -101,7 +126,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_7 = MacroKey(
         "Code",
-        0x1ED760,
+        COLOR_CODE,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.FIVE)),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
@@ -112,7 +137,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_8 = MacroKey(
         "Merge",
-        0x1ED760,
+        COLOR_SUBLIME_MERGE,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.SIX)),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
@@ -124,7 +149,7 @@ class AppSwitcherApp(KeyAppWithSettings):
 
     key_9 = MacroKey(
         "Chrome",
-        0x101010,
+        COLOR_CHROME,
         Sequence(
             Press(Keycode.WINDOWS),
             Press(Keycode.ONE),
@@ -143,7 +168,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_10 = MacroKey(
         "Notion",
-        0x101010,
+        COLOR_NOTION,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.THREE)),
         mac_command=Sequence(
             Press(Keycode.COMMAND),
@@ -154,7 +179,7 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
     key_11 = MacroKey(
         "Slack",
-        0x101010,
+        COLOR_SLACK,
         Sequence(
             Press(Keycode.COMMAND),
             Press(Keycode.CONTROL),
@@ -179,23 +204,25 @@ class HomeApp(KeyAppWithSettings):
     key_0 = SettingsValueKey(
         OS_SETTING,
         SwitchAppCommand(settings_app),
-        {OS_MAC: 0x555555, OS_WINDOWS: 0x00A4EF, OS_LINUX: 0x25D366},
+        {OS_MAC: COLOR_MAC, OS_WINDOWS: COLOR_WINDOWS, OS_LINUX: COLOR_LINUX},
         text_template="[ {value} ]",
     )
 
-    key_3 = Key(text="Num", color=0x303030, command=SwitchAppCommand(numpad_app))
-    key_4 = Key(text="Nav", color=0x303030, command=SwitchAppCommand(nav_app))
-    key_5 = Key(text="Func", color=0x303030, command=SwitchAppCommand(func_keys_app))
+    key_3 = Key(text="Num", color=COLOR_NUMPAD, command=SwitchAppCommand(numpad_app))
+    key_4 = Key(text="Nav", color=COLOR_NAV, command=SwitchAppCommand(nav_app))
+    key_5 = Key(text="Func", color=COLOR_FUNC, command=SwitchAppCommand(func_keys_app))
 
-    key_6 = Key(text="Apps", color=0x303030, command=SwitchAppCommand(app_switcher_app))
+    key_6 = Key(
+        text="Apps", color=COLOR_APPS, command=SwitchAppCommand(app_switcher_app)
+    )
     key_8 = Key(
-        text="WinMan", color=0x303030, command=SwitchAppCommand(window_manager_app)
+        text="WinMan", color=COLOR_WINMAN, command=SwitchAppCommand(window_manager_app)
     )
 
     # Fourth row
-    key_9 = Key("<<", 0x202000, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
-    key_10 = Key(">||", 0x002000, Media(ConsumerControlCode.PLAY_PAUSE))
-    key_11 = Key(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
+    key_9 = Key("<<", COLOR_MEDIA, Media(ConsumerControlCode.SCAN_PREVIOUS_TRACK))
+    key_10 = Key(">||", COLOR_MEDIA, Media(ConsumerControlCode.PLAY_PAUSE))
+    key_11 = Key(">>", COLOR_MEDIA, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
 
     encoder_button = Media(ConsumerControlCode.MUTE)
 

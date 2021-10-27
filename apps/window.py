@@ -3,6 +3,7 @@
 from apps.macro import MacroKey
 from apps.settings import KeyAppWithSettings, PreviousAppCommand
 from commands import Keycode, Press, Sequence
+from constants import COLOR_2, COLOR_3, COLOR_WINMAN
 
 
 class WindowManagementApp(KeyAppWithSettings):
@@ -10,7 +11,7 @@ class WindowManagementApp(KeyAppWithSettings):
 
     key_0 = MacroKey(
         "<-Desk",
-        0x101010,
+        COLOR_3,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.LEFT_ARROW)
         ),
@@ -18,13 +19,13 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_1 = MacroKey(
         "View",
-        0x101010,
+        COLOR_2,
         Sequence(Press(Keycode.WINDOWS), Press(Keycode.TAB)),
         mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.UP_ARROW)),
     )
     key_2 = MacroKey(
         "Desk->",
-        0x101010,
+        COLOR_3,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.RIGHT_ARROW)
         ),
@@ -33,7 +34,7 @@ class WindowManagementApp(KeyAppWithSettings):
 
     key_3 = MacroKey(
         "TL",
-        0x101010,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_SEVEN)
         ),
@@ -43,7 +44,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_4 = MacroKey(
         "Top",
-        0x101010,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_EIGHT)
         ),
@@ -53,7 +54,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_5 = MacroKey(
         "TR",
-        0x101010,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_NINE)
         ),
@@ -64,7 +65,7 @@ class WindowManagementApp(KeyAppWithSettings):
 
     key_6 = MacroKey(
         "Left",
-        0x101010,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_FOUR)
         ),
@@ -74,7 +75,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_7 = MacroKey(
         "Max",
-        0x1ED760,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_FIVE)
         ),
@@ -84,7 +85,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_8 = MacroKey(
         "Right",
-        0x1ED760,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_SIX)
         ),
@@ -95,7 +96,7 @@ class WindowManagementApp(KeyAppWithSettings):
 
     key_9 = MacroKey(
         "BL",
-        0x1ED760,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_ONE)
         ),
@@ -105,7 +106,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_10 = MacroKey(
         "Bottom",
-        0x1ED760,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_TWO)
         ),
@@ -115,7 +116,7 @@ class WindowManagementApp(KeyAppWithSettings):
     )
     key_11 = MacroKey(
         "BR",
-        0x1ED760,
+        COLOR_WINMAN,
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_THREE)
         ),
@@ -124,9 +125,3 @@ class WindowManagementApp(KeyAppWithSettings):
         ),
     )
     encoder_button = PreviousAppCommand()
-
-    def encoder_button_event(self, event):
-        if event.pressed:
-            self.encoder_button.execute(self)
-        else:
-            self.encoder_button.undo(self)
