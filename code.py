@@ -50,6 +50,8 @@ window_manager_app = WindowManagementApp(app_pad, macro_settings)
 class AppSwitcherApp(KeyAppWithSettings):
     name = "App Switcher"
 
+    key_2 = Key("Back", 0x101010, PreviousAppCommand())
+
     key_3 = MacroKey(
         "Term",
         0x101010,
@@ -162,13 +164,10 @@ class AppSwitcherApp(KeyAppWithSettings):
         windows_command=None,
     )
 
-    encoder_button = PreviousAppCommand()
+    encoder_button = Media(ConsumerControlCode.MUTE)
 
-    def encoder_button_event(self, event):
-        if event.pressed:
-            self.encoder_button.execute(self)
-        else:
-            self.encoder_button.undo(self)
+    encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
+    encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
 
 
 app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
