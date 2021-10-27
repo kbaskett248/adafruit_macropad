@@ -1,7 +1,7 @@
 # Nav cluster
 
 from apps.key import Key
-from apps.macro import MacroKey
+from apps.macro import MacroKey, MacroCommand
 from apps.settings import KeyAppWithSettings, PreviousAppCommand
 from commands import (
     ConsumerControlCode,
@@ -10,6 +10,7 @@ from commands import (
     Press,
     Sequence,
 )
+from constants import OS_MAC
 
 
 class SpotifyApp(KeyAppWithSettings):
@@ -72,19 +73,11 @@ class SpotifyApp(KeyAppWithSettings):
     key_11 = Key(">>", 0x202000, Media(ConsumerControlCode.SCAN_NEXT_TRACK))
 
     encoder_button = Media(ConsumerControlCode.MUTE)
-    encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
-    encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
-
-    def encoder_event(self, event):
-        if event.position > event.previous_position:
-            self.encoder_increase.execute(self)
-            self.encoder_increase.undo(self)
-        elif event.position < event.previous_position:
-            self.encoder_decrease.execute(self)
-            self.encoder_decrease.undo(self)
-
-    def encoder_button_event(self, event):
-        if event.pressed:
-            self.encoder_button.execute(self)
-        else:
-            self.encoder_button.undo(self)
+    encoder_increase = MacroCommand(
+        Sequence(Press(Keycode.CONTROL), Press(Keycode.UP_ARROW)),
+        **{OS_MAC: Sequence(Press(Keycode.COMMAND), Press(Keycode.UP_ARROW))}
+    )
+    encoder_decrease = MacroCommand(
+        Sequence(Press(Keycode.CONTROL), Press(Keycode.DOWN_ARROW)),
+        **{OS_MAC: Sequence(Press(Keycode.COMMAND), Press(Keycode.DOWN_ARROW))}
+    )
