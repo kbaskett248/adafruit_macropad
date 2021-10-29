@@ -1,4 +1,11 @@
 # pylint: disable=import-error, unused-import, too-few-public-methods
+try:
+    from typing import Callable
+except ImportError:
+    pass
+
+import time
+
 from adafruit_macropad import MacroPad
 
 from apps.base import BaseApp
@@ -26,6 +33,8 @@ class AppPad:
         self._app_index = 0
         self.app_index = 0
 
+        self._timers = dict()
+
     @classmethod
     def _init_macropad(cls):
         """Initialize the macropad component."""
@@ -42,6 +51,25 @@ class AppPad:
             self.current_app = self.apps[0]
         else:
             self.apps.append(app_class(self))
+
+    def add_timer(self, id_: str, delay: float, callback: Callable):
+        execute_time = time.monotonic() + delay
+        print(f"Added timer {id_}: {execute_time}")
+        self._timers[id_] = (execute_time, callback)
+
+    def execute_ready_timers(self):
+        finished_timers = []
+        current_time = time.monotonic()
+
+        finished_timers = [
+            (id_, timer[1])
+            for id_, timer in self._timers.items()
+            if current_time >= timer[0]
+        ]
+        for id_, callback in finished_timers:
+            print(f"Executing timer {id_}")
+            self._timers.pop(id_)
+            callback()
 
     @property
     def encoder_position(self):
@@ -106,6 +134,8 @@ class AppPad:
             events.append(
                 KeyEvent(number=key_event.key_number, pressed=key_event.pressed)
             )
+
+        self.execute_ready_timers()
 
         return tuple(events)
 
