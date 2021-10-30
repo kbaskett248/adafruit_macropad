@@ -82,6 +82,8 @@ class KeyApp(BaseApp):
 
     def __init__(self, app_pad):
         self.keys = []
+        self.double_tap_key_indices = set()
+
         for index in range(12):
             key = getattr(self, "key_%s" % index)
 
@@ -89,6 +91,9 @@ class KeyApp(BaseApp):
                 bound_key = key.bind(self, index)
             except AttributeError:
                 bound_key = None
+            else:
+                if key.double_tap_command is not None:
+                    self.double_tap_key_indices.add(index)
 
             self.keys.append(bound_key)
 
@@ -161,7 +166,7 @@ class KeyApp(BaseApp):
 
 class Key:
     class BoundKey:
-        def __init__(self, key, app, key_number):
+        def __init__(self, key: "Key", app: KeyApp, key_number: int):
             self.key = key
             self.app = app
             self.key_number = key_number
@@ -194,11 +199,24 @@ class Key:
         def release(self):
             self.key.release(self.app)
 
+        def double_tap(self):
+            self.key.double_tap(self.app)
+
+        def double_tap_release(self):
+            self.key.double_tap_release(self.app)
+
         def __str__(self) -> str:
             return f"{self.__class__.__name__}({self.key_number} - {self.key})"
 
-    def __init__(self, text="", color=0, command=None):
+    def __init__(
+        self,
+        text: str = "",
+        color: int = 0,
+        command: Optional[Command] = None,
+        double_tap_command: Optional[Command] = None,
+    ):
         self.command = command
+        self.double_tap_command = double_tap_command
         self._color = color
         self._text = text
 
@@ -216,5 +234,13 @@ class Key:
         if self.command:
             self.command.undo(app)
 
-    def bind(self, app, key_number):
+    def double_tap(self, app):
+        if self.double_tap_command:
+            self.double_tap_command.execute(app)
+
+    def double_tap_release(self, app):
+        if self.double_tap_command:
+            self.double_tap_release(app)
+
+    def bind(self, app: KeyApp, key_number: int):
         return self.BoundKey(self, app, key_number)

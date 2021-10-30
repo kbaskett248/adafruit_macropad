@@ -31,11 +31,12 @@ class SettingsValueKey(Key):
         self,
         setting: str,
         command: Optional[Command] = None,
+        double_tap_command: Optional[Command] = None,
         color_mapping: Optional[Dict[str, int]] = None,
         text_template: str = "{value}",
     ):
+        super().__init__(command=command, double_tap_command=double_tap_command)
         self.setting = setting
-        self.command = command
         self.color_mapping = color_mapping
         self.text_template = text_template
 

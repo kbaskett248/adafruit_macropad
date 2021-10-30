@@ -1,4 +1,9 @@
-from apps.key import KeyApp, Key
+try:
+    from typing import Optional
+except ImportError:
+    pass
+
+from apps.key import Key
 from apps.settings import (
     KeyAppWithSettings,
     PreviousAppCommand,
@@ -65,16 +70,15 @@ class MacroKey(Key):
 
     def __init__(
         self,
-        text="",
-        color=0,
-        command=None,
+        text: str = "",
+        color: int = 0,
+        command: Optional[Command] = None,
+        double_tap_command: Optional[Command] = None,
         linux_command=EMPTY_VALUE,
         mac_command=EMPTY_VALUE,
         windows_command=EMPTY_VALUE,
     ):
-        self.command = command
-        self._color = color
-        self._text = text
+        super().__init__(text, color, command, double_tap_command)
 
         self.os_commands = {
             os: com if (com is not EMPTY_VALUE) else self.command
