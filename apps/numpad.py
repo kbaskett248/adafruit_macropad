@@ -12,7 +12,7 @@ class NumpadApp(KeyAppWithSettings):
     # First row
     key_0 = Key("7", COLOR_NUMPAD, Text("7"))
     key_1 = Key("8", COLOR_NUMPAD, Text("8"))
-    key_2 = Key("9", COLOR_NUMPAD, Text("9"))
+    key_2 = Key("9", COLOR_NUMPAD, Text("9"), double_tap_command=PreviousAppCommand())
 
     # Second row
     key_3 = Key("4", COLOR_NUMPAD, Text("4"))

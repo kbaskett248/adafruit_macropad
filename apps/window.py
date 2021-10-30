@@ -29,6 +29,7 @@ class WindowManagementApp(KeyAppWithSettings):
         Sequence(
             Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.RIGHT_ARROW)
         ),
+        double_tap_command=PreviousAppCommand(),
         mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.RIGHT_ARROW)),
     )
 

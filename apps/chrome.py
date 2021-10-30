@@ -14,9 +14,6 @@ from constants import (
 )
 
 
-new_tab = Sequence(Press(Keycode.CONTROL), Text("t"), Release(Keycode.CONTROL))
-
-
 class ChromeApp(KeyAppWithSettings):
     name = "Chrome"
 
@@ -24,13 +21,14 @@ class ChromeApp(KeyAppWithSettings):
     key_2 = MacroKey(
         "Back",
         COLOR_BACK,
-        Sequence(PreviousAppCommand()),
+        PreviousAppCommand(),
+        double_tap_command=PreviousAppCommand(),
     )
 
     # Second row
     key_3 = MacroKey(
+        "Bkmk",
         COLOR_3,
-        0x101010,
         Sequence(Press(Keycode.CONTROL), Press(Keycode.D)),
         mac_command=Sequence(Press(Keycode.COMMAND), Text("d")),
     )

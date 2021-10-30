@@ -12,7 +12,9 @@ class FuncKeysApp(KeyAppWithSettings):
     # First row
     key_0 = Key("F1", COLOR_FUNC, Press(Keycode.F1))
     key_1 = Key("F2", COLOR_FUNC, Press(Keycode.F2))
-    key_2 = Key("F3", COLOR_FUNC, Press(Keycode.F3))
+    key_2 = Key(
+        "F3", COLOR_FUNC, Press(Keycode.F3), double_tap_command=PreviousAppCommand()
+    )
 
     # Second row
     key_3 = Key("F4", COLOR_FUNC, Press(Keycode.F4))

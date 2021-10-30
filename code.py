@@ -75,7 +75,12 @@ window_manager_app = WindowManagementApp(app_pad, macro_settings)
 class AppSwitcherApp(KeyAppWithSettings):
     name = "App Switcher"
 
-    key_2 = Key("Back", COLOR_BACK, PreviousAppCommand())
+    key_2 = Key(
+        "Back",
+        COLOR_BACK,
+        PreviousAppCommand(),
+        double_tap_command=PreviousAppCommand(),
+    )
 
     key_3 = MacroKey(
         "Term",
