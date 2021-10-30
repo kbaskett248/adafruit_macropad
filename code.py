@@ -204,7 +204,11 @@ class HomeApp(KeyAppWithSettings):
     key_0 = SettingsValueKey(
         OS_SETTING,
         SwitchAppCommand(settings_app),
-        {OS_MAC: COLOR_MAC, OS_WINDOWS: COLOR_WINDOWS, OS_LINUX: COLOR_LINUX},
+        color_mapping={
+            OS_MAC: COLOR_MAC,
+            OS_WINDOWS: COLOR_WINDOWS,
+            OS_LINUX: COLOR_LINUX,
+        },
         text_template="[ {value} ]",
     )
 

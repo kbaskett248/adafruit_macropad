@@ -11,7 +11,7 @@ class NavApp(KeyAppWithSettings):
 
     key_0 = Key("PrtScrn", COLOR_8, Press(Keycode.PRINT_SCREEN))
     key_1 = Key("Home", COLOR_2, Press(Keycode.HOME))
-    key_2 = Key("PgUp", COLOR_4, Press(Keycode.PAGE_UP))
+    key_2 = Key("PgUp", COLOR_4, Press(Keycode.PAGE_UP), PreviousAppCommand())
 
     key_3 = Key("Del", COLOR_ALERT, Press(Keycode.DELETE))
     key_4 = Key("End", COLOR_2, Press(Keycode.END))

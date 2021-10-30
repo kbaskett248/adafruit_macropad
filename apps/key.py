@@ -7,8 +7,10 @@ try:
 except ImportError:
     pass
 
+from app_pad import AppPad
 from commands import Command
 import displayio
+from event import DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
 import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
@@ -80,7 +82,7 @@ class KeyApp(BaseApp):
     encoder_increase: Optional[Command] = None
     encoder_decrease: Optional[Command] = None
 
-    def __init__(self, app_pad):
+    def __init__(self, app_pad: AppPad):
         self.keys = []
         self.double_tap_key_indices = set()
 
@@ -113,6 +115,10 @@ class KeyApp(BaseApp):
     def __len__(self):
         return len(self.keys)
 
+    def on_focus(self):
+        super().on_focus()
+        self.app_pad.track_double_taps(self.double_tap_key_indices)
+
     def display_on_focus(self):
         self.display_group[13].text = self.name
 
@@ -129,7 +135,13 @@ class KeyApp(BaseApp):
             except AttributeError:
                 self.macropad.pixels[i] = 0
 
-    def key_event(self, event):
+    def process_event(self, event):
+        if isinstance(event, DoubleTapEvent):
+            self.double_tap_event(event)
+        else:
+            super().process_event(event)
+
+    def key_event(self, event: KeyEvent):
         key = self[event.number]
 
         if key is None:
@@ -140,7 +152,7 @@ class KeyApp(BaseApp):
         else:
             key.release()
 
-    def encoder_button_event(self, event):
+    def encoder_button_event(self, event: EncoderButtonEvent):
         if self.encoder_button is None:
             return
 
@@ -149,7 +161,7 @@ class KeyApp(BaseApp):
         else:
             self.encoder_button.undo(self)
 
-    def encoder_event(self, event):
+    def encoder_event(self, event: EncoderEvent):
         if (
             event.position > event.previous_position
             and self.encoder_increase is not None
@@ -162,6 +174,17 @@ class KeyApp(BaseApp):
         ):
             self.encoder_decrease.execute(self)
             self.encoder_decrease.undo(self)
+
+    def double_tap_event(self, event: DoubleTapEvent):
+        key = self[event.number]
+
+        if key is None:
+            return
+
+        if event.pressed:
+            key.double_tap()
+        else:
+            key.double_tap_release()
 
 
 class Key:
