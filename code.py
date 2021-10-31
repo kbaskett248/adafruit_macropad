@@ -1,6 +1,8 @@
 """
-An App program for Adafruit MACROPAD. Apps can send hotkeys or do pretty much
-anything else.
+An App program for Adafruit MACROPAD. This was modified from the original
+Adafruit Macropad Hotkeys code (https://github.com/adafruit/Adafruit_Learning_System_Guides/tree/main/Macropad_Hotkeys).
+It enables you to more easily create complex layouts and has other advanced 
+features, including double-tap support.
 """
 
 from apps.chrome import ChromeApp
@@ -73,6 +75,12 @@ window_manager_app = WindowManagementApp(app_pad, macro_settings)
 
 
 class AppSwitcherApp(KeyAppWithSettings):
+    """
+    App with commands for switching between desktop apps. Some desktop apps
+    also have a context-specific app for that desktop app. These will display
+    when you switch to the app with the hotkey.
+    """
+
     name = "App Switcher"
 
     key_2 = Key(
@@ -204,6 +212,12 @@ app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
 
 
 class HomeApp(KeyAppWithSettings):
+    """
+    Main menu app that displays when starting the Macropad. Includes media
+    controls, a selector for the host OS, and buttons to switch to various
+    the other defined apps.
+    """
+
     name = "Home"
 
     key_0 = SettingsValueKey(
