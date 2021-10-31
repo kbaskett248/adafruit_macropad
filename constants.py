@@ -1,17 +1,26 @@
+"""Defines numerous constants used throughout the project."""
+
+# A unique empty value used when None is a valid value.
 EMPTY_VALUE = object()
 
+# The height and width of the macropad display.
 DISPLAY_WIDTH = 128
 DISPLAY_HEIGHT = 64
 
 # Settings
+
+# The setting name for the previous app setting
 PREVIOUS_APP_SETTING = "previous app"
 
+# The setting name and options for the OS setting
 OS_SETTING = "OS"
 OS_MAC = "MAC"
 OS_WINDOWS = "WIN"
 OS_LINUX = "LIN"
 
-# Colors
+# Defines a color scheme for the Macropad. You can reference these constants
+# for pixel colors to define a consistent color scheme and make it easy to
+# update the colors
 COLOR_1 = 0x4D0204
 COLOR_2 = 0x431A04
 COLOR_3 = 0x442602
