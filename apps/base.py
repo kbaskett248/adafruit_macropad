@@ -1,10 +1,13 @@
 """
 Includes a BaseApp implementation which handles the basic app run loop.
-
-BaseApp also provides a load_apps method to load any apps from a directory.
 """
 
 import os
+
+try:
+    from typing import Iterable, List, Union
+except ImportError:
+    pass
 
 import displayio
 import terminalio
@@ -15,8 +18,10 @@ from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 from event import EncoderEvent, EncoderButtonEvent, KeyEvent
 
 
-def init_display_group_base_app(display_width, display_height):
-    """Set up displayio group with all the labels."""
+def init_display_group_base_app(
+    display_width: int, display_height: int
+) -> displayio.Group:
+    """Set up a displayio group with a single label."""
     group = displayio.Group()
     group.append(Rect(0, 0, display_width, 12, fill=0xFFFFFF))
     group.append(
@@ -37,14 +42,14 @@ class BaseApp:
     name = "Base App"
 
     @staticmethod
-    def load_apps(directory):
+    def load_apps(directory: str) -> Iterable["BaseApp"]:
         """Load all the macro key setups from .py files in directory.
 
         Args:
             directory (str): The directory from which to load macros.
 
         Returns:
-            List[BaseApp]: A list of BaseApp objects
+            Iterable[BaseApp]: A list of BaseApp objects that were registered.
         """
         for filename in os.listdir(directory):
             if filename.endswith(".py"):
@@ -70,7 +75,17 @@ class BaseApp:
         return apps
 
     @staticmethod
-    def register_app(app_class):
+    def register_app(app_class: "BaseApp") -> "BaseApp":
+        """Register the specified app to the internal app list.
+
+        Intended to be used as a decorator.
+
+        Args:
+            app_class (BaseApp): [description]
+
+        Returns:
+            [BaseApp]: The app that was registered
+        """
         try:
             BaseApp._registered_apps.add(app_class)
         except AttributeError:
@@ -79,11 +94,12 @@ class BaseApp:
         return app_class
 
     @staticmethod
-    def list_registered_apps():
+    def list_registered_apps() -> List["BaseApp"]:
         """Return a list of the apps that have been registered.
 
         Returns:
-            List[BaseApp]: A list of apps that have been registered, sorted by name
+            List[BaseApp]: A list of apps that have been registered,
+                           sorted by name
         """
         try:
             return list(sorted(BaseApp._registered_apps, key=lambda app: app.name))
@@ -95,6 +111,10 @@ class BaseApp:
         self.macropad = app_pad.macropad
 
     def run(self):
+        """The main run loop for the app.
+
+        Checks the app_pad object for any new events, then processes them.
+        """
         self.on_focus()
 
         while True:
@@ -102,6 +122,13 @@ class BaseApp:
                 self.process_event(event)
 
     def on_focus(self):
+        """Code to execute when an app is focused.
+
+        Resets the state of commands.
+        Sets up the display.
+        Sets up the pixels.
+
+        """
         self.macropad.keyboard.release_all()
         self.macropad.consumer_control.release()
         self.macropad.mouse.release_all()
@@ -115,13 +142,29 @@ class BaseApp:
         self.macropad.pixels.show()
 
     def display_on_focus(self):
+        """Set up the display when an app is focused.
+
+        Set the display label to the name of the app.
+
+        """
         self.display_group[0].text = self.name
 
     def pixels_on_focus(self):
+        """Set up the pixels when an app is focused.
+
+        Disable the pixel for all the keys.
+
+        """
         for i in range(12):
             self.macropad.pixels[i] = 0
 
-    def process_event(self, event):
+    def process_event(self, event: Union[EncoderButtonEvent, EncoderEvent, KeyEvent]):
+        """Process a single event.
+
+        Args:
+            event (Union[EncoderButtonEvent, EncoderEvent, KeyEvent]):
+                An event from the App Pad
+        """
         if isinstance(event, EncoderEvent):
             self.encoder_event(event)
         elif isinstance(event, EncoderButtonEvent):
@@ -129,11 +172,27 @@ class BaseApp:
         elif isinstance(event, KeyEvent):
             self.key_event(event)
 
-    def encoder_event(self, event):
+    def encoder_event(self, event: EncoderEvent):
+        """Process an encoder event.
+
+        Args:
+            event (EncoderEvent): An event triggered by rotating the encoder
+        """
         pass
 
-    def encoder_button_event(self, event):
+    def encoder_button_event(self, event: EncoderButtonEvent):
+        """Process an encoder button event.
+
+        Args:
+            event (EncoderButtonEvent): An event triggered by pressing the
+                encoder button
+        """
         pass
 
-    def key_event(self, event):
+    def key_event(self, event: KeyEvent):
+        """Process a key event.
+
+        Args:
+            event (KeyEvent): An event triggered by pressing a key
+        """
         pass

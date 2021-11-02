@@ -1,17 +1,26 @@
+"""Defines a KeyApp that includes customizable settings.
+
+Also includes special Key subclasses and Command subclasses to interact with
+settings.
+"""
+
 try:
-    from typing import Dict, Optional
+    from typing import Any, Dict, Optional
 except ImportError:
     pass
 
+from app_pad import AppPad
 from apps.key import KeyApp, Key
 from commands import Command
 from constants import PREVIOUS_APP_SETTING
 
 
 class KeyAppWithSettings(KeyApp):
+    """A KeyApp that supports customizable settings."""
+
     name = "Base Settings"
 
-    def __init__(self, app_pad, settings=None):
+    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
         if settings is None:
             self.settings = {}
         else:
