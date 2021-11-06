@@ -14,7 +14,7 @@ from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 import displayio
 
-from app_pad import AppPad
+from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
 from apps.base import BaseApp
 from commands import Command
 from constants import (
@@ -26,7 +26,6 @@ from constants import (
     OS_SETTING,
     OS_WINDOWS,
 )
-from event import DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
 
 
 def init_display_group_macro_app(

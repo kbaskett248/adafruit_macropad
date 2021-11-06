@@ -4,16 +4,32 @@ defines the interface used by apps to run.
 """
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
+
+from collections import namedtuple
+import time
+
 try:
     from typing import Callable, Iterable, List, Optional, Tuple, Union
 except ImportError:
     pass
 
-import time
-
 from adafruit_macropad import MacroPad
 
-from event import DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
+
+# Event indicating the Encoder Button was pressed or released.
+EncoderButtonEvent = namedtuple("EncoderButtonEvent", ("pressed",))
+
+
+# Event indicating the Encoder was rotated.
+EncoderEvent = namedtuple("EncoderEvent", ("position", "previous_position"))
+
+
+# Event indicating a key was pressed or released.
+KeyEvent = namedtuple("KeyEvent", ("number", "pressed"))
+
+
+# Event indicating a key was tapped twice quickly.
+DoubleTapEvent = namedtuple("DoubleTapEvent", ("number", "pressed"))
 
 
 class DoubleTapBuffer:
