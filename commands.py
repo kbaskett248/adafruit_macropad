@@ -15,6 +15,7 @@ from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
 
 from apps.base import BaseApp
+from constants import PREVIOUS_APP_SETTING
 
 
 class Command:
@@ -217,9 +218,9 @@ class MouseMove(Command):
         """Initialize the MouseMove command.
 
         Args:
-            x (int, optional): The direction to move in the x direction. 
+            x (int, optional): The direction to move in the x direction.
                                Defaults to 0.
-            y (int, optional): The direction to move in the y direction. 
+            y (int, optional): The direction to move in the y direction.
                                Defaults to 0.
         """
         super().__init__()
@@ -297,3 +298,108 @@ class PlayFile(Command):
 
     def __str__(self):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
+
+
+class SwitchAppCommand(Command):
+    """A command to switch to a new App."""
+
+    def __init__(self, app: BaseApp):
+        super().__init__()
+        self.app = app
+
+    def execute(self, app: BaseApp):
+        """Switch to the new app.
+
+        Add the current app to the stack stored in PREVIOUS_APP_SETTING.
+
+        Args:
+            app (BaseApp): The current app
+        """
+        app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack.append(app)
+        app.app_pad.current_app = self.app
+
+
+class PreviousAppCommand(Command):
+    """A command to switch back to the previous app."""
+
+    def execute(self, app: BaseApp):
+        """Switch back to the last App in the App stack.
+
+        Pop the last App from the stack stored in PREVIOUS_APP_SETTING and
+        switch back to that app.
+
+        Args:
+            app (BaseApp): The current app
+
+        """
+        app_stack = app.get_setting(PREVIOUS_APP_SETTING)
+        previous_app = app_stack.pop()
+        if previous_app is not None:
+            app.app_pad.current_app = previous_app
+
+
+class SettingsDependentCommand(Command):
+    """A command which can run different override commands depending on the
+    value of a setting.
+
+    """
+
+    def __init__(
+        self, setting: str, default_command: Command, **override_commands: Command
+    ):
+        """Initialize the SettingsDependentCommand.
+
+        Args:
+            setting (str): The setting name to check
+            default_command (Command): A default command to run if the setting
+                doesn't match an override command.
+            override_commands (Dict[str, Command]): A dictionary mapping a
+                settings value to a Command. If the specified setting has the
+                value of one of these keys, the corresponding command is run.
+                Otherwise the default_command is run.
+
+        """
+        self.setting = setting
+        self.default_command = default_command
+        self.override_commands = override_commands
+
+    def execute(self, app: BaseApp):
+        """Execute the Command.
+
+        If the specified setting has the value of one of the keys in
+        self.override_commands, the corresponding command is run. Otherwise the
+        default_command is run.
+
+        Args:
+            app (BaseApp): The current app
+
+        """
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        if command is not None:
+            command.execute(app)
+
+    def undo(self, app: BaseApp):
+        """Undo the Command.
+
+        If the specified setting has the value of one of the keys in
+        self.override_commands, the corresponding command is run. Otherwise the
+        default_command is run.
+
+        Args:
+            app (BaseApp): The current app
+
+        """
+        try:
+            setting = app.get_setting(self.setting)
+            command = self.override_commands[setting]
+        except Exception:
+            command = self.default_command
+
+        if command is not None:
+            command.undo(app)

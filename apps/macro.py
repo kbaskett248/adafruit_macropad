@@ -3,14 +3,8 @@ try:
 except ImportError:
     pass
 
-from apps.key import Key
-from apps.settings import (
-    KeyAppWithSettings,
-    PreviousAppCommand,
-    SettingsDependentCommand,
-    SettingsSelectKey,
-)
-from commands import Command
+from apps.key import Key, KeyApp, SettingsSelectKey
+from commands import Command, PreviousAppCommand, SettingsDependentCommand
 from constants import (
     EMPTY_VALUE,
     PREVIOUS_APP_SETTING,
@@ -21,7 +15,7 @@ from constants import (
 )
 
 
-class MacroSettingsApp(KeyAppWithSettings):
+class MacroSettingsApp(KeyApp):
     name = "Macropad Settings"
 
     key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC, PreviousAppCommand())
@@ -35,7 +29,7 @@ class MacroSettingsApp(KeyAppWithSettings):
     encoder_button = PreviousAppCommand()
 
 
-class MacroApp(KeyAppWithSettings):
+class MacroApp(KeyApp):
     name = "Macro App"
     SETTINGS_APP = MacroSettingsApp
 

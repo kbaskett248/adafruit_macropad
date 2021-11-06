@@ -1,13 +1,13 @@
-# Nav cluster
+"""Hotkeys for Spotify."""
 
-from apps.key import Key
+from apps.key import Key, KeyApp
 from apps.macro import MacroKey, MacroCommand
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
 from commands import (
     ConsumerControlCode,
     Keycode,
     Media,
     Press,
+    PreviousAppCommand,
     Sequence,
 )
 from constants import (
@@ -20,7 +20,7 @@ from constants import (
 )
 
 
-class SpotifyApp(KeyAppWithSettings):
+class SpotifyApp(KeyApp):
     name = "Spotify"
 
     key_0 = MacroKey(

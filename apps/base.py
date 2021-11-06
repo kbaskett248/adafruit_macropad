@@ -5,7 +5,7 @@ Includes a BaseApp implementation which handles the basic app run loop.
 import os
 
 try:
-    from typing import Iterable, List, Union
+    from typing import Any, Dict, Iterable, List, Optional, Union
 except ImportError:
     pass
 
@@ -14,7 +14,7 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
-from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
+from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH, PREVIOUS_APP_SETTING
 from event import EncoderEvent, EncoderButtonEvent, KeyEvent
 
 
@@ -106,9 +106,22 @@ class BaseApp:
         except AttributeError:
             return []
 
-    def __init__(self, app_pad):
+    def __init__(self, app_pad, settings: Optional[Dict[str, Any]] = None):
+        """Initialize the App.
+
+        Args:
+            app_pad (AppPad): An AppPad instance
+            settings (Optional[Dict[str, Any]], optional): Settings dictionary.
+                If you pass None, the settings dictionary is initialized to an
+                empty dictionary. Defaults to None.
+        """
         self.app_pad = app_pad
         self.macropad = app_pad.macropad
+
+        if settings is None:
+            self.settings = {}
+        else:
+            self.settings = settings
 
     def run(self):
         """The main run loop for the app.
@@ -157,6 +170,28 @@ class BaseApp:
         """
         for i in range(12):
             self.macropad.pixels[i] = 0
+
+    def get_setting(self, setting: str) -> Any:
+        """Return the setting value with the given name.
+
+        If the setting isn't defined, None is returned.
+
+        Args:
+            setting (str): The setting name
+
+        Returns:
+            Any: The value for the setting, or None if it isn't defined
+        """
+        return self.settings.get(setting, None)
+
+    def put_setting(self, setting: str, value: Any):
+        """Store the value as a setting with the given name.
+
+        Args:
+            setting (str): The setting name
+            value (Any): The value for the setting
+        """
+        self.settings[setting] = value
 
     def process_event(self, event: Union[EncoderButtonEvent, EncoderEvent, KeyEvent]):
         """Process a single event.

@@ -1,12 +1,11 @@
 # MACROPAD Hotkeys example: Universal Numpad
 
-from apps.key import Key
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
-from commands import Keycode, Press
+from apps.key import Key, KeyApp
+from commands import Keycode, Press, PreviousAppCommand
 from constants import COLOR_FUNC
 
 
-class FuncKeysApp(KeyAppWithSettings):
+class FuncKeysApp(KeyApp):
     name = "Function Keys"
 
     # First row

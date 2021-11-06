@@ -1,12 +1,10 @@
 # Nav cluster
-
-from apps.key import Key
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
-from commands import Keycode, Press
+from apps.key import Key, KeyApp
+from commands import Keycode, Press, PreviousAppCommand
 from constants import COLOR_2, COLOR_4, COLOR_8, COLOR_ALERT, COLOR_NAV
 
 
-class NavApp(KeyAppWithSettings):
+class NavApp(KeyApp):
     name = "Navigation"
 
     key_0 = Key("PrtScrn", COLOR_8, Press(Keycode.PRINT_SCREEN))

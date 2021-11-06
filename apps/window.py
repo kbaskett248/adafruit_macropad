@@ -1,12 +1,12 @@
-# Nav cluster
+"""App with macros for managing windows and virtual desktops."""
 
+from apps.key import KeyApp
 from apps.macro import MacroKey
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
-from commands import Keycode, Press, Sequence
+from commands import Keycode, Press, PreviousAppCommand, Sequence
 from constants import COLOR_2, COLOR_3, COLOR_WINMAN
 
 
-class WindowManagementApp(KeyAppWithSettings):
+class WindowManagementApp(KeyApp):
     name = "Window Manager"
 
     key_0 = MacroKey(

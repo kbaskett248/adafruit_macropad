@@ -1,8 +1,8 @@
 # MACROPAD Hotkeys example: Firefox web browser for Linux
 
 from apps.macro import MacroCommand, MacroKey
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
-from commands import Keycode, Press, Release, Sequence, Text, Wait
+from apps.key import KeyApp
+from commands import Keycode, Press, PreviousAppCommand, Release, Sequence, Text, Wait
 from constants import (
     COLOR_3,
     COLOR_7,
@@ -14,7 +14,7 @@ from constants import (
 )
 
 
-class ChromeApp(KeyAppWithSettings):
+class ChromeApp(KeyApp):
     name = "Chrome"
 
     # First row

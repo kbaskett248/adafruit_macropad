@@ -5,7 +5,7 @@ the key, and the command to execute for the key.
 """
 
 try:
-    from typing import List, Set, Optional, Union
+    from typing import Any, Dict, List, Set, Optional, Union
 except ImportError:
     pass
 
@@ -103,7 +103,7 @@ class KeyApp(BaseApp):
     encoder_increase: Optional[Command] = None
     encoder_decrease: Optional[Command] = None
 
-    def __init__(self, app_pad: AppPad):
+    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
         """Initialize the KeyApp.
 
         Args:
@@ -125,7 +125,7 @@ class KeyApp(BaseApp):
 
             self.keys.append(bound_key)
 
-        super().__init__(app_pad)
+        super().__init__(app_pad, settings)
 
     def __getitem__(self, index):
         try:
@@ -467,3 +467,181 @@ class Key:
                 and the key number
         """
         return self.BoundKey(self, app, key_number)
+
+
+class SettingsValueKey(Key):
+    """A Key whose color and text are dependent on the value of a setting.
+
+    The text of the key is the value of the setting. The color of the key is
+    the color determined by the value of the setting using color_mapping.
+
+    """
+
+    def __init__(
+        self,
+        setting: str,
+        command: Optional[Command] = None,
+        double_tap_command: Optional[Command] = None,
+        color_mapping: Optional[Dict[str, int]] = None,
+        text_template: str = "{value}",
+    ):
+        """Initialize the SettingsValueKey.
+
+        Args:
+            setting (str): The name of the setting
+            command (Optional[Command], optional): A Command to execute when
+                the key is pressed. Defaults to None.
+            double_tap_command (Optional[Command], optional): A command to
+                execute when the key is double-tapped. Defaults to None.
+            color_mapping (Optional[Dict[str, int]], optional): A dictionary
+                mapping values for the setting to color codes. If None the key
+                will have no color. Defaults to None.
+            text_template (str, optional): A template string to determine the
+                text for the key. The keys for the template string are setting
+                and value. Defaults to "{value}".
+
+        """
+        super().__init__(command=command, double_tap_command=double_tap_command)
+        self.setting = setting
+        self.color_mapping = color_mapping
+        self.text_template = text_template
+
+    def text(self, app) -> str:
+        return self.text_template.format(
+            setting=self.setting, value=app.get_setting(self.setting)
+        )
+
+    def color(self, app) -> int:
+        if self.color_mapping is not None:
+            return self.color_mapping.get(app.get_setting(self.setting), 0)
+        return 0
+
+
+class SettingsSelectKey(Key):
+    """A key which stores a value to a setting when pressed.
+
+    Multiple keys can be linked to the same setting. The text and color for all
+    keys will be updated whenever the key is pressed.
+
+    """
+
+    marker = ">"
+    template = "{marker} {text}"
+
+    class BoundKey(Key.BoundKey):
+        """A SettingsSelectKey bound to a specific app and key number."""
+
+        def __init__(self, key: "SettingsSelectKey", app: KeyApp, key_number: int):
+            """Initialize the BoundKey.
+
+            Args:
+                key (SettingsSelectKey): A SettingsSelectKey instance
+                app (KeyApp): A KeyApp instance to bind
+                    to
+                key_number (int): The key number to bind to
+            """
+            super().__init__(key, app, key_number)
+            self.related_keys: Set[SettingsSelectKey.BoundKey] = set()
+
+            setting = key.setting
+            for bound_key in app.keys:
+                if not isinstance(bound_key, SettingsSelectKey.BoundKey):
+                    continue
+
+                if bound_key.key.setting == setting:
+                    self.related_keys.add(bound_key)
+                    bound_key.related_keys.add(self)
+
+        def press(self):
+            """Logic to run when the key is pressed.
+
+            Update the setting associated with the key.
+            Optionally run the command tied to the key.
+            Update the text and pixel for the key and any related keys.
+
+            """
+            self.key.press(self.app)
+            self.pixel = self.color()
+            self.label = self.text()
+
+            for key in self.related_keys:
+                key.pixel = key.color()
+                key.label = key.text()
+
+            self.app.macropad.display.refresh()
+            self.app.macropad.pixels.show()
+
+    def __init__(
+        self,
+        text: str = "",
+        color: int = 0,
+        setting: str = "",
+        value: Any = None,
+        command: Optional[Command] = None,
+    ):
+        """Initialize the SettingsSelectKey.
+
+        Args:
+            text (str, optional): The text to display for the key.
+                Defaults to "".
+            color (int, optional): The color to display when the value is the
+                current setting. Defaults to 0.
+            setting (str, optional): The name of the setting. Defaults to "".
+            value (Any, optional): The value of the setting. Defaults to None.
+            command (Optional[Command], optional): An additional command to run
+                when the key is pressed. Defaults to None.
+
+        """
+        super().__init__(text, color, command)
+        self.setting = setting
+        self.value = value
+
+    def text(self, app: KeyApp) -> str:
+        """The text to display for the key.
+
+        If the key's value is the current value for the setting, a marker is
+        added to the key's text to indicate it is selected.
+
+        Args:
+            app (KeyApp): An instance of KeyApp
+
+        Returns:
+            str: The text to display for the key.
+
+        """
+        if app.get_setting(self.setting) == self.value:
+            marker = self.marker
+        else:
+            marker = " "
+
+        return self.template.format(marker=marker, text=self._text)
+
+    def color(self, app: KeyApp) -> int:
+        """The color of the key's pixel.
+
+        If the key's value is the current value for the setting, the key's
+        color is displayed. Otherwise no color is displayed.
+
+        Args:
+            app (KeyApp): An instance of KeyApp
+
+        Returns:
+            int: The color to display for the key's pixel
+
+        """
+        if app.get_setting(self.setting) == self.value:
+            return self._color
+        return 0
+
+    def press(self, app: KeyApp):
+        """Update the setting for the key. Then run the command for the key.
+
+        Args:
+            app (KeyApp): An instance of KeyApp.
+
+        """
+        app.put_setting(self.setting, self.value)
+        super().press(app)
+
+    def __str__(self) -> str:
+        return f"{self.__class__.__name__}({self.setting}: {self.value})"

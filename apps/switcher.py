@@ -1,12 +1,11 @@
-# Nav cluster
+"""Hotkeys for switching between desktop apps."""
 
-from apps.key import Key
+from apps.key import KeyApp
 from apps.macro import MacroKey
-from apps.settings import KeyAppWithSettings, PreviousAppCommand
-from commands import Keycode, Press, Sequence
+from commands import Keycode, Press, PreviousAppCommand, Sequence
 
 
-class AppSwitcherApp(KeyAppWithSettings):
+class AppSwitcherApp(KeyApp):
     name = "App Switcher"
 
     key_3 = MacroKey(
@@ -111,9 +110,3 @@ class AppSwitcherApp(KeyAppWithSettings):
     )
 
     encoder_button = PreviousAppCommand()
-
-    def encoder_button_event(self, event):
-        if event.pressed:
-            self.encoder_button.execute(self)
-        else:
-            self.encoder_button.undo(self)

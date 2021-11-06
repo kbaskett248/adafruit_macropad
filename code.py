@@ -7,16 +7,10 @@ features, including double-tap support.
 
 from apps.chrome import ChromeApp
 from apps.func import FuncKeysApp
-from apps.key import Key
+from apps.key import Key, KeyApp, SettingsValueKey
 from apps.macro import MacroKey, MacroSettingsApp
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
-from apps.settings import (
-    KeyAppWithSettings,
-    SettingsValueKey,
-    SwitchAppCommand,
-    PreviousAppCommand,
-)
 from apps.spotify import SpotifyApp
 from app_pad import AppPad
 from apps.window import WindowManagementApp
@@ -25,8 +19,10 @@ from commands import (
     Keycode,
     Media,
     Press,
+    PreviousAppCommand,
     Release,
     Sequence,
+    SwitchAppCommand,
     Wait,
 )
 from constants import (
@@ -74,7 +70,7 @@ spotify_app = SpotifyApp(app_pad, macro_settings)
 window_manager_app = WindowManagementApp(app_pad, macro_settings)
 
 
-class AppSwitcherApp(KeyAppWithSettings):
+class AppSwitcherApp(KeyApp):
     """
     App with commands for switching between desktop apps. Some desktop apps
     also have a context-specific app for that desktop app. These will display
@@ -211,7 +207,7 @@ class AppSwitcherApp(KeyAppWithSettings):
 app_switcher_app = AppSwitcherApp(app_pad, macro_settings)
 
 
-class HomeApp(KeyAppWithSettings):
+class HomeApp(KeyApp):
     """
     Main menu app that displays when starting the Macropad. Includes media
     controls, a selector for the host OS, and buttons to switch to various
