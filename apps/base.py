@@ -14,8 +14,8 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
-from app_pad import AppPad, EncoderEvent, EncoderButtonEvent, KeyEvent
-from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH, PREVIOUS_APP_SETTING
+from app_pad import AppPad, DoubleTapEvent, EncoderEvent, EncoderButtonEvent, KeyEvent
+from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 
 
 def init_display_group_base_app(
@@ -193,11 +193,13 @@ class BaseApp:
         """
         self.settings[setting] = value
 
-    def process_event(self, event: Union[EncoderButtonEvent, EncoderEvent, KeyEvent]):
+    def process_event(
+        self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
+    ):
         """Process a single event.
 
         Args:
-            event (Union[EncoderButtonEvent, EncoderEvent, KeyEvent]):
+            event (Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]):
                 An event from the App Pad
         """
         if isinstance(event, EncoderEvent):
@@ -206,6 +208,8 @@ class BaseApp:
             self.encoder_button_event(event)
         elif isinstance(event, KeyEvent):
             self.key_event(event)
+        elif isinstance(event, DoubleTapEvent):
+            self.double_tap_event(event)
 
     def encoder_event(self, event: EncoderEvent):
         """Process an encoder event.
@@ -229,5 +233,13 @@ class BaseApp:
 
         Args:
             event (KeyEvent): An event triggered by pressing a key
+        """
+        pass
+
+    def double_tap_event(self, event: DoubleTapEvent):
+        """Process a double tap event.
+
+        Args:
+            event (DoubleTapEvent): An event triggered by double-tapping a key
         """
         pass

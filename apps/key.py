@@ -185,20 +185,6 @@ class KeyApp(BaseApp):
             except AttributeError:
                 self.macropad.pixels[i] = 0
 
-    def process_event(
-        self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
-    ):
-        """Process a single event.
-
-        Args:
-            event (Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]):
-                An event from the app_pad
-        """
-        if isinstance(event, DoubleTapEvent):
-            self.double_tap_event(event)
-        else:
-            super().process_event(event)
-
     def key_event(self, event: KeyEvent):
         """Process a key event.
 
