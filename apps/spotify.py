@@ -1,10 +1,10 @@
 """Hotkeys for Spotify."""
 
-from apps.key import Key, KeyApp
-from apps.macro import MacroKey, MacroCommand
+from apps.key import Key, KeyApp, MacroKey
 from commands import (
     ConsumerControlCode,
     Keycode,
+    MacroCommand,
     Media,
     Press,
     PreviousAppCommand,

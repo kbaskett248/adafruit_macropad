@@ -15,7 +15,7 @@ from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
 
 from apps.base import BaseApp
-from constants import PREVIOUS_APP_SETTING
+from constants import OS_SETTING, PREVIOUS_APP_SETTING
 
 
 class Command:
@@ -403,3 +403,8 @@ class SettingsDependentCommand(Command):
 
         if command is not None:
             command.undo(app)
+
+
+class MacroCommand(SettingsDependentCommand):
+    def __init__(self, default_command: Command, **override_commands: Command):
+        super().__init__(OS_SETTING, default_command, **override_commands)

@@ -1,7 +1,6 @@
 """App with macros for managing windows and virtual desktops."""
 
-from apps.key import KeyApp
-from apps.macro import MacroKey
+from apps.key import KeyApp, MacroKey
 from commands import Keycode, Press, PreviousAppCommand, Sequence
 from constants import COLOR_2, COLOR_3, COLOR_WINMAN
 

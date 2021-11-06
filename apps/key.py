@@ -17,7 +17,15 @@ import displayio
 from app_pad import AppPad
 from apps.base import BaseApp
 from commands import Command
-from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
+from constants import (
+    DISPLAY_HEIGHT,
+    DISPLAY_WIDTH,
+    EMPTY_VALUE,
+    OS_LINUX,
+    OS_MAC,
+    OS_SETTING,
+    OS_WINDOWS,
+)
 from event import DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
 
 
@@ -645,3 +653,64 @@ class SettingsSelectKey(Key):
 
     def __str__(self) -> str:
         return f"{self.__class__.__name__}({self.setting}: {self.value})"
+
+
+class MacroKey(Key):
+    class BoundKey(Key.BoundKey):
+        def press(self):
+            self.pixel = 0xFFFFFF
+            self.app.macropad.pixels.show()
+            self.key.press(self.app)
+
+        def release(self):
+            self.key.release(self.app)
+            self.pixel = self.color()
+            self.app.macropad.pixels.show()
+
+    def __init__(
+        self,
+        text: str = "",
+        color: int = 0,
+        command: Optional[Command] = None,
+        double_tap_command: Optional[Command] = None,
+        linux_command=EMPTY_VALUE,
+        mac_command=EMPTY_VALUE,
+        windows_command=EMPTY_VALUE,
+    ):
+        super().__init__(text, color, command, double_tap_command)
+
+        self.os_commands = {
+            os: com if (com is not EMPTY_VALUE) else self.command
+            for os, com in zip(
+                (OS_LINUX, OS_MAC, OS_WINDOWS),
+                (linux_command, mac_command, windows_command),
+            )
+        }
+
+    @staticmethod
+    def _get_os(app):
+        return app.get_setting(OS_SETTING)
+
+    def _get_command(self, app):
+        os = self._get_os(app)
+        return self.os_commands[os]
+
+    def text(self, app):
+        if self._get_command(app):
+            return self._text
+        return ""
+
+    def color(self, app):
+        if self._get_command(app):
+            return self._color
+        return 0
+
+    def press(self, app):
+        command = self._get_command(app)
+        if command:
+            command.execute(app)
+
+    def release(self, app):
+        command = self._get_command(app)
+        if command:
+            command.undo(app)

@@ -1,7 +1,6 @@
 """Hotkeys for switching between desktop apps."""
 
-from apps.key import KeyApp
-from apps.macro import MacroKey
+from apps.key import KeyApp, MacroKey
 from commands import Keycode, Press, PreviousAppCommand, Sequence
 
 

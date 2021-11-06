@@ -7,8 +7,7 @@ features, including double-tap support.
 
 from apps.chrome import ChromeApp
 from apps.func import FuncKeysApp
-from apps.key import Key, KeyApp, SettingsValueKey
-from apps.macro import MacroKey, MacroSettingsApp
+from apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey, MacroKey
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
 from apps.spotify import SpotifyApp
@@ -59,6 +58,20 @@ macro_settings = {
     OS_SETTING: OS_MAC,
     PREVIOUS_APP_SETTING: [],
 }
+
+
+class MacroSettingsApp(KeyApp):
+    name = "Macropad Settings"
+
+    key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC, PreviousAppCommand())
+    key_1 = SettingsSelectKey(
+        "WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS, PreviousAppCommand()
+    )
+    key_2 = SettingsSelectKey(
+        "LIN", 0x25D366, OS_SETTING, OS_LINUX, PreviousAppCommand()
+    )
+
+    encoder_button = PreviousAppCommand()
 
 
 chrome_app = ChromeApp(app_pad, macro_settings)
