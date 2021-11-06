@@ -258,9 +258,15 @@ class AppPad:
         self.macropad.encoder_switch_debounced.update()
         return self.macropad.encoder_switch_debounced.pressed
 
+    def event_stream(
+        self,
+    ) -> Iterable[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]]:
+        while True:
+            yield from self.check_events()
+
     def check_events(
         self,
-    ) -> Tuple[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent], ...]:
+    ) -> Iterable[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]]:
         """Check for changes in state and return a tuple of events.
 
         Also execute any timers that are scheduled to run.
@@ -269,32 +275,26 @@ class AppPad:
             Tuple[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent], ...]:
                 A tuple of Events.
         """
-        events = []
-
         position = self.encoder_position
         if position != self._last_encoder_position:
-            events.append(
-                EncoderEvent(
-                    position=position,
-                    previous_position=self._last_encoder_position,
-                )
-            )
+            last_encoder_position = self._last_encoder_position
             self._last_encoder_position = position
+            yield EncoderEvent(
+                position=position,
+                previous_position=last_encoder_position,
+            )
 
         encoder_switch = self.encoder_switch
         if encoder_switch != self._last_encoder_switch:
-            events.append(EncoderButtonEvent(pressed=encoder_switch))
+            yield EncoderButtonEvent(pressed=encoder_switch)
 
         key_event = self.macropad.keys.events.get()
         if key_event:
-            double_tap_events = self._handle_double_tap_event(
+            yield from self._handle_double_tap_event(
                 KeyEvent(number=key_event.key_number, pressed=key_event.pressed)
             )
-            events.extend(double_tap_events)
 
-        events.extend(self.execute_ready_timers())
-
-        return tuple(events)
+        yield from self.execute_ready_timers()
 
     def _handle_double_tap_event(
         self, event: KeyEvent

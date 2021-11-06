@@ -130,9 +130,8 @@ class BaseApp:
         """
         self.on_focus()
 
-        while True:
-            for event in self.app_pad.check_events():
-                self.process_event(event)
+        for event in self.app_pad.event_stream():
+            self.process_event(event)
 
     def on_focus(self):
         """Code to execute when an app is focused.
