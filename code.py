@@ -21,7 +21,7 @@ current_app = HomeApp(app_pad, app_settings)
 
 while True:
     try:
+        print(f"Current App = {current_app}")
         current_app.run()
     except AppSwitchException as err:
         current_app = err.app
-        print(f"current_app = {current_app}")

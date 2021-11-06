@@ -14,6 +14,7 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
+from app_pad import AppPad
 from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH, PREVIOUS_APP_SETTING
 from event import EncoderEvent, EncoderButtonEvent, KeyEvent
 
@@ -106,7 +107,7 @@ class BaseApp:
         except AttributeError:
             return []
 
-    def __init__(self, app_pad, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
         """Initialize the App.
 
         Args:
