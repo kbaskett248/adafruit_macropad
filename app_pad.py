@@ -13,14 +13,7 @@ import time
 
 from adafruit_macropad import MacroPad
 
-from apps.base import BaseApp
 from event import DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
-
-
-class DefaultApp(BaseApp):
-    """A basic app that just displays a message that no apps were found."""
-
-    name = "NO MACRO FILES FOUND"
 
 
 class DoubleTapBuffer:
@@ -163,19 +156,12 @@ class AppPad:
     DOUBLE_TAP_TIMER_ID = "_DRAIN_DOUBLE_TAP_BUFFER"
     # The ID of the time to clear the double tap buffer
 
-    class AppChange(Exception):
-        """Exception raised when an App triggers an App Change."""
-
     def __init__(self):
         self.macropad = self._init_macropad()
 
         self._last_encoder_position = self.encoder_position
         self._last_encoder_switch = self.encoder_switch
         self._running = False
-
-        self.apps = [DefaultApp(self)]
-        self._app_index = 0
-        self.app_index = 0
 
         self._timers = dict()
 
@@ -189,21 +175,6 @@ class AppPad:
         macropad.pixels.auto_write = False
 
         return macropad
-
-    def add_app(self, app_class):
-        """Add an app to the list of apps in this instance.
-
-        Note that this takes a class, and not an instance of the class.
-
-        Args:
-            app_class (subclass of BaseApp): The class of app to add.
-        """
-        if isinstance(self.apps[0], DefaultApp):
-            del self.apps[0]
-            self.apps.append(app_class(self))
-            self.current_app = self.apps[0]
-        else:
-            self.apps.append(app_class(self))
 
     def add_timer(self, id_: str, delay: float, callback: Callable):
         """Add a timer to run a callback after a delay.
@@ -270,38 +241,6 @@ class AppPad:
         """Return the state of the encoder switch."""
         self.macropad.encoder_switch_debounced.update()
         return self.macropad.encoder_switch_debounced.pressed
-
-    @property
-    def app_index(self) -> int:
-        """Return the current app index."""
-        return self._app_index
-
-    @app_index.setter
-    def app_index(self, value: int):
-        """Set the current app index and update the current app."""
-        self._app_index = value
-        self.current_app = self.apps[self._app_index]
-
-    @property
-    def current_app(self) -> BaseApp:
-        """Return the current app"""
-        return self._current_app
-
-    @current_app.setter
-    def current_app(self, new_app: BaseApp):
-        """Set a new current app.
-
-        Args:
-            new_app (BaseApp): The new App to set
-
-        Raises:
-            self.AppChange: If the AppPad is in a running state, an AppChange
-                exception is raised to trigger the current App to stop and the
-                new App to start.
-        """
-        self._current_app = new_app
-        if self._running:
-            raise self.AppChange()
 
     def check_events(
         self,
@@ -390,17 +329,3 @@ class AppPad:
             self._double_tap_buffer = DoubleTapBuffer(indices)
         else:
             self._double_tap_buffer = None
-
-    def run(self):
-        """The main event loop.
-
-        Run the current app until an AppChange exception is raised.
-        Then run the new app.
-        """
-        self._running = True
-
-        while True:
-            try:
-                self.current_app.run()
-            except self.AppChange:
-                pass

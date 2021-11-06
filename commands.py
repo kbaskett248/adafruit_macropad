@@ -300,6 +300,14 @@ class PlayFile(Command):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
 
 
+class AppSwitchException(Exception):
+    """Raise this exception to switch the currently running app."""
+
+    def __init__(self, app: BaseApp):
+        super().__init__()
+        self.app = app
+
+
 class SwitchAppCommand(Command):
     """A command to switch to a new App."""
 
@@ -317,7 +325,7 @@ class SwitchAppCommand(Command):
         """
         app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
         app_stack.append(app)
-        app.app_pad.current_app = self.app
+        raise AppSwitchException(self.app)
 
 
 class PreviousAppCommand(Command):
@@ -336,7 +344,7 @@ class PreviousAppCommand(Command):
         app_stack = app.get_setting(PREVIOUS_APP_SETTING)
         previous_app = app_stack.pop()
         if previous_app is not None:
-            app.app_pad.current_app = previous_app
+            raise AppSwitchException(previous_app)
 
 
 class SettingsDependentCommand(Command):

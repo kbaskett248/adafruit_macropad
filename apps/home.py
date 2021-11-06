@@ -35,13 +35,7 @@ from constants import (
     OS_LINUX,
     OS_MAC,
     OS_WINDOWS,
-    PREVIOUS_APP_SETTING,
 )
-
-macro_settings = {
-    OS_SETTING: OS_MAC,
-    PREVIOUS_APP_SETTING: [],
-}
 
 
 class MacroSettingsApp(KeyApp):
@@ -77,9 +71,9 @@ class HomeApp(KeyApp):
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
     encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
 
-    def __init__(self, app_pad: AppPad):
-        self.initialize_settings_dependent_keys(app_pad, macro_settings)
-        super().__init__(app_pad, settings=macro_settings)
+    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
+        self.initialize_settings_dependent_keys(app_pad, settings)
+        super().__init__(app_pad, settings=settings)
 
     @classmethod
     def initialize_settings_dependent_keys(
