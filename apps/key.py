@@ -18,6 +18,7 @@ from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, Ke
 from apps.base import BaseApp
 from commands import Command
 from constants import (
+    DISABLE_PIXELS_TIMEOUT,
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
     EMPTY_VALUE,
@@ -25,6 +26,8 @@ from constants import (
     OS_MAC,
     OS_SETTING,
     OS_WINDOWS,
+    PIXELS_DISABLED_SETTING,
+    TIMER_DISABLE_PIXELS,
 )
 
 
@@ -154,9 +157,15 @@ class KeyApp(BaseApp):
         In addition to setting up the state of the display and pixels, instruct
         the app_pad to track double-taps for any keys with a double-tap command.
 
+        Also add a timer to disable the pixels after a certain period of
+        inactivity.
+
         """
         super().on_focus()
         self.app_pad.track_double_taps(self.double_tap_key_indices)
+        self.app_pad.add_timer(
+            TIMER_DISABLE_PIXELS, DISABLE_PIXELS_TIMEOUT, self.disable_pixels
+        )
 
     def display_on_focus(self):
         """Set up the display when an app is focused.
@@ -184,6 +193,25 @@ class KeyApp(BaseApp):
                 key.pixel = key.color()
             except AttributeError:
                 self.macropad.pixels[i] = 0
+        self.put_setting(PIXELS_DISABLED_SETTING, False)
+
+    def disable_pixels(self):
+        """Turn off all the pixels on the keypad."""
+        for i in range(len(self.keys)):
+            self.app_pad.pixels[i] = 0
+        self.app_pad.pixels.show()
+        self.put_setting(PIXELS_DISABLED_SETTING, True)
+
+    def process_event(
+        self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
+    ):
+        if self.get_setting(PIXELS_DISABLED_SETTING):
+            self.pixels_on_focus()
+            self.app_pad.pixels.show()
+        self.app_pad.add_timer(
+            TIMER_DISABLE_PIXELS, DISABLE_PIXELS_TIMEOUT, self.disable_pixels
+        )
+        return super().process_event(event)
 
     def key_event(self, event: KeyEvent):
         """Process a key event.

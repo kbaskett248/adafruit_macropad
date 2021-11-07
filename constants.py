@@ -18,6 +18,16 @@ OS_MAC = "MAC"
 OS_WINDOWS = "WIN"
 OS_LINUX = "LIN"
 
+# Setting name for the pixels disabled setting
+PIXELS_DISABLED_SETTING = "pixels disabled"
+
+# Timeout after which the pixels will be disabled
+ONE_MINUTE = 60
+DISABLE_PIXELS_TIMEOUT = 20 * ONE_MINUTE
+
+# Timer ID for the disabled pixels timer
+TIMER_DISABLE_PIXELS = "disable pixels timer"
+
 # Defines a color scheme for the Macropad. You can reference these constants
 # for pixel colors to define a consistent color scheme and make it easy to
 # update the colors

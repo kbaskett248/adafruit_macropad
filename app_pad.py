@@ -174,6 +174,7 @@ class AppPad:
 
     def __init__(self):
         self.macropad = self._init_macropad()
+        self.pixels = self.macropad.pixels
 
         self._last_encoder_position = self.encoder_position
         self._last_encoder_switch = self.encoder_switch
