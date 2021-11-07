@@ -53,110 +53,61 @@ class AppSwitcherApp(KeyApp):
     key_3 = MacroKey(
         "Term",
         COLOR_TERMINAL,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.FOUR)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.SHIFT),
-            Press(Keycode.ENTER),
-        ),
+        Press(Keycode.WINDOWS, Keycode.FOUR),
+        mac_command=Press(Keycode.COMMAND, Keycode.SHIFT, Keycode.ENTER),
     )
     key_4 = MacroKey(
         "Files",
         COLOR_FILES,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.TWO)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.CONTROL),
-            Press(Keycode.OPTION),
-            Press(Keycode.F),
-        ),
+        Press(Keycode.WINDOWS, Keycode.TWO),
+        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.F),
     )
     key_5 = MacroKey(
         "Spotify",
         COLOR_SPOTIFY,
-        Sequence(
-            Press(Keycode.WINDOWS),
-            Press(Keycode.SEVEN),
-        ),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.OPTION),
-            Press(Keycode.CONTROL),
-            Press(Keycode.S),
-        ),
+        Press(Keycode.WINDOWS, Keycode.SEVEN),
+        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S),
     )
 
     key_6 = MacroKey(
         "PyCharm",
         COLOR_PYCHARM,
-        Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.OPTION),
-            Press(Keycode.CONTROL),
-            Press(Keycode.H),
-        ),
+        Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.H),
         windows_command=None,
     )
     key_7 = MacroKey(
         "Code",
         COLOR_CODE,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.FIVE)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.OPTION),
-            Press(Keycode.CONTROL),
-            Press(Keycode.V),
-        ),
+        Press(Keycode.WINDOWS, Keycode.FIVE),
+        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.V),
     )
     key_8 = MacroKey(
         "Merge",
         COLOR_SUBLIME_MERGE,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.SIX)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.OPTION),
-            Press(Keycode.CONTROL),
-            Press(Keycode.M),
-        ),
+        Press(Keycode.WINDOWS, Keycode.SIX),
+        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.M),
     )
 
     key_9 = MacroKey(
         "Chrome",
         COLOR_CHROME,
         Sequence(
-            Press(Keycode.WINDOWS),
-            Press(Keycode.ONE),
+            Press(Keycode.WINDOWS, Keycode.ONE),
             Wait(0.1),
-            Release(Keycode.ONE),
-            Release(Keycode.WINDOWS),
+            Release(Keycode.ONE, Keycode.WINDOWS),
         ),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.CONTROL),
-            Press(Keycode.OPTION),
-            Press(Keycode.C),
-        ),
+        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C),
     )
     key_10 = MacroKey(
         "Notion",
         COLOR_NOTION,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.THREE)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.CONTROL),
-            Press(Keycode.OPTION),
-            Press(Keycode.N),
-        ),
+        Press(Keycode.WINDOWS, Keycode.THREE),
+        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.N),
     )
     key_11 = MacroKey(
         "Slack",
         COLOR_SLACK,
-        Sequence(
-            Press(Keycode.COMMAND),
-            Press(Keycode.CONTROL),
-            Press(Keycode.OPTION),
-            Press(Keycode.L),
-        ),
+        Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.L),
         windows_command=None,
     )
 
@@ -180,15 +131,11 @@ class AppSwitcherApp(KeyApp):
             "Spotify",
             COLOR_SPOTIFY,
             Sequence(
-                Press(Keycode.WINDOWS),
-                Press(Keycode.SEVEN),
+                Press(Keycode.WINDOWS, Keycode.SEVEN),
                 SwitchAppCommand(spotify_app),
             ),
             mac_command=Sequence(
-                Press(Keycode.COMMAND),
-                Press(Keycode.OPTION),
-                Press(Keycode.CONTROL),
-                Press(Keycode.S),
+                Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S),
                 SwitchAppCommand(spotify_app),
             ),
         )
@@ -197,18 +144,13 @@ class AppSwitcherApp(KeyApp):
             "Chrome",
             COLOR_CHROME,
             Sequence(
-                Press(Keycode.WINDOWS),
-                Press(Keycode.ONE),
+                Press(Keycode.WINDOWS, Keycode.ONE),
                 Wait(0.1),
-                Release(Keycode.ONE),
-                Release(Keycode.WINDOWS),
+                Release(Keycode.ONE, Keycode.WINDOWS),
                 SwitchAppCommand(chrome_app),
             ),
             mac_command=Sequence(
-                Press(Keycode.COMMAND),
-                Press(Keycode.CONTROL),
-                Press(Keycode.OPTION),
-                Press(Keycode.C),
+                Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C),
                 SwitchAppCommand(chrome_app),
             ),
         )

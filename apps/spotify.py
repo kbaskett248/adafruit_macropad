@@ -27,14 +27,10 @@ class SpotifyApp(KeyApp):
         "Exit",
         COLOR_CLOSE,
         Sequence(
-            Press(Keycode.CONTROL),
-            Press(Keycode.SHIFT),
-            Press(Keycode.Q),
+            Press(Keycode.CONTROL, Keycode.SHIFT, Keycode.Q),
             PreviousAppCommand(),
         ),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND), Press(Keycode.Q), PreviousAppCommand()
-        ),
+        mac_command=Sequence(Press(Keycode.COMMAND, Keycode.Q), PreviousAppCommand()),
     )
     key_2 = Key(
         "Back",
@@ -46,37 +42,37 @@ class SpotifyApp(KeyApp):
     key_3 = MacroKey(
         "Search",
         COLOR_SPOTIFY,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.L)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.L)),
+        Press(Keycode.CONTROL, Keycode.L),
+        mac_command=Press(Keycode.COMMAND, Keycode.L),
     )
     key_4 = MacroKey(
         "Shuffle",
         COLOR_2,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.S)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.S)),
+        Press(Keycode.CONTROL, Keycode.S),
+        mac_command=Press(Keycode.COMMAND, Keycode.S),
     )
     key_5 = MacroKey(
         "Filter",
         COLOR_SPOTIFY,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.F)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.F)),
+        Press(Keycode.CONTROL, Keycode.F),
+        mac_command=Press(Keycode.COMMAND, Keycode.F),
     )
 
     key_6 = MacroKey(
         "<-",
         COLOR_MEDIA,
-        Sequence(Press(Keycode.SHIFT), Press(Keycode.LEFT_ARROW)),
+        Press(Keycode.SHIFT, Keycode.LEFT_ARROW),
     )
     key_7 = MacroKey(
         "Repeat",
         COLOR_2,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.R)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.R)),
+        Press(Keycode.CONTROL, Keycode.R),
+        mac_command=Press(Keycode.COMMAND, Keycode.R),
     )
     key_8 = MacroKey(
         "->",
         COLOR_MEDIA,
-        Sequence(Press(Keycode.SHIFT), Press(Keycode.RIGHT_ARROW)),
+        Press(Keycode.SHIFT, Keycode.RIGHT_ARROW),
     )
 
     # Fourth row
@@ -86,10 +82,10 @@ class SpotifyApp(KeyApp):
 
     encoder_button = Media(ConsumerControlCode.MUTE)
     encoder_increase = MacroCommand(
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.UP_ARROW)),
-        **{OS_MAC: Sequence(Press(Keycode.COMMAND), Press(Keycode.UP_ARROW))}
+        Press(Keycode.CONTROL, Keycode.UP_ARROW),
+        **{OS_MAC: Press(Keycode.COMMAND, Keycode.UP_ARROW)}
     )
     encoder_decrease = MacroCommand(
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.DOWN_ARROW)),
-        **{OS_MAC: Sequence(Press(Keycode.COMMAND), Press(Keycode.DOWN_ARROW))}
+        Press(Keycode.CONTROL, Keycode.DOWN_ARROW),
+        **{OS_MAC: Press(Keycode.COMMAND, Keycode.DOWN_ARROW)}
     )

@@ -1,7 +1,7 @@
 """App with macros for managing windows and virtual desktops."""
 
 from apps.key import KeyApp, MacroKey
-from commands import Keycode, Press, PreviousAppCommand, Sequence
+from commands import Keycode, Press, PreviousAppCommand
 from constants import COLOR_2, COLOR_3, COLOR_WINMAN
 
 
@@ -11,117 +11,77 @@ class WindowManagementApp(KeyApp):
     key_0 = MacroKey(
         "<-Desk",
         COLOR_3,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.LEFT_ARROW)
-        ),
-        mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.LEFT_ARROW)),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.LEFT_ARROW),
+        mac_command=Press(Keycode.CONTROL, Keycode.LEFT_ARROW),
     )
     key_1 = MacroKey(
         "View",
         COLOR_2,
-        Sequence(Press(Keycode.WINDOWS), Press(Keycode.TAB)),
-        mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.UP_ARROW)),
+        Press(Keycode.WINDOWS, Keycode.TAB),
+        mac_command=Press(Keycode.CONTROL, Keycode.UP_ARROW),
     )
     key_2 = MacroKey(
         "Desk->",
         COLOR_3,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.RIGHT_ARROW)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.RIGHT_ARROW),
         double_tap_command=PreviousAppCommand(),
-        mac_command=Sequence(Press(Keycode.CONTROL), Press(Keycode.RIGHT_ARROW)),
+        mac_command=Press(Keycode.CONTROL, Keycode.RIGHT_ARROW),
     )
 
     key_3 = MacroKey(
         "TL",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_SEVEN)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_SEVEN)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_SEVEN),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_SEVEN),
     )
     key_4 = MacroKey(
         "Top",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_EIGHT)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_EIGHT)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_EIGHT),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_EIGHT),
     )
     key_5 = MacroKey(
         "TR",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_NINE)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_NINE)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_NINE),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_NINE),
     )
 
     key_6 = MacroKey(
         "Left",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_FOUR)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_FOUR)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_FOUR),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_FOUR),
     )
     key_7 = MacroKey(
         "Max",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_FIVE)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_FIVE)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_FIVE),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_FIVE),
     )
     key_8 = MacroKey(
         "Right",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_SIX)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_SIX)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_SIX),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_SIX),
     )
 
     key_9 = MacroKey(
         "BL",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_ONE)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_ONE)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_ONE),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_ONE),
     )
     key_10 = MacroKey(
         "Bottom",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_TWO)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_TWO)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_TWO),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_TWO),
     )
     key_11 = MacroKey(
         "BR",
         COLOR_WINMAN,
-        Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.WINDOWS), Press(Keycode.KEYPAD_THREE)
-        ),
-        mac_command=Sequence(
-            Press(Keycode.CONTROL), Press(Keycode.COMMAND), Press(Keycode.KEYPAD_THREE)
-        ),
+        Press(Keycode.CONTROL, Keycode.WINDOWS, Keycode.KEYPAD_THREE),
+        mac_command=Press(Keycode.CONTROL, Keycode.COMMAND, Keycode.KEYPAD_THREE),
     )
     encoder_button = PreviousAppCommand()

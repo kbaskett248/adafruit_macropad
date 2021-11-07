@@ -81,45 +81,53 @@ class Sequence(Command):
 class Press(Command):
     """Press the given keycode. Release it to undo."""
 
-    def __init__(self, keycode: int):
+    def __init__(self, *keycodes: int):
         """Initialize the Press command.
 
         Args:
-            keycode (int): The Keycode of the key to press.
+            keycodes (Tuple[int, ...]): A tuple of Keycodes to press.
         """
         super().__init__()
-        self.keycode = keycode
+        self.keycodes = keycodes
 
     def execute(self, app: BaseApp):
-        """Send a keyboard press of the given keycode."""
-        app.macropad.keyboard.press(self.keycode)
+        """Send a keyboard press of the given keycodes."""
+        for keycode in self.keycodes:
+            app.macropad.keyboard.press(keycode)
 
     def undo(self, app: BaseApp):
-        """Send a keyboard release of the given keycode."""
-        app.macropad.keyboard.release(self.keycode)
+        """Send a keyboard release of the given keycodes."""
+        for keycode in reversed(self.keycodes):
+            app.macropad.keyboard.release(keycode)
 
     def __str__(self):
-        return "{0}({1})".format(self.__class__.__name__, self.keycode)
+        return "{0}({1})".format(
+            self.__class__.__name__,
+            ", ".join(map(str, self.keycodes)),
+        )
 
 
 class Release(Command):
     """Release the given keycode."""
 
-    def __init__(self, keycode: int):
+    def __init__(self, *keycodes: int):
         """Initialize the Release command.
 
         Args:
-            keycode (int): A Keycode value for the key to release.
+            keycodes (Tuple[int, ...]): A tuple of Keycodes to release.
         """
         super().__init__()
-        self.keycode = keycode
+        self.keycodes = keycodes
 
     def execute(self, app: BaseApp):
         """Send a keyboard release of the given keycode."""
-        app.macropad.keyboard.release(self.keycode)
+        for keycode in self.keycodes:
+            app.macropad.keyboard.release(keycode)
 
     def __str__(self):
-        return "{0}({1})".format(self.__class__.__name__, self.keycode)
+        return "{0}({1})".format(
+            self.__class__.__name__, ", ".join(map(str, self.keycodes))
+        )
 
 
 class Wait(Command):

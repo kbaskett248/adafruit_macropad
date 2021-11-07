@@ -37,96 +37,76 @@ class ChromeApp(KeyApp):
     key_3 = MacroKey(
         "Bkmk",
         COLOR_3,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.D)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Text("d")),
+        Press(Keycode.CONTROL, Keycode.D),
+        mac_command=Press(Keycode.COMMAND, Keycode.D),
     )
     key_4 = MacroKey(
         "Close",
         COLOR_CLOSE,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.W)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Text("w")),
+        Press(Keycode.CONTROL, Keycode.W),
+        mac_command=Press(Keycode.COMMAND, Keycode.W),
     )
 
     # Third row
     key_6 = MacroKey(
         "<-",
         COLOR_7,
-        Sequence(Press(Keycode.ALT), Press(Keycode.LEFT_ARROW)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.LEFT_ARROW)),
+        Press(Keycode.ALT, Keycode.LEFT_ARROW),
+        mac_command=Press(Keycode.COMMAND, Keycode.LEFT_ARROW),
     )
     key_7 = MacroKey(
         "Address",
         COLOR_9,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.L)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.L)),
+        Press(Keycode.CONTROL, Keycode.L),
+        mac_command=Press(Keycode.COMMAND, Keycode.L),
     )
     key_8 = MacroKey(
         "->",
         COLOR_7,
-        Sequence(Press(Keycode.ALT), Press(Keycode.RIGHT_ARROW)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Press(Keycode.RIGHT_ARROW)),
+        Press(Keycode.ALT, Keycode.RIGHT_ARROW),
+        mac_command=Press(Keycode.COMMAND, Keycode.RIGHT_ARROW),
     )
 
     # Fourth row
     key_9 = MacroKey(
         "Menu",
         COLOR_CHROME,
-        Sequence(Press(Keycode.ALT), Press(Keycode.E)),
+        Press(Keycode.ALT, Keycode.E),
         mac_command=None,
     )
     key_10 = MacroKey(
         "Book",
         COLOR_CHROME,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.SHIFT), Press(Keycode.O)),
-        mac_command=Sequence(
-            Press(Keycode.COMMAND), Press(Keycode.OPTION), Press(Keycode.B)
-        ),
+        Press(Keycode.CONTROL, Keycode.SHIFT, Keycode.O),
+        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.B),
     )
     key_11 = MacroKey(
         "Hist",
         COLOR_CHROME,
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.H)),
-        mac_command=Sequence(Press(Keycode.COMMAND), Text("y")),
+        Press(Keycode.CONTROL, Keycode.H),
+        mac_command=Press(Keycode.COMMAND, Keycode.Y),
     )
 
     encoder_button = MacroCommand(
         Sequence(
-            Press(Keycode.CONTROL),
-            Press(Keycode.SHIFT),
-            Press(Keycode.A),
+            Press(Keycode.CONTROL, Keycode.SHIFT, Keycode.A),
             Wait(0.1),
-            Release(Keycode.A),
-            Release(Keycode.SHIFT),
-            Release(Keycode.CONTROL),
+            Release(Keycode.A, Keycode.SHIFT, Keycode.CONTROL),
         ),
         **{
             OS_MAC: Sequence(
-                Press(Keycode.COMMAND),
-                Press(Keycode.SHIFT),
-                Press(Keycode.A),
+                Press(Keycode.COMMAND, Keycode.SHIFT, Keycode.A),
                 Wait(0.1),
-                Release(Keycode.A),
-                Release(Keycode.SHIFT),
-                Release(Keycode.COMMAND),
+                Release(Keycode.A, Keycode.SHIFT, Keycode.COMMAND),
             )
         },
     )
 
     encoder_decrease = MacroCommand(
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.PAGE_UP)),
-        **{
-            OS_MAC: Sequence(
-                Press(Keycode.COMMAND), Press(Keycode.OPTION), Press(Keycode.LEFT_ARROW)
-            )
-        },
+        Press(Keycode.CONTROL, Keycode.PAGE_UP),
+        **{OS_MAC: Press(Keycode.COMMAND, Keycode.OPTION, Keycode.LEFT_ARROW)},
     )
     encoder_increase = MacroCommand(
-        Sequence(Press(Keycode.CONTROL), Press(Keycode.PAGE_DOWN)),
-        **{
-            OS_MAC: Sequence(
-                Press(Keycode.COMMAND),
-                Press(Keycode.OPTION),
-                Press(Keycode.RIGHT_ARROW),
-            )
-        },
+        Press(Keycode.CONTROL, Keycode.PAGE_DOWN),
+        **{OS_MAC: Press(Keycode.COMMAND, Keycode.OPTION, Keycode.RIGHT_ARROW)},
     )
