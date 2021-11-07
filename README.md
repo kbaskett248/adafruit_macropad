@@ -12,6 +12,7 @@ I wanted to define more complex configurations than what was easily possible wit
 * Rather than switching macro sets with the encoder, you may choose to switch macro sets with keys. This allows you to define menu-based switchers, making it much faster to get to the desired set. It also frees up the rotary encoder for use as a volume knob, scrubber, or anything else.
 * Each key can define an OS-specific variant. This allows you to switch up which keystrokes are sent depending on the OS you've selected.
 * Double-tap support so you can define a second command for each key, giving you 24 possible commands per macro set.
+* Basic timers that run callbacks. This can be used for many things, including disabling the key LEDs after a period of inactivity.
 * An App-based model where the App is responsible for control flow. This allows including other types of Apps with completely different behavior, like games, alongside your macros.
 
 ## Using
