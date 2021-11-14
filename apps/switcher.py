@@ -12,6 +12,7 @@ from apps.spotify import SpotifyApp
 from commands import (
     ConsumerControlCode,
     Keycode,
+    MacroCommand,
     Media,
     Press,
     PreviousAppCommand,
@@ -31,6 +32,7 @@ from constants import (
     COLOR_SPOTIFY,
     COLOR_SUBLIME_MERGE,
     COLOR_TERMINAL,
+    OS_MAC,
 )
 
 
@@ -130,13 +132,23 @@ class AppSwitcherApp(KeyApp):
         cls.key_5 = MacroKey(
             "Spotify",
             COLOR_SPOTIFY,
-            Sequence(
-                Press(Keycode.WINDOWS, Keycode.SEVEN),
-                SwitchAppCommand(spotify_app),
+            Press(Keycode.WINDOWS, Keycode.SEVEN),
+            mac_command=Press(
+                Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S
             ),
-            mac_command=Sequence(
-                Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S),
-                SwitchAppCommand(spotify_app),
+            double_tap_command=MacroCommand(
+                Sequence(
+                    Press(Keycode.WINDOWS, Keycode.SEVEN),
+                    SwitchAppCommand(spotify_app),
+                ),
+                **{
+                    OS_MAC: Sequence(
+                        Press(
+                            Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S
+                        ),
+                        SwitchAppCommand(spotify_app),
+                    ),
+                }
             ),
         )
 
@@ -147,10 +159,24 @@ class AppSwitcherApp(KeyApp):
                 Press(Keycode.WINDOWS, Keycode.ONE),
                 Wait(0.1),
                 Release(Keycode.ONE, Keycode.WINDOWS),
-                SwitchAppCommand(chrome_app),
             ),
-            mac_command=Sequence(
-                Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C),
-                SwitchAppCommand(chrome_app),
+            mac_command=Press(
+                Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C
+            ),
+            double_tap_command=MacroCommand(
+                Sequence(
+                    Press(Keycode.WINDOWS, Keycode.ONE),
+                    Wait(0.1),
+                    Release(Keycode.ONE, Keycode.WINDOWS),
+                    SwitchAppCommand(chrome_app),
+                ),
+                **{
+                    OS_MAC: Sequence(
+                        Press(
+                            Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C
+                        ),
+                        SwitchAppCommand(chrome_app),
+                    ),
+                }
             ),
         )
