@@ -26,6 +26,25 @@ class ChromeApp(KeyApp):
     name = "Chrome"
 
     # First row
+    key_0 = MacroKey(
+        "Exit",
+        COLOR_CLOSE,
+        Sequence(
+            Press(Keycode.ALT, Keycode.F4),
+            PreviousAppCommand(),
+        ),
+        mac_command=Sequence(Press(Keycode.COMMAND, Keycode.Q), PreviousAppCommand()),
+    )
+    key_1 = MacroKey(
+        "Switch",
+        COLOR_CHROME,
+        Sequence(
+            Press(Keycode.WINDOWS, Keycode.ONE),
+            Wait(0.1),
+            Release(Keycode.ONE, Keycode.WINDOWS),
+        ),
+        mac_command=Press(Keycode.COMMAND, Keycode.CONTROL, Keycode.OPTION, Keycode.C),
+    )
     key_2 = MacroKey(
         "Back",
         COLOR_BACK,

@@ -32,6 +32,12 @@ class SpotifyApp(KeyApp):
         ),
         mac_command=Sequence(Press(Keycode.COMMAND, Keycode.Q), PreviousAppCommand()),
     )
+    key_1 = MacroKey(
+        "Switch",
+        COLOR_SPOTIFY,
+        Press(Keycode.WINDOWS, Keycode.SEVEN),
+        mac_command=Press(Keycode.COMMAND, Keycode.OPTION, Keycode.CONTROL, Keycode.S),
+    )
     key_2 = Key(
         "Back",
         COLOR_BACK,
