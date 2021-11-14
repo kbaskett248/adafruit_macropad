@@ -474,7 +474,7 @@ class Key:
 
         """
         if self.double_tap_command:
-            self.double_tap_release(app)
+            self.double_tap_command.undo(app)
 
     def bind(self, app: KeyApp, key_number: int) -> BoundKey:
         """Bind this Key to a KeyApp and return a BoundKey instance.
