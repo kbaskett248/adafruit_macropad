@@ -1,7 +1,7 @@
-# MACROPAD Hotkeys example: Universal Numpad
+# MACROPAD Hotkeys example: Function keys
 
 from apps.key import Key, KeyApp
-from commands import Keycode, Press, PreviousAppCommand
+from commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand
 from constants import COLOR_FUNC
 
 
@@ -30,4 +30,7 @@ class FuncKeysApp(KeyApp):
     key_10 = Key("F11", COLOR_FUNC, Press(Keycode.F11))
     key_11 = Key("F12", COLOR_FUNC, Press(Keycode.F12))
 
-    encoder_button = PreviousAppCommand()
+    encoder_button = Media(ConsumerControlCode.MUTE)
+
+    encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
+    encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)

@@ -26,6 +26,9 @@ class NumpadApp(KeyApp):
     # Fourth row
     key_9 = Key(".", COLOR_8, Text("."))
     key_10 = Key("0", COLOR_NUMPAD, Text("0"))
-    key_11 = Key("Entr", COLOR_WARNING, Press(Keycode.KEYPAD_ENTER))
+    key_11 = Key("Enter", COLOR_WARNING, Press(Keycode.KEYPAD_ENTER))
 
-    encoder_button = PreviousAppCommand()
+    encoder_button = Media(ConsumerControlCode.MUTE)
+
+    encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
+    encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
