@@ -323,6 +323,7 @@ class AppPad:
             return result
         except self._double_tap_buffer.DoubleTapDetected:
             self.delete_timer(self.DOUBLE_TAP_TIMER_ID)
+            self._double_tap_buffer.drain_buffer()
             return (
                 DoubleTapEvent(number=event.number, pressed=True),
                 DoubleTapEvent(number=event.number, pressed=False),
