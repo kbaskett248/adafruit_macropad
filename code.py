@@ -6,14 +6,14 @@ features, including double-tap support.
 """
 
 from apps.home import HomeApp
-from app_pad import AppPad
-from commands import AppSwitchException
-from constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
+from utils.app_pad import AppPad
+from utils.commands import AppSwitchException
+from utils.constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
 
 
 app_settings = {
     OS_SETTING: OS_MAC,
-    PREVIOUS_APP_SETTING: [],
+    PREVIOUS_APP_SETTING: [], 
 }
 
 app_pad = AppPad()

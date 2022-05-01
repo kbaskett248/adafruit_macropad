@@ -8,20 +8,15 @@ try:
 except ImportError:
     pass
 
-from apps.func import FuncKeysApp
-from apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey
-from apps.nav import NavApp
-from apps.numpad import NumpadApp
-from app_pad import AppPad
-from apps.switcher import AppSwitcherApp
-from apps.window import WindowManagementApp
-from commands import (
+from utils.apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey
+from utils.app_pad import AppPad
+from utils.commands import (
     ConsumerControlCode,
-    Media,
+    Media, 
     PreviousAppCommand,
     SwitchAppCommand,
 )
-from constants import (
+from utils.constants import (
     COLOR_APPS,
     COLOR_FUNC,
     COLOR_LINUX,
@@ -36,6 +31,11 @@ from constants import (
     OS_MAC,
     OS_WINDOWS,
 )
+from apps.func import FuncKeysApp
+from apps.nav import NavApp
+from apps.numpad import NumpadApp
+from apps.switcher import AppSwitcherApp
+from apps.window import WindowManagementApp
 
 
 class MacroSettingsApp(KeyApp):

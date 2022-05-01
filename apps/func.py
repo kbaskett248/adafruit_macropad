@@ -1,8 +1,8 @@
 # MACROPAD Hotkeys example: Function keys
 
-from apps.key import Key, KeyApp
-from commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand
-from constants import COLOR_FUNC
+from utils.apps.key import Key, KeyApp
+from utils.commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand
+from utils.constants import COLOR_FUNC
 
 
 class FuncKeysApp(KeyApp):

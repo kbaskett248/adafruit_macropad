@@ -1,7 +1,7 @@
 """Hotkeys for Spotify."""
 
-from apps.key import Key, KeyApp, MacroKey
-from commands import (
+from utils.apps.key import Key, KeyApp, MacroKey
+from utils.commands import (
     ConsumerControlCode,
     Keycode,
     MacroCommand,
@@ -10,7 +10,7 @@ from commands import (
     PreviousAppCommand,
     Sequence,
 )
-from constants import (
+from utils.constants import (
     COLOR_2,
     COLOR_BACK,
     COLOR_CLOSE,

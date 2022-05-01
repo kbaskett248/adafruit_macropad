@@ -1,7 +1,7 @@
 # MACROPAD Hotkeys example: Firefox web browser for Linux
 
-from apps.key import KeyApp, MacroKey
-from commands import (
+from utils.apps.key import KeyApp, MacroKey
+from utils.commands import (
     Keycode,
     MacroCommand,
     Press,
@@ -11,7 +11,7 @@ from commands import (
     Text,
     Wait,
 )
-from constants import (
+from utils.constants import (
     COLOR_3,
     COLOR_7,
     COLOR_9,
