@@ -204,7 +204,7 @@ class AppPad:
                                  an Iterable of Events.
         """
         execute_time = time.monotonic() + delay
-        print(f"Added timer {id_}: {execute_time}")
+        # print(f"Added timer {id_}: {execute_time}")
         self._timers[id_] = (execute_time, callback)
 
     def delete_timer(self, id_: str):
@@ -263,7 +263,15 @@ class AppPad:
         self,
     ) -> Iterable[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]]:
         while True:
+            self.main_loop_hook()
             yield from self.check_events()
+
+    def main_loop_hook(self):
+        """Run the main loop hook.
+
+        This is called every time the main loop runs.
+        """
+        pass
 
     def check_events(
         self,
@@ -342,7 +350,7 @@ class AppPad:
         Args:
             indices (Iterable[int]): The key numbers to track.
         """
-        print("Tracking double taps: ", indices)
+        # print("Tracking double taps: ", indices)
         if indices:
             self._double_tap_buffer = DoubleTapBuffer(indices)
         else:

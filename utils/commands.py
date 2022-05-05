@@ -9,6 +9,11 @@ is released.
 
 import time
 
+try:
+    from typing import Callable
+except ImportError:
+    pass
+
 # Expose these libraries to those that use commands
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
@@ -105,6 +110,28 @@ class Press(Command):
             self.__class__.__name__,
             ", ".join(map(str, self.keycodes)),
         )
+
+
+class Callback(Command):
+    """A command that calls a callback function."""
+
+    def __init__(self, callback: Callable, *args, **kwargs):
+        """Initialize the Callback command.
+
+        Args:
+            callback: The callback function to call.
+        """
+        super().__init__()
+        self.callback = callback
+        self.args = args
+        self.kwargs = kwargs
+
+    def execute(self, app: BaseApp):
+        """Call the callback function."""
+        self.callback(app, *self.args, **self.kwargs)
+
+    def undo(self, app: BaseApp):
+        pass
 
 
 class Release(Command):
@@ -308,15 +335,7 @@ class PlayFile(Command):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
 
 
-class AppSwitchException(Exception):
-    """Raise this exception to switch the currently running app."""
-
-    def __init__(self, app: BaseApp):
-        super().__init__()
-        self.app = app
-
-
-class SwitchAppCommand(Command):
+class SwitchAppCommand(Command): 
     """A command to switch to a new App."""
 
     def __init__(self, app: BaseApp):
@@ -338,7 +357,7 @@ class SwitchAppCommand(Command):
 
 class PreviousAppCommand(Command):
     """A command to switch back to the previous app."""
-
+ 
     def execute(self, app: BaseApp):
         """Switch back to the last App in the App stack.
 
@@ -424,3 +443,18 @@ class SettingsDependentCommand(Command):
 class MacroCommand(SettingsDependentCommand):
     def __init__(self, default_command: Command, **override_commands: Command):
         super().__init__(OS_SETTING, default_command, **override_commands)
+
+
+class AppSwitchException(Exception):
+    """Raise this exception to switch the currently running app."""
+
+    def __init__(self, app: BaseApp):
+        super().__init__()
+        self.app = app
+
+
+class RedrawAppException(Exception):
+    """Raise this exception to redraw the current app."""
+
+    def __init__(self):
+        super().__init__()
