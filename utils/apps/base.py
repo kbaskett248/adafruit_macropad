@@ -14,12 +14,18 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
-from utils.app_pad import AppPad, DoubleTapEvent, EncoderEvent, EncoderButtonEvent, KeyEvent
+from utils.app_pad import (
+    AppPad,
+    DoubleTapEvent,
+    EncoderEvent,
+    EncoderButtonEvent,
+    KeyEvent,
+)
 from utils.constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 
 
 def init_display_group_base_app(
-    display_width: int, display_height: int 
+    display_width: int, display_height: int
 ) -> displayio.Group:
     """Set up a displayio group with a single label."""
     group = displayio.Group()

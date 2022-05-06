@@ -9,7 +9,7 @@ import sys
 import logging
 import subprocess
 from datetime import datetime
-from typing import List 
+from typing import List
 
 import serial
 from adafruit_board_toolkit import circuitpython_serial
@@ -51,10 +51,11 @@ def send_data_to_serial_port(data, ports: List[str]):
         except Exception as e:
             logger.error(f"{e}")
 
+
 if __name__ == "__main__":
     if len(sys.argv) > 1:
-        current_active_window = sys.argv[1].split('.')[0]
-    else: 
+        current_active_window = sys.argv[1].split(".")[0]
+    else:
         current_active_window = current_active_window_process_name()
 
     data_to_send = {

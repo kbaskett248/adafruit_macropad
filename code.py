@@ -20,34 +20,36 @@ from utils.commands import AppSwitchException
 from utils.constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
 from utils.config import conf
 
+
 class SettingsAppPad(AppPad):
-    def main_loop_hook(self): 
+    def main_loop_hook(self):
         if conf.reload_config():
             raise AppSwitchException(None)
 
+
 APP_PAD = SettingsAppPad()
 
+
 def get_settings():
-    app_settings = {
-        OS_SETTING: OS_MAC,
-        PREVIOUS_APP_SETTING: []
-    }
+    app_settings = {OS_SETTING: OS_MAC, PREVIOUS_APP_SETTING: []}
 
     for k, v in conf.__dict__.items():
         app_settings[k] = v
-    
+
     return app_settings
+
 
 def get_app():
     if process := get_settings().get("host", {}).get("process"):
-        print(process.lower(), SELECT_APPS.get(process.lower(), DEFAULT_APP) )
-        return SELECT_APPS.get(process.lower(), DEFAULT_APP) 
+        print(process.lower(), SELECT_APPS.get(process.lower(), DEFAULT_APP))
+        return SELECT_APPS.get(process.lower(), DEFAULT_APP)
     return DEFAULT_APP
 
+
 current_app = get_app()(APP_PAD, get_settings())
- 
+
 while True:
-    try: 
+    try:
         print("app = ", current_app)
         current_app.run()
     except AppSwitchException as err:

@@ -12,7 +12,7 @@ from utils.apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey
 from utils.app_pad import AppPad
 from utils.commands import (
     ConsumerControlCode,
-    Media, 
+    Media,
     PreviousAppCommand,
     SwitchAppCommand,
 )

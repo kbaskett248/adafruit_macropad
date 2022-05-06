@@ -14,7 +14,7 @@ from utils.commands import (
     Media,
     Press,
     PreviousAppCommand,
-    Release, 
+    Release,
     Sequence,
     SwitchAppCommand,
     Wait,

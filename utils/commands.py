@@ -335,7 +335,7 @@ class PlayFile(Command):
         return "{0}({1})".format(self.__class__.__name__, self.file_)
 
 
-class SwitchAppCommand(Command): 
+class SwitchAppCommand(Command):
     """A command to switch to a new App."""
 
     def __init__(self, app: BaseApp):
@@ -357,7 +357,7 @@ class SwitchAppCommand(Command):
 
 class PreviousAppCommand(Command):
     """A command to switch back to the previous app."""
- 
+
     def execute(self, app: BaseApp):
         """Switch back to the last App in the App stack.
 

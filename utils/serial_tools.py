@@ -10,7 +10,7 @@ from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
 
 keyboard = Keyboard(devices)
 keyboard_layout = KeyboardLayoutUS(keyboard)
- 
+
 
 def get_serial_data(is_json: bool = True):
     if usb_cdc.data.in_waiting > 0:
@@ -21,16 +21,17 @@ def get_serial_data(is_json: bool = True):
     return {}
 
 
-def trigger_serial_script(): 
+def trigger_serial_script():
     keyboard.press(Keycode.F13)
-    keyboard.release_all() 
+    keyboard.release_all()
 
 
 def clear_serial():
     while supervisor.runtime.serial_bytes_available:
         input()
 
-def trigger_and_get(): 
-    trigger_serial_script() 
+
+def trigger_and_get():
+    trigger_serial_script()
     time.sleep(0.5)
-    return get_serial_data() 
+    return get_serial_data()

@@ -1,7 +1,13 @@
 # Nav cluster
 
 from utils.apps.key import Key, KeyApp, MacroKey
-from utils.commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand
+from utils.commands import (
+    ConsumerControlCode,
+    Keycode,
+    Media,
+    Press,
+    PreviousAppCommand,
+)
 from utils.constants import COLOR_2, COLOR_4, COLOR_8, COLOR_ALERT, COLOR_NAV
 
 

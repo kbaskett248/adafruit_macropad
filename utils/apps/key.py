@@ -14,8 +14,14 @@ from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 import displayio
 
-from utils.app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
-from utils.apps.base import BaseApp 
+from utils.app_pad import (
+    AppPad,
+    DoubleTapEvent,
+    EncoderButtonEvent,
+    EncoderEvent,
+    KeyEvent,
+)
+from utils.apps.base import BaseApp
 from utils.commands import Command
 from utils.constants import (
     DISABLE_PIXELS_TIMEOUT,
