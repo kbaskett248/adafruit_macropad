@@ -21,13 +21,6 @@ def get_settings():
     
     return app_settings
 
-class SettingsAppPad(AppPad):
-    def main_loop_hook(self):
-        if conf.reload_config():
-            raise AppSwitchException(None)
-
-app_pad = SettingsAppPad()
-
 def get_app():
     apps = {
         "code": VSCode
@@ -40,10 +33,18 @@ def get_app():
         return apps.get(process.lower(), PRIMARY_APP) 
     return PRIMARY_APP
 
+class SettingsAppPad(AppPad):
+    def main_loop_hook(self): 
+        if conf.reload_config():
+            raise AppSwitchException(None)
+
+app_pad = SettingsAppPad()
+
 current_app = get_app()(app_pad, get_settings())
  
 while True:
     try: 
+        print("app = ", current_app)
         current_app.run()
     except AppSwitchException as err:
         current_app = err.app if err.app else get_app()(app_pad, get_settings())

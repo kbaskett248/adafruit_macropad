@@ -1,7 +1,7 @@
 # MACROPAD Hotkeys example: Function keys
 
 from utils.apps.key import Key, KeyApp
-from utils.commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand, Sequence, Release, Text, SwitchAppCommand
+from utils.commands import ConsumerControlCode, Keycode, Media, Press, PreviousAppCommand, Sequence, Release, Text, SwitchAppCommand, Wait
 from utils.constants import COLOR_FUNC
 from utils.config import conf
 
@@ -58,7 +58,18 @@ class Work(KeyApp):
         self.key_2 = Key("@", COLOR_FUNC, Sequence(Text("some_email@somedomain.com")), Text("some_other_email@somedomain.com"))
         self.key_6 = Key("Code", COLOR_FUNC, get_shortcut("vscode"))
         self.key_3 = Key("Idea", COLOR_FUNC, get_shortcut("intellij"))
-        self.key_4 = Key("Chrome", COLOR_FUNC, get_shortcut("chrome"))
+        
+        branch = settings['host'].get("branch").split("_")[0] if settings['host'].get("branch") else None
+        self.key_5 = Key(branch, COLOR_FUNC, Sequence(
+            Press(Keycode.WINDOWS),
+            Text('r'),
+            Release(Keycode.WINDOWS),
+            Wait(0.2),
+            Text(f'https://globalrewards.atlassian.net/browse/{branch}'),
+            Press(Keycode.ENTER),
+            Release(Keycode.ENTER),
+        ))
+        # self.key_5 = Key(settings['host'].get("branch"), COLOR_FUNC, Sequence(Text("some_email@somedomain.com")), Text("some_other_email@somedomain.com"))
         self.key_10 = Key("Slack", COLOR_FUNC, get_shortcut("slack"))
         self.key_9 = Key("Postman", COLOR_FUNC, get_shortcut("postman"))
 
