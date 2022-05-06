@@ -5,10 +5,7 @@ It enables you to more easily create complex layouts and has other advanced
 features, including double-tap support.
 """
 try:
-    from apps_private.work import Work, VSCode
-
-    DEFAULT_APP = Work
-    SELECT_APPS = {"code": VSCode}
+    from apps_private.default import DEFAULT_APP, SELECT_APPS
 except Exception:
     from apps.home import HomeApp
 
