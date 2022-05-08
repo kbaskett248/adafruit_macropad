@@ -5,17 +5,15 @@ the key, and the command to execute for the key.
 """
 
 try:
-    from typing import Any, Dict, List, Set, Optional, Union
+    from typing import Any, Dict, List, Optional, Set, Union
 except ImportError:
     pass
 
+import displayio
 import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
-import displayio
-
 from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
-from apps.base import BaseApp
 from commands import Command
 from constants import (
     DISABLE_PIXELS_TIMEOUT,
@@ -29,6 +27,8 @@ from constants import (
     PIXELS_DISABLED_SETTING,
     TIMER_DISABLE_PIXELS,
 )
+
+from apps.base import BaseApp
 
 
 def init_display_group_macro_app(

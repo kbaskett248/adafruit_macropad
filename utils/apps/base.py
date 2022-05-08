@@ -17,8 +17,8 @@ from adafruit_display_text import label
 from utils.app_pad import (
     AppPad,
     DoubleTapEvent,
-    EncoderEvent,
     EncoderButtonEvent,
+    EncoderEvent,
     KeyEvent,
 )
 from utils.constants import DISPLAY_HEIGHT, DISPLAY_WIDTH

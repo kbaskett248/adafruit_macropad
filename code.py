@@ -47,7 +47,7 @@ current_app = get_app()(APP_PAD, get_settings())
 
 while True:
     try:
-        print("app = ", current_app)
+        print(f"Current App = {current_app}")
         current_app.run()
     except AppSwitchException as err:
         current_app = err.app if err.app else get_app()(APP_PAD, get_settings())
