@@ -13,8 +13,7 @@ import displayio
 import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
-
-from app_pad import AppPad, DoubleTapEvent, EncoderEvent, EncoderButtonEvent, KeyEvent
+from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
 from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 
 

@@ -5,8 +5,8 @@ defines the interface used by apps to run.
 
 # pylint: disable=import-error, unused-import, too-few-public-methods
 
-from collections import namedtuple
 import time
+from collections import namedtuple
 
 try:
     from typing import Callable, Iterable, List, Optional, Tuple, Union
@@ -14,7 +14,6 @@ except ImportError:
     pass
 
 from adafruit_macropad import MacroPad
-
 
 # Event indicating the Encoder Button was pressed or released.
 EncoderButtonEvent = namedtuple("EncoderButtonEvent", ("pressed",))

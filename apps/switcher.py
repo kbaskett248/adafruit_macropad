@@ -5,6 +5,8 @@ try:
 except ImportError:
     pass
 
+from apps.chrome import ChromeApp
+from apps.spotify import SpotifyApp
 from utils.app_pad import AppPad
 from utils.apps.key import Key, KeyApp, MacroKey
 from utils.commands import (
@@ -14,7 +16,7 @@ from utils.commands import (
     Media,
     Press,
     PreviousAppCommand,
-    Release, 
+    Release,
     Sequence,
     SwitchAppCommand,
     Wait,
@@ -32,8 +34,6 @@ from utils.constants import (
     COLOR_TERMINAL,
     OS_MAC,
 )
-from apps.spotify import SpotifyApp
-from apps.chrome import ChromeApp
 
 
 class AppSwitcherApp(KeyApp):
