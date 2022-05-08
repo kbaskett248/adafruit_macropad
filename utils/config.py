@@ -1,14 +1,7 @@
 from adafruit_hid.keycode import Keycode
-import usb_hid
-from adafruit_hid.keycode import Keycode
-import supervisor
-import time
-import json
-import rtc
 
-
-from utils.serial_tools import trigger_and_get, get_serial_data
-from utils.constants import OS_WINDOWS, OS_SETTING, PREVIOUS_APP_SETTING
+from utils.constants import OS_WINDOWS
+from utils.serial_tools import get_serial_data, trigger_and_get
 
 
 class Config:

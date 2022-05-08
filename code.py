@@ -14,8 +14,8 @@ except Exception:
 
 from utils.app_pad import AppPad
 from utils.commands import AppSwitchException
-from utils.constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
 from utils.config import conf
+from utils.constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
 
 
 class SettingsAppPad(AppPad):

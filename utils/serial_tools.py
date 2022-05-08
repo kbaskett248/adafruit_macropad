@@ -1,12 +1,12 @@
-import time
 import json
-import supervisor
+import time
 
+import supervisor
 import usb_cdc
-from usb_hid import devices
-from adafruit_hid.keycode import Keycode
 from adafruit_hid.keyboard import Keyboard
 from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
+from adafruit_hid.keycode import Keycode
+from usb_hid import devices
 
 keyboard = Keyboard(devices)
 keyboard_layout = KeyboardLayoutUS(keyboard)

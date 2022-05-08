@@ -3,17 +3,16 @@ from tendo import singleton
 # script lock
 me = singleton.SingleInstance()
 
-import os
 import json
-import sys
 import logging
+import os
 import subprocess
+import sys
 from datetime import datetime
 from typing import List
 
 import serial
 from adafruit_board_toolkit import circuitpython_serial
-
 
 formatter = logging.Formatter(
     fmt="%(asctime)s %(levelname)-8s %(message)s", datefmt="%Y-%m-%d %H:%M:%S"
