@@ -42,7 +42,6 @@ def get_app():
         return SELECT_APPS.get(process.lower(), DEFAULT_APP)
     return DEFAULT_APP
 
-
 current_app = get_app()(APP_PAD, get_settings())
 
 while True:
