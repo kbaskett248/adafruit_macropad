@@ -1,7 +1,7 @@
 """
 An App program for Adafruit MACROPAD. This was modified from the original
 Adafruit Macropad Hotkeys code (https://github.com/adafruit/Adafruit_Learning_System_Guides/tree/main/Macropad_Hotkeys).
-It enables you to more easily create complex layouts and has other advanced 
+It enables you to more easily create complex layouts and has other advanced
 features, including double-tap support.
 """
 
