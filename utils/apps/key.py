@@ -13,9 +13,17 @@ import displayio
 import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
-from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
-from commands import Command
-from constants import (
+
+from utils.app_pad import (
+    AppPad,
+    DoubleTapEvent,
+    EncoderButtonEvent,
+    EncoderEvent,
+    KeyEvent,
+)
+from utils.apps.base import BaseApp
+from utils.commands import Command
+from utils.constants import (
     DISABLE_PIXELS_TIMEOUT,
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
@@ -27,8 +35,6 @@ from constants import (
     PIXELS_DISABLED_SETTING,
     TIMER_DISABLE_PIXELS,
 )
-
-from apps.base import BaseApp
 
 
 def init_display_group_macro_app(
