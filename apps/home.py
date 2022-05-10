@@ -8,19 +8,14 @@ try:
 except ImportError:
     pass
 
+from app_pad import AppPad
 from apps.func import FuncKeysApp
 from apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey
 from apps.nav import NavApp
 from apps.numpad import NumpadApp
-from app_pad import AppPad
 from apps.switcher import AppSwitcherApp
 from apps.window import WindowManagementApp
-from commands import (
-    ConsumerControlCode,
-    Media,
-    PreviousAppCommand,
-    SwitchAppCommand,
-)
+from commands import ConsumerControlCode, Media, PreviousAppCommand, SwitchAppCommand
 from constants import (
     COLOR_APPS,
     COLOR_FUNC,
@@ -31,9 +26,9 @@ from constants import (
     COLOR_NUMPAD,
     COLOR_WINDOWS,
     COLOR_WINMAN,
-    OS_SETTING,
     OS_LINUX,
     OS_MAC,
+    OS_SETTING,
     OS_WINDOWS,
 )
 
