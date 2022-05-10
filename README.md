@@ -29,3 +29,15 @@ The existing layout has a Home App with the following features:
   * Function Keys
   * A Window Management app which allows switching virtual desktops and quickly resizing windows. Note that this requires defining hotkeys on the host computer.
   * An app switcher you can use to quickly swap to your most used desktop programs. Some programs may have their own associated macro apps which open when switching to them. Note that this may also require defining hotkeys on the host computer.
+
+# Contributors
+
+Thanks for your interest in contributing!
+
+This project uses [`black`](https://github.com/psf/black) and [`isort`](https://pycqa.github.io/isort/) to maintain code style. Both of these tools are configured to run via [`pre-commit`](https://pre-commit.com/index.html). After installing `pre-commit` using your preferred method, install the git hooks for this repository.
+
+```
+pre-commit install
+```
+
+The first commit may take some time while `pre-commit` installs the hooks. Subsequent commits will be faster.
