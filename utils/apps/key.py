@@ -5,19 +5,25 @@ the key, and the command to execute for the key.
 """
 
 try:
-    from typing import Any, Dict, List, Set, Optional, Union
+    from typing import Any, Dict, List, Optional, Set, Union
 except ImportError:
     pass
 
+import displayio
 import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
-import displayio
 
-from app_pad import AppPad, DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent
-from apps.base import BaseApp
-from commands import Command
-from constants import (
+from utils.app_pad import (
+    AppPad,
+    DoubleTapEvent,
+    EncoderButtonEvent,
+    EncoderEvent,
+    KeyEvent,
+)
+from utils.apps.base import BaseApp
+from utils.commands import Command
+from utils.constants import (
     DISABLE_PIXELS_TIMEOUT,
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,

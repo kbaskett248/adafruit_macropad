@@ -14,8 +14,14 @@ import terminalio
 from adafruit_display_shapes.rect import Rect
 from adafruit_display_text import label
 
-from app_pad import AppPad, DoubleTapEvent, EncoderEvent, EncoderButtonEvent, KeyEvent
-from constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
+from utils.app_pad import (
+    AppPad,
+    DoubleTapEvent,
+    EncoderButtonEvent,
+    EncoderEvent,
+    KeyEvent,
+)
+from utils.constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 
 
 def init_display_group_base_app(
