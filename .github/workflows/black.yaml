@@ -1,0 +1,15 @@
+name: Black
+
+on:
+  - pull_request
+
+jobs:
+  black:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: psf/black@stable
+        with:
+          options: "--check --verbose"
+          src: "./src"
+          version: "21.5b1"
