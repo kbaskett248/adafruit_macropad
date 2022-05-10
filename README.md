@@ -41,3 +41,5 @@ pre-commit install
 ```
 
 The first commit may take some time while `pre-commit` installs the hooks. Subsequent commits will be faster.
+
+In addition, there is a Github action which will run these checks on any pull request.
