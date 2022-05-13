@@ -112,28 +112,6 @@ class Press(Command):
         )
 
 
-class Callback(Command):
-    """A command that calls a callback function."""
-
-    def __init__(self, callback: Callable, *args, **kwargs):
-        """Initialize the Callback command.
-
-        Args:
-            callback: The callback function to call.
-        """
-        super().__init__()
-        self.callback = callback
-        self.args = args
-        self.kwargs = kwargs
-
-    def execute(self, app: BaseApp):
-        """Call the callback function."""
-        self.callback(app, *self.args, **self.kwargs)
-
-    def undo(self, app: BaseApp):
-        pass
-
-
 class Release(Command):
     """Release the given keycode."""
 
@@ -451,10 +429,3 @@ class AppSwitchException(Exception):
     def __init__(self, app: BaseApp):
         super().__init__()
         self.app = app
-
-
-class RedrawAppException(Exception):
-    """Raise this exception to redraw the current app."""
-
-    def __init__(self):
-        super().__init__()
