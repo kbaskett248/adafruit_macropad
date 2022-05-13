@@ -47,16 +47,6 @@ class Config:
                     return True
             else:
                 self.host = trigger_and_get()
-                # if timestamp := self.host.get('timestamp'):
-                #     class RTC(object):
-                #         @property
-                #         def datetime(self):
-                #             return time.struct_time((2018, 3, 17, 21, 1, 47, 0, 0, 0))
-
-                #     r = RTC()
-                #     rtc.set_time_source(r)
-                #     # rtc.RTC().calibration = 9
-                #     # rtc.RTC().datetime = time.localtime(int(timestamp))
                 return True
         except Exception as e:
             print(str(e))
