@@ -294,8 +294,9 @@ class WinHook
 	}
 }
 
+; This adds a hook to every change to an active window.
+; Strictly speaking, hooks could/should be limited to windows where the active status changing is relevant to the MacroPad.
 WinHook.Shell.Add("Activated",,,,32772)
-
 
 Activated(Win_Hwnd, Win_Title, Win_Class, Win_Exe, Win_Event)
 {
