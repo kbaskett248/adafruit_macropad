@@ -9,7 +9,7 @@ from utils.app_pad import AppPad
 from utils.commands import AppSwitchException
 
 try:
-    from user.settings import DEFAULT_APP
+    from user import DEFAULT_APP
 except ImportError:
     from default_settings import DEFAULT_APP
 
