@@ -18,9 +18,22 @@ app_settings = {
 app_pad = AppPad()
 current_app = HomeApp(app_pad, app_settings)
 
-while True:
-    try:
-        print(f"Current App = {current_app}")
-        current_app.run()
-    except AppSwitchException as err:
-        current_app = err.app
+try:
+    while True:
+        try:
+            print(f"Current App = {current_app}")
+            current_app.run()
+        except AppSwitchException as err:
+            current_app = err.app
+except Exception as e:
+    print("Exception in event_stream, importing keyboard and releasing all keys.")
+
+    from adafruit_hid.keyboard import Keyboard
+    from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
+    from usb_hid import devices
+
+    keyboard = Keyboard(devices)
+    keyboard_layout = KeyboardLayoutUS(keyboard)
+    keyboard.release_all()
+
+    raise e
