@@ -29,11 +29,7 @@ except Exception as e:
     print("Exception in event_stream, importing keyboard and releasing all keys.")
 
     from adafruit_hid.keyboard import Keyboard
-    from adafruit_hid.keyboard_layout_us import KeyboardLayoutUS
     from usb_hid import devices
 
-    keyboard = Keyboard(devices)
-    keyboard_layout = KeyboardLayoutUS(keyboard)
-    keyboard.release_all()
-
+    Keyboard(devices).release_all()
     raise e
