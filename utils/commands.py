@@ -15,7 +15,6 @@ from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
 from adafruit_hid.mouse import Mouse
 
 from utils.apps.base import BaseApp
-from utils.constants import OS_SETTING, PREVIOUS_APP_SETTING
 
 
 class Command:
@@ -331,7 +330,7 @@ class SwitchAppCommand(Command):
         Args:
             app (BaseApp): The current app
         """
-        app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack = self.app.settings.previous_app_settings
         app_stack.append(app)
         raise AppSwitchException(self.app)
 
@@ -349,7 +348,7 @@ class PreviousAppCommand(Command):
             app (BaseApp): The current app
 
         """
-        app_stack = app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack = app.settings.previous_app_settings
         previous_app = app_stack.pop()
         if previous_app is not None:
             raise AppSwitchException(previous_app)
@@ -392,7 +391,7 @@ class SettingsDependentCommand(Command):
 
         """
         try:
-            setting = app.get_setting(self.setting)
+            setting = self.get_setting(app, self.setting)
             command = self.override_commands[setting]
         except Exception:
             command = self.default_command
@@ -420,7 +419,15 @@ class SettingsDependentCommand(Command):
         if command is not None:
             command.undo(app)
 
+    @staticmethod
+    def get_setting(app: BaseApp, setting: str):
+        return app.get_setting(setting)
+
 
 class MacroCommand(SettingsDependentCommand):
     def __init__(self, default_command: Command, **override_commands: Command):
-        super().__init__(OS_SETTING, default_command, **override_commands)
+        super().__init__(None, default_command, **override_commands)
+
+    @staticmethod
+    def get_setting(app: BaseApp, setting: str):
+        return app.settings.host_os
