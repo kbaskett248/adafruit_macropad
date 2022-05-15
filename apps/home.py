@@ -33,7 +33,6 @@ from utils.constants import (
     COLOR_WINMAN,
     OS_LINUX,
     OS_MAC,
-    OS_SETTING,
     OS_WINDOWS,
 )
 
@@ -41,12 +40,12 @@ from utils.constants import (
 class MacroSettingsApp(KeyApp):
     name = "Macropad Settings"
 
-    key_0 = SettingsSelectKey("MAC", 0x555555, OS_SETTING, OS_MAC, PreviousAppCommand())
+    key_0 = SettingsSelectKey("MAC", 0x555555, 'host_os', OS_MAC, PreviousAppCommand())
     key_1 = SettingsSelectKey(
-        "WIN", 0x00A4EF, OS_SETTING, OS_WINDOWS, PreviousAppCommand()
+        "WIN", 0x00A4EF, 'host_os', OS_WINDOWS, PreviousAppCommand()
     )
     key_2 = SettingsSelectKey(
-        "LIN", 0x25D366, OS_SETTING, OS_LINUX, PreviousAppCommand()
+        "LIN", 0x25D366, 'host_os', OS_LINUX, PreviousAppCommand()
     )
 
     encoder_button = PreviousAppCommand()
@@ -81,7 +80,7 @@ class HomeApp(KeyApp):
     ):
         settings_app = MacroSettingsApp(app_pad, settings)
         cls.key_0 = SettingsValueKey(
-            OS_SETTING,
+            'host_os',
             SwitchAppCommand(settings_app),
             color_mapping={
                 OS_MAC: COLOR_MAC,

@@ -187,7 +187,10 @@ class BaseApp:
         Returns:
             Any: The value for the setting, or None if it isn't defined
         """
-        return self.settings.get(setting, None)
+        if hasattr(self.settings, setting):
+            return getattr(self.settings, setting)
+        else:
+            return self.settings._app_settings.get(setting, None) 
 
     def put_setting(self, setting: str, value: Any):
         """Store the value as a setting with the given name.
@@ -196,7 +199,10 @@ class BaseApp:
             setting (str): The setting name
             value (Any): The value for the setting
         """
-        self.settings[setting] = value
+        if hasattr(self.settings, setting):
+            setattr(self.settings, setting, value)
+        else:
+            self.settings._app_settings[setting] = value
 
     def process_event(
         self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]

@@ -30,9 +30,7 @@ from utils.constants import (
     EMPTY_VALUE,
     OS_LINUX,
     OS_MAC,
-    OS_SETTING,
     OS_WINDOWS,
-    PIXELS_DISABLED_SETTING,
     TIMER_DISABLE_PIXELS,
 )
 
@@ -199,19 +197,19 @@ class KeyApp(BaseApp):
                 key.pixel = key.color()
             except AttributeError:
                 self.macropad.pixels[i] = 0
-        self.put_setting(PIXELS_DISABLED_SETTING, False)
+        self.settings.pixels_disabled = False
 
     def disable_pixels(self):
         """Turn off all the pixels on the keypad."""
         for i in range(len(self.keys)):
             self.app_pad.pixels[i] = 0
         self.app_pad.pixels.show()
-        self.put_setting(PIXELS_DISABLED_SETTING, True)
+        self.settings.pixels_disabled = True
 
     def process_event(
         self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
     ):
-        if self.get_setting(PIXELS_DISABLED_SETTING):
+        if self.settings.pixels_disabled:
             self.pixels_on_focus()
             self.app_pad.pixels.show()
         self.app_pad.add_timer(
@@ -528,7 +526,7 @@ class SettingsValueKey(Key):
                 and value. Defaults to "{value}".
 
         """
-        super().__init__(command=command, double_tap_command=double_tap_command)
+        super().__init__(command=command, double_tap_command=double_tap_command) 
         self.setting = setting
         self.color_mapping = color_mapping
         self.text_template = text_template
@@ -708,7 +706,7 @@ class MacroKey(Key):
 
     @staticmethod
     def _get_os(app):
-        return app.get_setting(OS_SETTING)
+        return app.settings.host_os
 
     def _get_command(self, app):
         os = self._get_os(app)

@@ -8,17 +8,18 @@ features, including double-tap support.
 from apps.home import HomeApp
 from utils.app_pad import AppPad
 from utils.commands import AppSwitchException
-from utils.constants import OS_MAC, OS_SETTING, PREVIOUS_APP_SETTING
 
-app_settings = {
-    OS_SETTING: OS_MAC,
-    PREVIOUS_APP_SETTING: [],
-}
+try:
+    from user import Settings
+except ImportError as e:
+    from settings import BaseSettings as Settings
+
+settings = Settings()
 
 app_pad = AppPad()
-current_app = HomeApp(app_pad, app_settings)
+current_app = settings.default_app(app_pad, settings)
 
-while True:
+while True: 
     try:
         print(f"Current App = {current_app}")
         current_app.run()
