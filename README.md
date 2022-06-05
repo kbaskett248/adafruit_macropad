@@ -30,6 +30,46 @@ The existing layout has a Home App with the following features:
   * A Window Management app which allows switching virtual desktops and quickly resizing windows. Note that this requires defining hotkeys on the host computer.
   * An app switcher you can use to quickly swap to your most used desktop programs. Some programs may have their own associated macro apps which open when switching to them. Note that this may also require defining hotkeys on the host computer.
 
+## Customizing
+
+There are two methods to tailor the macropad to your specific use case.
+The preferred method avoids modifying any versioned files,
+so you can continue to pull in updates from this project.
+The second method may be easier for those without as much `git` or `python` experience.
+
+### Preferred
+
+The preferred way to customize your apps and hotkeys is by creating a `user` module or package.
+If that module or package defines `DEFAULT_APP`, then that app will be loaded when the macropad starts.
+
+1. Clone this repo.
+2. In the base of the repo, create either `user.py` or create a directory called `user` with a file called `__init__.py`.
+3. In whichever file you created, define a callable called `DEFAULT_APP`.
+   The callable should accept an `AppPad` instance.
+   For example, the default configuration assumes the host OS is windows.
+   If you wanted to set the default host OS to MacOS instead, you could define `user.py` as follows.
+
+   ```py
+   # user.py
+   from apps.home import HomeApp
+   from utils.constants import OS_SETTING, OS_MAC, PREVIOUS_APP_SETTING
+
+   app_settings = {
+       OS_SETTING: OS_MAC,
+       PREVIOUS_APP_SETTING: [],
+   }
+
+   DEFAULT_APP = lambda app_pad: HomeApp(app_pad, app_settings)
+   ```
+
+That's all there is to it.
+
+### Method 2
+
+If you aren't interested in pulling down future updates,
+then feel free to make any tweaks you'd like to make in the `apps` folder or any other code.
+
+
 # Contributors
 
 Thanks for your interest in contributing!
