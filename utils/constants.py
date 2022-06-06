@@ -10,16 +10,16 @@ DISPLAY_HEIGHT = 64
 # Settings
 
 # The setting name for the previous app setting
-PREVIOUS_APP_SETTING = "previous app"
+PREVIOUS_APP_SETTING = "previous_app"
 
 # The setting name and options for the OS setting
-OS_SETTING = "OS"
+OS_SETTING = "host_os"
 OS_MAC = "MAC"
 OS_WINDOWS = "WIN"
 OS_LINUX = "LIN"
 
 # Setting name for the pixels disabled setting
-PIXELS_DISABLED_SETTING = "pixels disabled"
+PIXELS_DISABLED_SETTING = "pixels_disabled"
 
 # Timeout after which the pixels will be disabled
 ONE_MINUTE = 60
