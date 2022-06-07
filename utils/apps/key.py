@@ -24,6 +24,16 @@ from utils.app_pad import (
 from utils.apps.base import BaseApp
 from utils.commands import Command
 from utils.constants import (
+    COLOR_1,
+    COLOR_2,
+    COLOR_3,
+    COLOR_4,
+    COLOR_5,
+    COLOR_6,
+    COLOR_7,
+    COLOR_8,
+    COLOR_9,
+    COLOR_10,
     DISABLE_PIXELS_TIMEOUT,
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
@@ -35,6 +45,7 @@ from utils.constants import (
     PIXELS_DISABLED_SETTING,
     TIMER_DISABLE_PIXELS,
 )
+from utils.settings import BaseSettings
 
 
 def init_display_group_macro_app(
@@ -79,6 +90,42 @@ def init_display_group_macro_app(
     return group
 
 
+class KeyAppSettings(BaseSettings):
+    color_scheme: Dict[str, int] = {
+        COLOR_1: 0x4D0204,
+        COLOR_2: 0x431A04,
+        COLOR_3: 0x442602,
+        COLOR_4: 0x4E1C02,
+        COLOR_5: 0x4F3803,
+        COLOR_6: 0x243417,
+        COLOR_7: 0x112A22,
+        COLOR_8: 0x132423,
+        COLOR_9: 0x161D24,
+        COLOR_10: 0x0A1F28,
+    }
+    host_os: str = OS_WINDOWS
+    pixels_disabled: bool = False
+    pixels_disabled_timeout: int = 20 * 60
+
+    def __init__(
+        self,
+        color_scheme: Optional[Dict[str, int]] = None,
+        host_os: Optional[str] = None,
+        pixels_disabled: Optional[bool] = None,
+        pixels_disabled_timeout: Optional[int] = None,
+        **kwargs,
+    ):
+        if color_scheme is not None:
+            self.color_scheme = color_scheme
+        if host_os is not None:
+            self.host_os = host_os
+        if pixels_disabled is not None:
+            self.pixels_disabled = pixels_disabled
+        if pixels_disabled_timeout is not None:
+            self.pixels_disabled_timeout = pixels_disabled_timeout
+        super().__init__(**kwargs)
+
+
 class KeyApp(BaseApp):
     """An App with a specific command bound to each key.
 
@@ -91,6 +138,8 @@ class KeyApp(BaseApp):
     """
 
     name = "Key App"
+
+    settings: KeyAppSettings
 
     display_group = init_display_group_macro_app(DISPLAY_WIDTH, DISPLAY_HEIGHT)
 
@@ -119,11 +168,12 @@ class KeyApp(BaseApp):
     encoder_increase: Optional[Command] = None
     encoder_decrease: Optional[Command] = None
 
-    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, app_pad: AppPad, settings: Optional[KeyAppSettings] = None):
         """Initialize the KeyApp.
 
         Args:
             app_pad (AppPad): An AppPad instance
+            settings (KeyAppSettings): A KeyAppSettings instance
         """
         self.keys: List[Optional[Key.BoundKey]] = []
         self.double_tap_key_indices: Set[int] = set()
@@ -140,6 +190,9 @@ class KeyApp(BaseApp):
                     self.double_tap_key_indices.add(index)
 
             self.keys.append(bound_key)
+
+        if settings is None:
+            settings = KeyAppSettings()
 
         super().__init__(app_pad, settings)
 
@@ -199,19 +252,19 @@ class KeyApp(BaseApp):
                 key.pixel = key.color()
             except AttributeError:
                 self.macropad.pixels[i] = 0
-        self.put_setting(PIXELS_DISABLED_SETTING, False)
+        self.settings.pixels_disabled = False
 
     def disable_pixels(self):
         """Turn off all the pixels on the keypad."""
         for i in range(len(self.keys)):
             self.app_pad.pixels[i] = 0
         self.app_pad.pixels.show()
-        self.put_setting(PIXELS_DISABLED_SETTING, True)
+        self.settings.pixels_disabled = True
 
     def process_event(
         self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
     ):
-        if self.get_setting(PIXELS_DISABLED_SETTING):
+        if self.settings.pixels_disabled:
             self.pixels_on_focus()
             self.app_pad.pixels.show()
         self.app_pad.add_timer(
@@ -535,12 +588,12 @@ class SettingsValueKey(Key):
 
     def text(self, app) -> str:
         return self.text_template.format(
-            setting=self.setting, value=app.get_setting(self.setting)
+            setting=self.setting, value=app.settings.get(self.setting, "")
         )
 
     def color(self, app) -> int:
         if self.color_mapping is not None:
-            return self.color_mapping.get(app.get_setting(self.setting), 0)
+            return self.color_mapping.get(app.settings.get(self.setting, 0xFFFFFF), 0)
         return 0
 
 
@@ -636,7 +689,7 @@ class SettingsSelectKey(Key):
             str: The text to display for the key.
 
         """
-        if app.get_setting(self.setting) == self.value:
+        if app.settings.get(self.setting, None) == self.value:
             marker = self.marker
         else:
             marker = " "
@@ -656,7 +709,7 @@ class SettingsSelectKey(Key):
             int: The color to display for the key's pixel
 
         """
-        if app.get_setting(self.setting) == self.value:
+        if app.settings.get(self.setting, None) == self.value:
             return self._color
         return 0
 
@@ -667,7 +720,7 @@ class SettingsSelectKey(Key):
             app (KeyApp): An instance of KeyApp.
 
         """
-        app.put_setting(self.setting, self.value)
+        app.settings[self.setting] = self.value
         super().press(app)
 
     def __str__(self) -> str:
@@ -708,7 +761,7 @@ class MacroKey(Key):
 
     @staticmethod
     def _get_os(app):
-        return app.get_setting(OS_SETTING)
+        return app.settings.host_os
 
     def _get_command(self, app):
         os = self._get_os(app)

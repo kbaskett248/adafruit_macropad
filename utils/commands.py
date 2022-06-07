@@ -331,7 +331,7 @@ class SwitchAppCommand(Command):
         Args:
             app (BaseApp): The current app
         """
-        app_stack = self.app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack = self.app.settings.get(PREVIOUS_APP_SETTING, [])
         app_stack.append(app)
         raise AppSwitchException(self.app)
 
@@ -349,7 +349,7 @@ class PreviousAppCommand(Command):
             app (BaseApp): The current app
 
         """
-        app_stack = app.get_setting(PREVIOUS_APP_SETTING)
+        app_stack = app.settings.get(PREVIOUS_APP_SETTING, [])
         previous_app = app_stack.pop()
         if previous_app is not None:
             raise AppSwitchException(previous_app)
@@ -392,7 +392,7 @@ class SettingsDependentCommand(Command):
 
         """
         try:
-            setting = app.get_setting(self.setting)
+            setting = app.settings[self.setting]
             command = self.override_commands[setting]
         except Exception:
             command = self.default_command
@@ -412,7 +412,7 @@ class SettingsDependentCommand(Command):
 
         """
         try:
-            setting = app.get_setting(self.setting)
+            setting = app.settings[self.setting]
             command = self.override_commands[setting]
         except Exception:
             command = self.default_command

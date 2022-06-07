@@ -4,6 +4,8 @@ Includes a BaseApp implementation which handles the basic app run loop.
 
 import os
 
+from utils.settings import BaseSettings
+
 try:
     from typing import Any, Dict, Iterable, List, Optional, Union
 except ImportError:
@@ -112,20 +114,19 @@ class BaseApp:
         except AttributeError:
             return []
 
-    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, app_pad: AppPad, settings: Optional[BaseSettings] = None):
         """Initialize the App.
 
         Args:
             app_pad (AppPad): An AppPad instance
-            settings (Optional[Dict[str, Any]], optional): Settings dictionary.
-                If you pass None, the settings dictionary is initialized to an
-                empty dictionary. Defaults to None.
+            settings (Optional[BaseSettings]): The settings for the app.
+                If you pass None, an empty settings object is created.
         """
         self.app_pad = app_pad
         self.macropad = app_pad.macropad
 
         if settings is None:
-            self.settings = {}
+            self.settings = BaseSettings()
         else:
             self.settings = settings
 
@@ -175,28 +176,6 @@ class BaseApp:
         """
         for i in range(12):
             self.macropad.pixels[i] = 0
-
-    def get_setting(self, setting: str) -> Any:
-        """Return the setting value with the given name.
-
-        If the setting isn't defined, None is returned.
-
-        Args:
-            setting (str): The setting name
-
-        Returns:
-            Any: The value for the setting, or None if it isn't defined
-        """
-        return self.settings.get(setting, None)
-
-    def put_setting(self, setting: str, value: Any):
-        """Store the value as a setting with the given name.
-
-        Args:
-            setting (str): The setting name
-            value (Any): The value for the setting
-        """
-        self.settings[setting] = value
 
     def process_event(
         self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]

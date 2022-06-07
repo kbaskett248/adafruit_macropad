@@ -37,6 +37,7 @@ from utils.constants import (
     COLOR_WARNING,
     COLOR_WINDOWS,
     COLOR_WINMAN,
+    EMPTY_VALUE,
 )
 
 
@@ -79,6 +80,8 @@ class BaseSettings:
         COLOR_TERMINAL: COLOR_10,
     }
 
+    normalized_color_scheme: Dict[str, int]
+
     def __init__(self, **kwargs):
         self.additional_settings = {}
         for key, value in kwargs.items():
@@ -97,6 +100,14 @@ class BaseSettings:
         except:
             self.additional_settings[key] = value
 
+    def get(self, setting: str, default=EMPTY_VALUE) -> Any:
+        try:
+            return self[setting]
+        except KeyError as err:
+            if default is EMPTY_VALUE:
+                raise err
+            return default
+
     def normalize_colors(self):
         """
         Convert any color names to the corresponding color defined in the scheme.
@@ -106,6 +117,10 @@ class BaseSettings:
         so if you have multiple levels of indirection, you will need to call this
         functions multiple times.
         """
+        normalized_colors = {}
         for name, color in self.color_scheme.items():
-            if isinstance(color, str):
+            if isinstance(color, int):
+                normalized_colors[name] = color
+            elif isinstance(color, str):
                 self.color_scheme[name] = self.color_scheme[color]
+        self.normalized_color_scheme = normalized_colors
