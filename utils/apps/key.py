@@ -125,6 +125,14 @@ class KeyAppSettings(BaseSettings):
             self.pixels_disabled_timeout = pixels_disabled_timeout
         super().__init__(**kwargs)
 
+    def color(self, color_name: str) -> int:
+        for _ in range(5):
+            color = self.color_scheme.get(color_name, 0x000000)
+            if isinstance(color, int):
+                return color
+            color_name = color
+        return 0x000000
+
 
 class KeyApp(BaseApp):
     """An App with a specific command bound to each key.
