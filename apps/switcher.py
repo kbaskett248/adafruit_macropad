@@ -8,7 +8,7 @@ except ImportError:
 from apps.chrome import ChromeApp
 from apps.spotify import SpotifyApp
 from utils.app_pad import AppPad
-from utils.apps.key import Key, KeyApp, MacroKey
+from utils.apps.key import Key, KeyApp, KeyAppSettings, MacroKey
 from utils.commands import (
     ConsumerControlCode,
     Keycode,
@@ -118,13 +118,13 @@ class AppSwitcherApp(KeyApp):
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
     encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
 
-    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, app_pad: AppPad, settings: Optional[KeyAppSettings] = None):
         self.initialize_settings_dependent_keys(app_pad, settings)
         super().__init__(app_pad, settings=settings)
 
     @classmethod
     def initialize_settings_dependent_keys(
-        cls, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None
+        cls, app_pad: AppPad, settings: Optional[KeyAppSettings] = None
     ):
         chrome_app = ChromeApp(app_pad, settings)
         spotify_app = SpotifyApp(app_pad, settings)
