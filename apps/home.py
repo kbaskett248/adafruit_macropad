@@ -14,7 +14,13 @@ from apps.numpad import NumpadApp
 from apps.switcher import AppSwitcherApp
 from apps.window import WindowManagementApp
 from utils.app_pad import AppPad
-from utils.apps.key import Key, KeyApp, SettingsSelectKey, SettingsValueKey
+from utils.apps.key import (
+    Key,
+    KeyApp,
+    KeyAppSettings,
+    SettingsSelectKey,
+    SettingsValueKey,
+)
 from utils.commands import (
     ConsumerControlCode,
     Media,
@@ -71,13 +77,13 @@ class HomeApp(KeyApp):
     encoder_increase = Media(ConsumerControlCode.VOLUME_INCREMENT)
     encoder_decrease = Media(ConsumerControlCode.VOLUME_DECREMENT)
 
-    def __init__(self, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None):
+    def __init__(self, app_pad: AppPad, settings: Optional[KeyAppSettings] = None):
         self.initialize_settings_dependent_keys(app_pad, settings)
         super().__init__(app_pad, settings=settings)
 
     @classmethod
     def initialize_settings_dependent_keys(
-        cls, app_pad: AppPad, settings: Optional[Dict[str, Any]] = None
+        cls, app_pad: AppPad, settings: Optional[KeyAppSettings] = None
     ):
         settings_app = MacroSettingsApp(app_pad, settings)
         cls.key_0 = SettingsValueKey(
