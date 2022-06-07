@@ -331,7 +331,11 @@ class SwitchAppCommand(Command):
         Args:
             app (BaseApp): The current app
         """
-        app_stack = self.app.settings.get(PREVIOUS_APP_SETTING, [])
+        try:
+            app_stack = self.app.settings[PREVIOUS_APP_SETTING]
+        except KeyError:
+            app_stack = []
+            self.app.settings[PREVIOUS_APP_SETTING] = app_stack
         app_stack.append(app)
         raise AppSwitchException(self.app)
 
