@@ -460,7 +460,7 @@ class Key:
     def __init__(
         self,
         text: str = "",
-        color: int = 0,
+        color: Union[int, str] = 0,
         command: Optional[Command] = None,
         double_tap_command: Optional[Command] = None,
     ):
@@ -469,7 +469,9 @@ class Key:
         Args:
             text (str, optional): The text for the label of the Key.
                 Defaults to "".
-            color (int, optional): The color value for the Key. Defaults to 0.
+            color (int | str, optional): The color value for the Key.
+                Defaults to 0. May be an int or a string. If a string, the
+                color is looked up in the settings color scheme.
             command (Optional[Command], optional): The Command to execute when
                 pressing the key. Defaults to None.
             double_tap_command (Optional[Command], optional): The Command to
@@ -501,6 +503,8 @@ class Key:
         Returns:
             int: The color associated with this Key
         """
+        if isinstance(self._color, str):
+            return app.settings.color(self._color)
         return self._color
 
     def press(self, app: KeyApp):
@@ -570,7 +574,7 @@ class SettingsValueKey(Key):
         setting: str,
         command: Optional[Command] = None,
         double_tap_command: Optional[Command] = None,
-        color_mapping: Optional[Dict[str, int]] = None,
+        color_mapping: Optional[Dict[str, Union[int, str]]] = None,
         text_template: str = "{value}",
     ):
         """Initialize the SettingsValueKey.
@@ -582,8 +586,10 @@ class SettingsValueKey(Key):
             double_tap_command (Optional[Command], optional): A command to
                 execute when the key is double-tapped. Defaults to None.
             color_mapping (Optional[Dict[str, int]], optional): A dictionary
-                mapping values for the setting to color codes. If None the key
-                will have no color. Defaults to None.
+                mapping values for the setting to colors. If None the key
+                will have no color. Defaults to None. Colors may be ints or
+                strings. If strings, the color names will be mapped to ints
+                using the settings color scheme.
             text_template (str, optional): A template string to determine the
                 text for the key. The keys for the template string are setting
                 and value. Defaults to "{value}".
@@ -601,7 +607,10 @@ class SettingsValueKey(Key):
 
     def color(self, app) -> int:
         if self.color_mapping is not None:
-            return self.color_mapping.get(app.settings.get(self.setting, 0xFFFFFF), 0)
+            color = self.color_mapping.get(app.settings.get(self.setting, ""), 0)
+            if isinstance(color, str):
+                color = app.settings.color(color)
+            return color
         return 0
 
 
@@ -662,7 +671,7 @@ class SettingsSelectKey(Key):
     def __init__(
         self,
         text: str = "",
-        color: int = 0,
+        color: Union[int, str] = 0,
         setting: str = "",
         value: Any = None,
         command: Optional[Command] = None,
@@ -672,8 +681,9 @@ class SettingsSelectKey(Key):
         Args:
             text (str, optional): The text to display for the key.
                 Defaults to "".
-            color (int, optional): The color to display when the value is the
-                current setting. Defaults to 0.
+            color (int | str, optional): The color to display when the value is
+                the current setting. Defaults to 0. May be an int or string.
+                If a string, the color is retrieved from the app settings.
             setting (str, optional): The name of the setting. Defaults to "".
             value (Any, optional): The value of the setting. Defaults to None.
             command (Optional[Command], optional): An additional command to run
@@ -718,7 +728,7 @@ class SettingsSelectKey(Key):
 
         """
         if app.settings.get(self.setting, None) == self.value:
-            return self._color
+            return super().color(app)
         return 0
 
     def press(self, app: KeyApp):
@@ -750,7 +760,7 @@ class MacroKey(Key):
     def __init__(
         self,
         text: str = "",
-        color: int = 0,
+        color: Union[int, str] = 0,
         command: Optional[Command] = None,
         double_tap_command: Optional[Command] = None,
         linux_command=EMPTY_VALUE,
@@ -759,7 +769,7 @@ class MacroKey(Key):
     ):
         super().__init__(text, color, command, double_tap_command)
 
-        self.os_commands = {
+        self.os_commands: Dict[str, Optional[Command]] = {
             os: com if (com is not EMPTY_VALUE) else self.command
             for os, com in zip(
                 (OS_LINUX, OS_MAC, OS_WINDOWS),
@@ -768,21 +778,21 @@ class MacroKey(Key):
         }
 
     @staticmethod
-    def _get_os(app):
+    def _get_os(app) -> str:
         return app.settings.host_os
 
-    def _get_command(self, app):
+    def _get_command(self, app) -> Optional[Command]:
         os = self._get_os(app)
         return self.os_commands[os]
 
-    def text(self, app):
+    def text(self, app) -> str:
         if self._get_command(app):
             return self._text
         return ""
 
-    def color(self, app):
+    def color(self, app) -> int:
         if self._get_command(app):
-            return self._color
+            return super().color(app)
         return 0
 
     def press(self, app):
