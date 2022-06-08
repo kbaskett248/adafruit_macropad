@@ -26,9 +26,9 @@ ONE_MINUTE = 60
 # Timer ID for the disabled pixels timer
 TIMER_DISABLE_PIXELS = "disable pixels timer"
 
-# Defines a color scheme for the Macropad. You can reference these constants
-# for pixel colors to define a consistent color scheme and make it easy to
-# update the colors
+# Defines color names for the color scheme for the Macropad. You can use these
+# color names to refer to colors defined in the default color scheme defined
+# in settings.py.
 COLOR_1 = "COLOR_1"
 COLOR_2 = "COLOR_2"
 COLOR_3 = "COLOR_3"
