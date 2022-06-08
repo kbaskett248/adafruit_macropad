@@ -1,7 +1,7 @@
 """Hotkeys for switching between desktop apps."""
 
 try:
-    from typing import Any, Dict, Optional
+    from typing import Optional
 except ImportError:
     pass
 

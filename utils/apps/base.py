@@ -7,7 +7,7 @@ import os
 from utils.settings import BaseSettings
 
 try:
-    from typing import Any, Dict, Iterable, List, Optional, Union
+    from typing import Iterable, List, Optional, Union
 except ImportError:
     pass
 

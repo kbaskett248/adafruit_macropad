@@ -4,7 +4,7 @@ Also includes media control and settings management.
 """
 
 try:
-    from typing import Any, Dict, Optional
+    from typing import Optional
 except ImportError:
     pass
 
