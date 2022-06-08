@@ -21,9 +21,7 @@ OS_LINUX = "LIN"
 # Setting name for the pixels disabled setting
 PIXELS_DISABLED_SETTING = "pixels_disabled"
 
-# Timeout after which the pixels will be disabled
 ONE_MINUTE = 60
-DISABLE_PIXELS_TIMEOUT = 20 * ONE_MINUTE
 
 # Timer ID for the disabled pixels timer
 TIMER_DISABLE_PIXELS = "disable pixels timer"

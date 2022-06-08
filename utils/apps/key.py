@@ -34,15 +34,13 @@ from utils.constants import (
     COLOR_8,
     COLOR_9,
     COLOR_10,
-    DISABLE_PIXELS_TIMEOUT,
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
     EMPTY_VALUE,
+    ONE_MINUTE,
     OS_LINUX,
     OS_MAC,
-    OS_SETTING,
     OS_WINDOWS,
-    PIXELS_DISABLED_SETTING,
     TIMER_DISABLE_PIXELS,
 )
 from utils.settings import BaseSettings
@@ -105,7 +103,7 @@ class KeyAppSettings(BaseSettings):
     }
     host_os: str = OS_WINDOWS
     pixels_disabled: bool = False
-    pixels_disabled_timeout: int = 20 * 60
+    pixels_disabled_timeout: int = 20 * ONE_MINUTE
 
     def __init__(
         self,
@@ -230,9 +228,13 @@ class KeyApp(BaseApp):
         """
         super().on_focus()
         self.app_pad.track_double_taps(self.double_tap_key_indices)
-        self.app_pad.add_timer(
-            TIMER_DISABLE_PIXELS, DISABLE_PIXELS_TIMEOUT, self.disable_pixels
-        )
+
+        if self.settings.pixels_disabled_timeout:
+            self.app_pad.add_timer(
+                TIMER_DISABLE_PIXELS,
+                self.settings.pixels_disabled_timeout,
+                self.disable_pixels,
+            )
 
     def display_on_focus(self):
         """Set up the display when an app is focused.
@@ -275,9 +277,12 @@ class KeyApp(BaseApp):
         if self.settings.pixels_disabled:
             self.pixels_on_focus()
             self.app_pad.pixels.show()
-        self.app_pad.add_timer(
-            TIMER_DISABLE_PIXELS, DISABLE_PIXELS_TIMEOUT, self.disable_pixels
-        )
+        if self.settings.pixels_disabled_timeout:
+            self.app_pad.add_timer(
+                TIMER_DISABLE_PIXELS,
+                self.settings.pixels_disabled_timeout,
+                self.disable_pixels,
+            )
         return super().process_event(event)
 
     def key_event(self, event: KeyEvent):
