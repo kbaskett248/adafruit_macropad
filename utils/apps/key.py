@@ -20,6 +20,7 @@ from utils.app_pad import (
     EncoderButtonEvent,
     EncoderEvent,
     KeyEvent,
+    SerialEvent,
 )
 from utils.apps.base import BaseApp
 from utils.commands import Command
@@ -272,7 +273,10 @@ class KeyApp(BaseApp):
         self.settings.pixels_disabled = True
 
     def process_event(
-        self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
+        self,
+        event: Union[
+            DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent, SerialEvent
+        ],
     ):
         if self.settings.pixels_disabled:
             self.pixels_on_focus()
@@ -359,6 +363,10 @@ class KeyApp(BaseApp):
             key.double_tap()
         else:
             key.double_tap_release()
+
+    def serial_event(self, event: SerialEvent):
+        print("received serial event", event.message)
+        self.settings.pixels_disabled = not self.settings.pixels_disabled
 
 
 class Key:

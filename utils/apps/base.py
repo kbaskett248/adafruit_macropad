@@ -22,6 +22,7 @@ from utils.app_pad import (
     EncoderButtonEvent,
     EncoderEvent,
     KeyEvent,
+    SerialEvent,
 )
 from utils.constants import DISPLAY_HEIGHT, DISPLAY_WIDTH
 
@@ -194,6 +195,8 @@ class BaseApp:
             self.key_event(event)
         elif isinstance(event, DoubleTapEvent):
             self.double_tap_event(event)
+        elif isinstance(event, SerialEvent):
+            self.serial_event(event)
 
     def encoder_event(self, event: EncoderEvent):
         """Process an encoder event.
@@ -225,5 +228,14 @@ class BaseApp:
 
         Args:
             event (DoubleTapEvent): An event triggered by double-tapping a key
+        """
+        pass
+
+    def serial_event(self, event: SerialEvent):
+        """Process a message from the serial port.
+
+        Args:
+            event (SerialEvent): An event triggered by a message over the
+                serial port
         """
         pass
