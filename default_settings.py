@@ -4,7 +4,9 @@ except ImportError:
     pass
 
 from apps.home import HomeApp
-from utils.apps.key import KeyAppSettings
+from utils.app_pad import SerialEvent
+from utils.apps.key import KeyApp, KeyAppSettings
+from utils.commands import SwitchAppCommand
 from utils.constants import (
     COLOR_1,
     COLOR_2,
@@ -39,6 +41,7 @@ from utils.constants import (
     COLOR_WARNING,
     COLOR_WINDOWS,
     COLOR_WINMAN,
+    EVENT_UPDATE_ACTIVE_WINDOW,
     OS_WINDOWS,
 )
 
@@ -80,6 +83,31 @@ class AppSettings(KeyAppSettings):
         COLOR_TERMINAL: COLOR_10,
     }
     host_os = OS_WINDOWS
+
+    AUTO_SWITCH_APPS = ("Chrome", "Spotify")
+
+    def serial_event(self, app: KeyApp, event: SerialEvent):
+        event_type = event.message.get("event")
+        if event_type == EVENT_UPDATE_ACTIVE_WINDOW:
+            active_window = event.message.get("active_window", "")
+            self.handle_autoswitch(app, active_window)
+        else:
+            return super().serial_event(app, event)
+
+    def handle_autoswitch(self, app: KeyApp, active_window: str):
+        if not active_window:
+            return
+
+        active_window = active_window.lower()
+
+        for app_name in self.AUTO_SWITCH_APPS:
+            if app_name.lower() in active_window:
+                new_app = self.get_app(app_name)
+                if new_app:
+                    SwitchAppCommand.switch_app(app, new_app)
+                    break
+
+        return
 
 
 DEFAULT_APP = lambda app_pad: HomeApp(app_pad, AppSettings())

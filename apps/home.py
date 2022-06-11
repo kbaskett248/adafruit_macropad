@@ -95,6 +95,7 @@ class HomeApp(KeyApp):
                 OS_LINUX: COLOR_LINUX,
             },
             text_template="[ {value} ]",
+            text_mapping={OS_LINUX: "LIN", OS_MAC: "MAC", OS_WINDOWS: "WIN"},
         )
 
         numpad_app = NumpadApp(app_pad, settings)

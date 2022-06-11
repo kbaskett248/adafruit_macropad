@@ -1,16 +1,21 @@
 try:
-    from typing import Any, Dict
+    from typing import TYPE_CHECKING, Any, Dict, Optional
 except ImportError:
-    pass
+    TYPE_CHECKING = False
 
 from utils.constants import EMPTY_VALUE
+
+if TYPE_CHECKING:
+    from utils.apps.base import BaseApp
 
 
 class BaseSettings:
     additional_settings: Dict[str, Any]
+    registered_apps: Dict[str, BaseApp]
 
     def __init__(self, **kwargs):
         self.additional_settings = {}
+        self.registered_apps = {}
         for key, value in kwargs.items():
             self[key] = value
 
@@ -33,3 +38,9 @@ class BaseSettings:
             if default is EMPTY_VALUE:
                 raise err
             return default
+
+    def register_app(self, app: BaseApp):
+        self.registered_apps[app.name] = app
+
+    def get_app(self, name: str) -> Optional[BaseApp]:
+        return self.registered_apps.get(name, None)
