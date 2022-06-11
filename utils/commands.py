@@ -336,7 +336,7 @@ class SwitchAppCommand(Command):
         Args:
             app (BaseApp): The current app
         """
-        self.switch_app(self.app, app)
+        self.switch_app(app, self.app)
 
     @staticmethod
     def switch_app(current_app, new_app):
