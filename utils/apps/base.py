@@ -131,6 +131,8 @@ class BaseApp:
         else:
             self.settings = settings
 
+        self.settings.register_app(self)
+
     def run(self):
         """The main run loop for the app.
 
