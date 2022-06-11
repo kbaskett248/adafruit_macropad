@@ -38,9 +38,11 @@ from utils.constants import (
     DISPLAY_HEIGHT,
     DISPLAY_WIDTH,
     EMPTY_VALUE,
+    EVENT_CONNECT,
     ONE_MINUTE,
     OS_LINUX,
     OS_MAC,
+    OS_SETTING,
     OS_WINDOWS,
     TIMER_DISABLE_PIXELS,
 )
@@ -131,6 +133,11 @@ class KeyAppSettings(BaseSettings):
                 return color
             color_name = color
         return 0x000000
+
+    def serial_event(self, app: "KeyApp", event: SerialEvent):
+        if event.message["event"] == EVENT_CONNECT:
+            self.host_os = event.message[OS_SETTING]
+            app.on_focus()
 
 
 class KeyApp(BaseApp):
@@ -366,7 +373,7 @@ class KeyApp(BaseApp):
 
     def serial_event(self, event: SerialEvent):
         print("received serial event", event.message)
-        self.settings.pixels_disabled = not self.settings.pixels_disabled
+        self.settings.serial_event(self, event)
 
 
 class Key:
@@ -589,6 +596,7 @@ class SettingsValueKey(Key):
         double_tap_command: Optional[Command] = None,
         color_mapping: Optional[Dict[str, Union[int, str]]] = None,
         text_template: str = "{value}",
+        text_mapping: Optional[Dict[str, str]] = None,
     ):
         """Initialize the SettingsValueKey.
 
@@ -612,11 +620,13 @@ class SettingsValueKey(Key):
         self.setting = setting
         self.color_mapping = color_mapping
         self.text_template = text_template
+        self.text_mapping = text_mapping
 
     def text(self, app) -> str:
-        return self.text_template.format(
-            setting=self.setting, value=app.settings.get(self.setting, "")
-        )
+        value = app.settings.get(self.setting, "")
+        if self.text_mapping:
+            value = self.text_mapping.get(value, value)
+        return self.text_template.format(setting=self.setting, value=value)
 
     def color(self, app) -> int:
         if self.color_mapping is not None:

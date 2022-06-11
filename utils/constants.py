@@ -14,8 +14,8 @@ PREVIOUS_APP_SETTING = "previous_app"
 
 # The setting name and options for the OS setting
 OS_SETTING = "host_os"
-OS_MAC = "MAC"
-OS_WINDOWS = "WIN"
+OS_MAC = "darwin"
+OS_WINDOWS = "win32"
 OS_LINUX = "LIN"
 
 # Setting name for the pixels disabled setting
@@ -25,6 +25,11 @@ ONE_MINUTE = 60
 
 # Timer ID for the disabled pixels timer
 TIMER_DISABLE_PIXELS = "disable pixels timer"
+
+# Event types
+EVENT_CONNECT = "connect"
+EVENT_SYNC_TIME = "sync_time"
+EVENT_UPDATE_ACTIVE_WINDOW = "update_active_window"
 
 # Defines color names for the color scheme for the Macropad. You can use these
 # color names to refer to colors defined in the default color scheme defined
