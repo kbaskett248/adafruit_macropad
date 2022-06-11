@@ -16,9 +16,18 @@ except ImportError:
 app_pad = AppPad()
 current_app = DEFAULT_APP(app_pad)
 
-while True:
-    try:
-        print(f"Current App = {current_app}")
-        current_app.run()
-    except AppSwitchException as err:
-        current_app = err.app
+try:
+    while True:
+        try:
+            print(f"Current App = {current_app}")
+            current_app.run()
+        except AppSwitchException as err:
+            current_app = err.app
+except Exception as e:
+    print("Exception in event_stream, importing keyboard and releasing all keys.")
+
+    from adafruit_hid.keyboard import Keyboard
+    from usb_hid import devices
+
+    Keyboard(devices).release_all()
+    raise e
