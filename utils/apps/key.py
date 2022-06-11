@@ -135,7 +135,7 @@ class KeyAppSettings(BaseSettings):
         return 0x000000
 
     def serial_event(self, app: "KeyApp", event: SerialEvent):
-        if event.message["event"] == EVENT_CONNECT:
+        if event.message.get("event") == EVENT_CONNECT:
             self.host_os = event.message[OS_SETTING]
             app.on_focus()
 

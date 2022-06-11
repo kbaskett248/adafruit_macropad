@@ -1,5 +1,5 @@
 try:
-    from typing import TYPE_CHECKING, Any, Dict
+    from typing import TYPE_CHECKING, Any, Dict, Optional
 except ImportError:
     TYPE_CHECKING = False
 
@@ -41,3 +41,6 @@ class BaseSettings:
 
     def register_app(self, app: BaseApp):
         self.registered_apps[app.name] = app
+
+    def get_app(self, name: str) -> Optional[BaseApp]:
+        return self.registered_apps.get(name, None)
