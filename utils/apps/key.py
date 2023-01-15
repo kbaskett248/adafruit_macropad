@@ -45,6 +45,8 @@ from utils.constants import (
 )
 from utils.settings import BaseSettings
 
+EMPTY_DISPLAY_GROUP = displayio.Group()
+
 
 def init_display_group_macro_app(
     display_width: int, display_height: int
@@ -103,7 +105,7 @@ class KeyAppSettings(BaseSettings):
     }
     host_os: str = OS_WINDOWS
     pixels_disabled: bool = False
-    pixels_disabled_timeout: int = 20 * ONE_MINUTE
+    pixels_disabled_timeout: int = 15 * ONE_MINUTE
 
     def __init__(
         self,
@@ -266,24 +268,34 @@ class KeyApp(BaseApp):
 
     def disable_pixels(self):
         """Turn off all the pixels on the keypad."""
+        # Clear the pixels
         for i in range(len(self.keys)):
             self.app_pad.pixels[i] = 0
         self.app_pad.pixels.show()
+
+        # Clear the display
+        self.macropad.display.show(EMPTY_DISPLAY_GROUP)
+        self.macropad.display.refresh()
+
         self.settings.pixels_disabled = True
 
     def process_event(
         self, event: Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]
     ):
-        if self.settings.pixels_disabled:
-            self.pixels_on_focus()
-            self.app_pad.pixels.show()
+        # Reset the pixel disable timer
         if self.settings.pixels_disabled_timeout:
             self.app_pad.add_timer(
                 TIMER_DISABLE_PIXELS,
                 self.settings.pixels_disabled_timeout,
                 self.disable_pixels,
             )
-        return super().process_event(event)
+
+        # If pixels are disabled, redisplay
+        if self.settings.pixels_disabled:
+            self.on_focus()
+            return
+
+        super().process_event(event)
 
     def key_event(self, event: KeyEvent):
         """Process a key event.
