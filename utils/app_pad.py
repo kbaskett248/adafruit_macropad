@@ -8,6 +8,8 @@ defines the interface used by apps to run.
 import time
 from collections import namedtuple
 
+from utils.serial import get_serial_data
+
 try:
     from typing import Callable, Iterable, List, Optional, Tuple, Union
 except ImportError:
@@ -29,6 +31,10 @@ KeyEvent = namedtuple("KeyEvent", ("number", "pressed"))
 
 # Event indicating a key was tapped twice quickly.
 DoubleTapEvent = namedtuple("DoubleTapEvent", ("number", "pressed"))
+
+
+# Event containing data received over the serial port.
+SerialEvent = namedtuple("SerialEvent", ("message",))
 
 
 class DoubleTapBuffer:
@@ -266,7 +272,9 @@ class AppPad:
 
     def check_events(
         self,
-    ) -> Iterable[Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent]]:
+    ) -> Iterable[
+        Union[DoubleTapEvent, EncoderButtonEvent, EncoderEvent, KeyEvent, SerialEvent]
+    ]:
         """Check for changes in state and return a tuple of events.
 
         Also execute any timers that are scheduled to run.
@@ -293,6 +301,10 @@ class AppPad:
             yield from self._handle_double_tap_event(
                 KeyEvent(number=key_event.key_number, pressed=key_event.pressed)
             )
+
+        serial_event = self.check_serial()
+        if serial_event:
+            yield serial_event
 
         yield from self.execute_ready_timers()
 
@@ -334,6 +346,14 @@ class AppPad:
                 self._double_tap_buffer.drain_buffer,
             )
             return tuple()
+
+    def check_serial(self) -> Optional[SerialEvent]:
+        message = get_serial_data()
+
+        if message:
+            return SerialEvent(message)
+
+        return None
 
     def track_double_taps(self, indices: Iterable[int]):
         """Create a new DoubleTapBuffer tracking the specified key numbers.

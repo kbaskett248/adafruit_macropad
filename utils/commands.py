@@ -9,6 +9,11 @@ is released.
 
 import time
 
+try:
+    from typing import List
+except ImportError:
+    pass
+
 # Expose these libraries to those that use commands
 from adafruit_hid.consumer_control_code import ConsumerControlCode
 from adafruit_hid.keycode import Keycode  # REQUIRED if using Keycode.* values
@@ -331,13 +336,20 @@ class SwitchAppCommand(Command):
         Args:
             app (BaseApp): The current app
         """
+        self.switch_app(app, self.app)
+
+    @staticmethod
+    def switch_app(current_app, new_app):
+        if current_app is new_app:
+            return
+
         try:
-            app_stack = self.app.settings[PREVIOUS_APP_SETTING]
+            app_stack = current_app.settings[PREVIOUS_APP_SETTING]
         except KeyError:
             app_stack = []
-            self.app.settings[PREVIOUS_APP_SETTING] = app_stack
-        app_stack.append(app)
-        raise AppSwitchException(self.app)
+            current_app.settings[PREVIOUS_APP_SETTING] = app_stack
+        app_stack.append(current_app)
+        raise AppSwitchException(new_app)
 
 
 class PreviousAppCommand(Command):
@@ -353,9 +365,12 @@ class PreviousAppCommand(Command):
             app (BaseApp): The current app
 
         """
-        app_stack = app.settings.get(PREVIOUS_APP_SETTING, [])
-        previous_app = app_stack.pop()
-        if previous_app is not None:
+        app_stack: List[BaseApp] = app.settings.get(PREVIOUS_APP_SETTING, [])
+        try:
+            previous_app = app_stack.pop()
+        except IndexError:
+            pass
+        else:
             raise AppSwitchException(previous_app)
 
 
